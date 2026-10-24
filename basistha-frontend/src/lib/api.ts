@@ -5,7 +5,7 @@
 
 import { BirthDetails, KundaliData, PanchangData, DashaData } from "@/types/astrology";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://basistha-api-poxq.onrender.com/api/v1";
 
 export async function fetchKundaliData(details: BirthDetails): Promise<KundaliData> {
   try {
