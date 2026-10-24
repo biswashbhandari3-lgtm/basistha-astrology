@@ -17,16 +17,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir --prefix=/install -r requirements.txt
+    pip install --no-cache-dir -r requirements.txt
 
 # Stage 2: Final minimal runtime image (< 150MB, fast cold-start)
 FROM python:3.11-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PORT=8000 \
-    PATH="/install/bin:$PATH" \
-    PYTHONPATH="/install/lib/python3.11/site-packages:$PYTHONPATH"
+    PORT=8000
 
 WORKDIR /app
 
@@ -37,7 +35,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy pre-compiled python dependencies from builder
-COPY --from=builder /install /install
+COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
 
 # Copy application code
 COPY . .
