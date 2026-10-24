@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: basistha-backend
+    rootDir: basistha-backend
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEFAULT_AYANAMSHA
+        value: LAHIRI
+      - key: DEFAULT_TIMEZONE_OFFSET
+        value: 5.75
