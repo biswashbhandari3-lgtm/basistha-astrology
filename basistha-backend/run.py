@@ -1,12 +1,14 @@
 """
-Basistha Astronomical Engine - Local Server Launcher
+Basistha Astronomical Engine - Server Launcher
 """
+import os
 import uvicorn
 
 if __name__ == "__main__":
+    port = int(os.getenv("PORT", 8000))
     print("=" * 60)
     print("  Basistha Astronomical & Astrological Backend Engine")
-    print("  Server running at: http://localhost:8000")
-    print("  Interactive Docs at: http://localhost:8000/docs")
+    print(f"  Server running at: http://0.0.0.0:{port}")
+    print(f"  Interactive Docs at: http://0.0.0.0:{port}/docs")
     print("=" * 60)
-    uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("app.main:app", host="0.0.0.0", port=port, reload=False)
