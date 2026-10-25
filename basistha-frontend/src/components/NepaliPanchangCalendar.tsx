@@ -1,16 +1,17 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
+import {
+  calculateDayPanchang,
+  gregorianToBS,
+  toDevanagari,
+  NEPALI_MONTHS,
+  WEEKDAY_NAMES
+} from "@/lib/vedicPanchangEngine";
 
-// Devanagari Digit Helper
-export function toDevanagari(num: number | string): string {
-  const devanagariDigits = ["०", "१", "२", "३", "४", "५", "६", "७", "८", "९"];
-  return String(num).replace(/\d/g, (d) => devanagariDigits[parseInt(d, 10)]);
-}
-
-// Days of the week in Nepali (Abbreviated)
-const WEEKDAYS = [
+// Weekdays short headers
+const WEEKDAY_HEADERS = [
   { short: "आ", full: "आइतवार" },
   { short: "सो", full: "सोमवार" },
   { short: "मं", full: "मङ्गलबार" },
@@ -20,53 +21,27 @@ const WEEKDAYS = [
   { short: "श", full: "शनिवार" },
 ];
 
-// 12 Nepali Months
-const NEPALI_MONTHS = [
-  "वैशाख", "जेठ", "असार", "साउन", "भदौ", "असोज",
-  "कार्तिक", "मंसिर", "पुस", "माघ", "फागुन", "चैत"
-];
-
-// Pre-calculated sample data for month of कार्तिक २०८३ (matching the screenshot exactly)
-interface DayPanchang {
-  gate: number;
-  dayOfWeek: number; // 0 = Sunday, 6 = Saturday
-  tithi: string;
-  tithiEnd: string;
-  nextTithi: string;
-  paksha: string;
-  festival?: string;
-  nakshatra: string;
-  nakshatraEnd: string;
-  yoga: string;
-  yogaEnd: string;
-  karana: string;
-  karanaEnd: string;
-  chandraRashi: string;
-  chandraEnd: string;
-  suryaRashi: string;
-  guruRashi: string;
-  sunrise: string;
-  sunset: string;
-  shakSambat: string;
-  nepalSambat: string;
-  ritu: string;
-  ayana: string;
-  samvatsar: string;
-}
-
 export function NepaliPanchangCalendar() {
-  // Current selected state (Default: 8 Kartik 2083, Sunday)
-  const [selectedMonth, setSelectedMonth] = useState("कार्तिक");
-  const [selectedYear, setSelectedYear] = useState("२०८३");
-  const [selectedGate, setSelectedGate] = useState(8);
+  // Compute today's BS date initially
+  const todayBS = useMemo(() => {
+    const now = new Date();
+    // Nepal Standard Time (UTC+5:45)
+    const nstOffset = 5.75 * 60;
+    const localUtcMinutes = now.getTime() + now.getTimezoneOffset() * 60000;
+    const nstDate = new Date(localUtcMinutes + nstOffset * 60000);
+    return gregorianToBS(nstDate);
+  }, []);
+
+  // Selected State (Default: Today's real computed Bikram Sambat date)
+  const [selectedYear, setSelectedYear] = useState<number>(todayBS.yearBS);
+  const [selectedMonth, setSelectedMonth] = useState<number>(todayBS.monthBS);
+  const [selectedGate, setSelectedGate] = useState<number>(todayBS.dayBS);
 
   // Live real-time clock state (NST: Nepal Standard Time UTC+5:45)
   const [currentTime, setCurrentTime] = useState<Date | null>(null);
 
   useEffect(() => {
-    // Initialize NST time
     const updateTime = () => {
-      // Create current date adjusted to UTC+5:45
       const now = new Date();
       setCurrentTime(now);
     };
@@ -75,44 +50,72 @@ export function NepaliPanchangCalendar() {
     return () => clearInterval(interval);
   }, []);
 
-  // Selected Day Panchang details (Matching the screenshot for कार्तिक ८)
-  const panchangData: DayPanchang = {
-    gate: selectedGate,
-    dayOfWeek: 0, // Sunday
-    tithi: "चतुर्दशी तिथि",
-    tithiEnd: "१०:२७ AM सम्म",
-    nextTithi: "उप्रान्त पूर्णिमा",
-    paksha: "आश्विनशुक्ल पक्ष:",
-    festival: selectedGate === 8 ? "कोजाग्रत पूर्णिमा (दशैं समापन)" : undefined,
-    nakshatra: "रेवती",
-    nakshatraEnd: "३३:४८",
-    yoga: "हर्षण",
-    yogaEnd: "३२:५७",
-    karana: "वणिज",
-    karanaEnd: "१०:४५",
-    chandraRashi: "मीन",
-    chandraEnd: "२०:५१ सम्म",
-    suryaRashi: "तुला",
-    guruRashi: "सिंह",
-    sunrise: "०६:०९ AM",
-    sunset: "१७:२६ PM",
-    shakSambat: "शाके १९४८",
-    nepalSambat: "ने.सं. ११४६ (कौलाथ्व)",
-    ritu: "शरद्ऋतु:",
-    ayana: "दक्षिणायनं",
-    samvatsar: "रौद्रनामसंवत्सरः ।"
+  // Dynamically calculate full Panchang data for the selected gate, month, and year!
+  const panchangData = useMemo(() => {
+    return calculateDayPanchang(selectedYear, selectedMonth, selectedGate);
+  }, [selectedYear, selectedMonth, selectedGate]);
+
+  // Calendar matrix calculations
+  const totalDays = panchangData.totalDaysInMonth;
+  const startDayOffset = panchangData.startDayOfWeek; // 0 = Sunday, 6 = Saturday
+  const daysArray = useMemo(() => Array.from({ length: totalDays }, (_, i) => i + 1), [totalDays]);
+
+  // Previous month overflow days
+  const prevMonthDays = useMemo(() => {
+    return Array.from({ length: startDayOffset }, (_, i) => 30 - startDayOffset + 1 + i);
+  }, [startDayOffset]);
+
+  // Next month overflow days (to fill 35 or 42 grid cells)
+  const nextMonthDays = useMemo(() => {
+    const totalFilled = startDayOffset + totalDays;
+    const targetCells = totalFilled > 35 ? 42 : 35;
+    const remaining = targetCells - totalFilled;
+    return Array.from({ length: remaining }, (_, i) => i + 1);
+  }, [startDayOffset, totalDays]);
+
+  // Navigation handlers
+  const handlePrevDay = () => {
+    if (selectedGate > 1) {
+      setSelectedGate(selectedGate - 1);
+    } else {
+      // Go to previous month
+      if (selectedMonth > 1) {
+        const prevMonth = selectedMonth - 1;
+        const prevPanchang = calculateDayPanchang(selectedYear, prevMonth, 1);
+        setSelectedMonth(prevMonth);
+        setSelectedGate(prevPanchang.totalDaysInMonth);
+      } else {
+        const prevYear = selectedYear - 1;
+        const prevMonth = 12;
+        const prevPanchang = calculateDayPanchang(prevYear, prevMonth, 1);
+        setSelectedYear(prevYear);
+        setSelectedMonth(prevMonth);
+        setSelectedGate(prevPanchang.totalDaysInMonth);
+      }
+    }
   };
 
-  // Month days setup for कार्तिक (30 days, 1 starts on Sunday)
-  const totalDays = 30;
-  const startDayOffset = 0; // Starts on Sunday (index 0)
-  const daysArray = Array.from({ length: totalDays }, (_, i) => i + 1);
+  const handleNextDay = () => {
+    if (selectedGate < totalDays) {
+      setSelectedGate(selectedGate + 1);
+    } else {
+      // Go to next month
+      if (selectedMonth < 12) {
+        setSelectedMonth(selectedMonth + 1);
+        setSelectedGate(1);
+      } else {
+        setSelectedYear(selectedYear + 1);
+        setSelectedMonth(1);
+        setSelectedGate(1);
+      }
+    }
+  };
 
-  // Previous month filler days (e.g. 5 days from previous month if any)
-  const prevMonthDays = Array.from({ length: startDayOffset }, (_, i) => 30 - startDayOffset + 1 + i);
-  // Next month filler days to complete 35 or 42 grid cells
-  const remainingCells = 35 - (startDayOffset + totalDays);
-  const nextMonthDays = Array.from({ length: remainingCells > 0 ? remainingCells : remainingCells + 7 }, (_, i) => i + 1);
+  const handleJumpToToday = () => {
+    setSelectedYear(todayBS.yearBS);
+    setSelectedMonth(todayBS.monthBS);
+    setSelectedGate(todayBS.dayBS);
+  };
 
   // Live Clock calculation
   const hours = currentTime ? currentTime.getHours() : 14;
@@ -187,11 +190,19 @@ export function NepaliPanchangCalendar() {
                 <div className="relative">
                   <select
                     value={selectedMonth}
-                    onChange={(e) => setSelectedMonth(e.target.value)}
+                    onChange={(e) => {
+                      const newMonth = parseInt(e.target.value, 10);
+                      setSelectedMonth(newMonth);
+                      // Clamp gate to new month max days
+                      const targetPanchang = calculateDayPanchang(selectedYear, newMonth, 1);
+                      if (selectedGate > targetPanchang.totalDaysInMonth) {
+                        setSelectedGate(targetPanchang.totalDaysInMonth);
+                      }
+                    }}
                     className="appearance-none bg-amber-50/80 hover:bg-amber-100/80 border border-amber-200/80 rounded-xl px-4 py-2 pr-8 text-sm font-bold text-slate-800 cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-amber-400"
                   >
-                    {NEPALI_MONTHS.map((m) => (
-                      <option key={m} value={m}>
+                    {NEPALI_MONTHS.map((m, idx) => (
+                      <option key={m} value={idx + 1}>
                         {m}
                       </option>
                     ))}
@@ -205,12 +216,19 @@ export function NepaliPanchangCalendar() {
                 <div className="relative">
                   <select
                     value={selectedYear}
-                    onChange={(e) => setSelectedYear(e.target.value)}
+                    onChange={(e) => {
+                      const newYear = parseInt(e.target.value, 10);
+                      setSelectedYear(newYear);
+                      const targetPanchang = calculateDayPanchang(newYear, selectedMonth, 1);
+                      if (selectedGate > targetPanchang.totalDaysInMonth) {
+                        setSelectedGate(targetPanchang.totalDaysInMonth);
+                      }
+                    }}
                     className="appearance-none bg-amber-50/80 hover:bg-amber-100/80 border border-amber-200/80 rounded-xl px-4 py-2 pr-8 text-sm font-bold text-slate-800 cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-amber-400"
                   >
-                    {["२०८०", "२०८१", "२०८२", "२०८३", "२०८४", "२०८५"].map((y) => (
+                    {[2080, 2081, 2082, 2083, 2084, 2085].map((y) => (
                       <option key={y} value={y}>
-                        {y} वि.सं.
+                        {toDevanagari(y)} वि.सं.
                       </option>
                     ))}
                   </select>
@@ -233,11 +251,7 @@ export function NepaliPanchangCalendar() {
               <div className="flex items-center gap-2">
                 <button
                   type="button"
-                  onClick={() => {
-                    setSelectedMonth("कार्तिक");
-                    setSelectedYear("२०८३");
-                    setSelectedGate(8);
-                  }}
+                  onClick={handleJumpToToday}
                   className="px-3.5 py-1.5 rounded-xl border border-amber-300 bg-amber-50 hover:bg-amber-100 text-xs font-bold text-amber-900 transition-colors shadow-xs"
                 >
                   आज
@@ -245,8 +259,8 @@ export function NepaliPanchangCalendar() {
                 <div className="flex items-center rounded-xl border border-amber-200 bg-amber-50/50 overflow-hidden">
                   <button
                     type="button"
-                    onClick={() => setSelectedGate((prev) => (prev > 1 ? prev - 1 : 1))}
-                    className="px-2.5 py-1.5 hover:bg-amber-100 text-xs font-bold text-slate-700 transition-colors"
+                    onClick={handlePrevDay}
+                    className="px-2.5 py-1.5 hover:bg-amber-100 text-xs font-bold text-slate-700 transition-colors cursor-pointer"
                     title="अघिल्लो दिन"
                   >
                     ❮
@@ -254,8 +268,8 @@ export function NepaliPanchangCalendar() {
                   <div className="w-[1px] h-4 bg-amber-200" />
                   <button
                     type="button"
-                    onClick={() => setSelectedGate((prev) => (prev < totalDays ? prev + 1 : totalDays))}
-                    className="px-2.5 py-1.5 hover:bg-amber-100 text-xs font-bold text-slate-700 transition-colors"
+                    onClick={handleNextDay}
+                    className="px-2.5 py-1.5 hover:bg-amber-100 text-xs font-bold text-slate-700 transition-colors cursor-pointer"
                     title="पछिल्लो दिन"
                   >
                     ❯
@@ -267,19 +281,19 @@ export function NepaliPanchangCalendar() {
             {/* 2. Main Two-Column Row (Left: Selected Day Details, Right: Grid) */}
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
               
-              {/* ── Left Column: Today's Panchanga Overview Card ── */}
-              <div className="md:col-span-5 bg-[#fbf7ed] border border-amber-200/80 rounded-2xl p-5 flex flex-col gap-4 text-center items-center shadow-xs">
+              {/* ── Left Column: Selected Day Panchanga Details Card ── */}
+              <div className="md:col-span-5 bg-[#fbf7ed] border border-amber-200/80 rounded-2xl p-5 flex flex-col gap-4 text-center items-center shadow-xs transition-all duration-300">
                 
                 {/* Big Date Header */}
                 <div className="flex flex-col items-center">
                   <h3 className="text-4xl sm:text-5xl font-black text-slate-900 tracking-tight leading-none mb-1">
-                    {toDevanagari(panchangData.gate)} {selectedMonth}
+                    {toDevanagari(panchangData.dayBS)} {panchangData.monthName}
                   </h3>
                   <p className="text-sm font-bold text-slate-700">
-                    {panchangData.dayOfWeek === 0 ? "रविवार" : "वार"}, {selectedYear}
+                    {panchangData.dayOfWeekName}, {toDevanagari(panchangData.yearBS)}
                   </p>
                   <p className="text-xs text-slate-500 font-mono tracking-wider mt-0.5">
-                    2026 OCT {panchangData.gate + 17}
+                    {panchangData.gregorianDateStr}
                   </p>
                 </div>
 
@@ -306,11 +320,15 @@ export function NepaliPanchangCalendar() {
                   </span>
                 </div>
 
-                {/* Special Festival Banner (If applicable) */}
-                {panchangData.festival && (
-                  <div className="w-full py-2 px-3 rounded-xl bg-amber-100/80 border border-amber-300 text-amber-950 font-bold text-xs flex items-center justify-center gap-1.5 shadow-xs">
+                {/* Special Festival Banner (If applicable on that selected day) */}
+                {panchangData.festival ? (
+                  <div className="w-full py-2 px-3 rounded-xl bg-amber-100/90 border border-amber-300 text-amber-950 font-bold text-xs flex items-center justify-center gap-1.5 shadow-xs animate-in fade-in duration-300">
                     <span className="text-red-600 text-sm">🚩</span>
                     <span>{panchangData.festival}</span>
+                  </div>
+                ) : (
+                  <div className="w-full py-1.5 px-3 rounded-xl bg-slate-100/60 border border-slate-200/70 text-slate-500 font-medium text-[11px]">
+                    सामान्य दिन (दैनिक नित्यकर्म)
                   </div>
                 )}
 
@@ -343,20 +361,11 @@ export function NepaliPanchangCalendar() {
               {/* ── Right Column: Monthly Calendar Grid + Micro-Cards ── */}
               <div className="md:col-span-7 flex flex-col gap-4 relative">
                 
-                {/* Subtle Astrological Zodiac Background Watermark */}
-                <div
-                  className="absolute inset-0 pointer-events-none opacity-[0.04] bg-center bg-no-repeat bg-contain z-0"
-                  style={{
-                    backgroundImage:
-                      "radial-gradient(circle, #8c3d10 2px, transparent 2px), radial-gradient(circle, #8c3d10 1px, transparent 1px)"
-                  }}
-                />
-
                 {/* Calendar Days Table */}
                 <div className="relative z-10 w-full overflow-hidden">
                   {/* Weekday Headers */}
                   <div className="grid grid-cols-7 text-center font-bold text-xs pb-2 border-b border-slate-200">
-                    {WEEKDAYS.map((w, idx) => (
+                    {WEEKDAY_HEADERS.map((w, idx) => (
                       <div
                         key={w.short}
                         className={`py-1 ${idx === 6 ? "text-red-600" : "text-slate-700"}`}
@@ -415,34 +424,34 @@ export function NepaliPanchangCalendar() {
                   </div>
                 </div>
 
-                {/* 6 Micro Panchanga Cards Row */}
+                {/* 6 Micro Panchanga Cards Row (Dynamically calculated for selected day!) */}
                 <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 pt-2 border-t border-slate-200 text-center">
                   {/* Nakshatra */}
                   <div className="p-2 rounded-xl bg-slate-50 border border-slate-200/80 flex flex-col justify-center">
                     <span className="text-[10px] font-medium text-slate-500">नक्षत्र</span>
                     <span className="text-xs font-bold text-slate-800">{panchangData.nakshatra}</span>
-                    <span className="text-[9px] text-amber-700 font-mono">{panchangData.nakshatraEnd}</span>
+                    <span className="text-[9px] text-amber-700 font-mono">{panchangData.nakshatraGhati}</span>
                   </div>
 
                   {/* Yoga */}
                   <div className="p-2 rounded-xl bg-slate-50 border border-slate-200/80 flex flex-col justify-center">
                     <span className="text-[10px] font-medium text-slate-500">योग</span>
                     <span className="text-xs font-bold text-slate-800">{panchangData.yoga}</span>
-                    <span className="text-[9px] text-amber-700 font-mono">{panchangData.yogaEnd}</span>
+                    <span className="text-[9px] text-amber-700 font-mono">{panchangData.yogaGhati}</span>
                   </div>
 
                   {/* Karana */}
                   <div className="p-2 rounded-xl bg-slate-50 border border-slate-200/80 flex flex-col justify-center">
                     <span className="text-[10px] font-medium text-slate-500">करण</span>
                     <span className="text-xs font-bold text-slate-800">{panchangData.karana}</span>
-                    <span className="text-[9px] text-amber-700 font-mono">{panchangData.karanaEnd}</span>
+                    <span className="text-[9px] text-amber-700 font-mono">{panchangData.karanaGhati}</span>
                   </div>
 
                   {/* Chandra */}
                   <div className="p-2 rounded-xl bg-slate-50 border border-slate-200/80 flex flex-col justify-center">
                     <span className="text-[10px] font-medium text-slate-500">चन्द्र</span>
                     <span className="text-xs font-bold text-slate-800">{panchangData.chandraRashi}</span>
-                    <span className="text-[9px] text-amber-700 font-semibold">{panchangData.chandraEnd}</span>
+                    <span className="text-[9px] text-amber-700 font-semibold">{panchangData.chandraEndTime}</span>
                   </div>
 
                   {/* Surya */}
@@ -632,7 +641,7 @@ export function NepaliPanchangCalendar() {
                 {formattedDigitalTime}
               </span>
               <span className="text-xs font-semibold text-slate-600 mt-1">
-                वि.सं. {selectedYear} {selectedMonth} {toDevanagari(panchangData.gate)} गते, {panchangData.dayOfWeek === 0 ? "आइतबार" : "वार"}
+                वि.सं. {toDevanagari(panchangData.yearBS)} {panchangData.monthName} {toDevanagari(panchangData.dayBS)} गते, {panchangData.dayOfWeekName}
               </span>
             </div>
 
