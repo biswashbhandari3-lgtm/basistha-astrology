@@ -11,6 +11,8 @@ export interface Translations {
     contact: string;
     explore: string;
     switchLang: string;
+    login: string;
+    logout: string;
   };
   header: {
     title: string;
@@ -122,7 +124,9 @@ export const translations: Record<Locale, Translations> = {
       resources: "स्रोतहरू",
       contact: "सम्पर्क",
       explore: "अन्वेषण गर्नुहोस्",
-      switchLang: "भाषा परिवर्तन"
+      switchLang: "भाषा परिवर्तन",
+      login: "लगइन",
+      logout: "लगआउट"
     },
     header: {
       title: "BASISTHA",
@@ -249,7 +253,9 @@ export const translations: Record<Locale, Translations> = {
       resources: "Resources",
       contact: "Contact",
       explore: "Explore Now",
-      switchLang: "Language"
+      switchLang: "Language",
+      login: "Login",
+      logout: "Logout"
     },
     header: {
       title: "BASISTHA",
@@ -377,7 +383,9 @@ export const translations: Record<Locale, Translations> = {
       resources: "साधनानि",
       contact: "सम्पर्कः",
       explore: "अन्वेषणं कुरुत",
-      switchLang: "भाषापरिवर्तनम्"
+      switchLang: "भाषापरिवर्तनम्",
+      login: "प्रवेशः",
+      logout: "निर्गमनम्"
     },
     header: {
       title: "वसिष्ठः",
