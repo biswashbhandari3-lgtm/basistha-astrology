@@ -24,14 +24,14 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
     const camera = new THREE.PerspectiveCamera(45, aspect, 0.1, 1000);
     camera.position.set(0, 0, 32);
 
-    // 2. WebGL Renderer with Alpha Transparency
+    // 2. WebGL Renderer with Alpha Transparency (4K Ultra-HD Support)
     const renderer = new THREE.WebGLRenderer({
       alpha: true,
       antialias: true,
       powerPreference: "high-performance"
     });
     renderer.setSize(container.clientWidth, container.clientHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2.5));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.05;
     container.appendChild(renderer.domElement);
@@ -57,23 +57,98 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
       tex.magFilter = THREE.LinearFilter;
     });
 
-    // Soft circular Star Glow Texture (Guarantees NO square point artifacts)
-    const createStarTexture = () => {
+    // ==========================================
+    // 4K Ultra-HD Celestial Star Textures
+    // ==========================================
+
+    // Texture 1: 256x256 Ultra-Crisp Circular Celestial Glow
+    const create4KStarTexture = () => {
       const canvas = document.createElement("canvas");
-      canvas.width = 64;
-      canvas.height = 64;
+      canvas.width = 256;
+      canvas.height = 256;
       const ctx = canvas.getContext("2d");
       if (ctx) {
-        const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+        const grad = ctx.createRadialGradient(128, 128, 0, 128, 128, 128);
         grad.addColorStop(0, "rgba(255, 255, 255, 1.0)");
-        grad.addColorStop(0.18, "rgba(240, 248, 255, 0.90)");
-        grad.addColorStop(0.45, "rgba(180, 215, 255, 0.35)");
-        grad.addColorStop(0.75, "rgba(100, 160, 255, 0.08)");
-        grad.addColorStop(1, "rgba(0, 0, 0, 0)");
+        grad.addColorStop(0.08, "rgba(255, 255, 255, 0.95)");
+        grad.addColorStop(0.22, "rgba(220, 240, 255, 0.75)");
+        grad.addColorStop(0.48, "rgba(140, 195, 255, 0.28)");
+        grad.addColorStop(0.75, "rgba(80, 140, 255, 0.06)");
+        grad.addColorStop(1.0, "rgba(0, 0, 0, 0)");
         ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, 64, 64);
+        ctx.fillRect(0, 0, 256, 256);
       }
-      return new THREE.CanvasTexture(canvas);
+      const tex = new THREE.CanvasTexture(canvas);
+      tex.generateMipmaps = true;
+      tex.minFilter = THREE.LinearMipmapLinearFilter;
+      tex.magFilter = THREE.LinearFilter;
+      return tex;
+    };
+
+    // Texture 2: 512x512 4K Radiant Stellar Flare with 4-Point Diffraction Cross Spikes
+    const create4KBrightSpikeTexture = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = 512;
+      canvas.height = 512;
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        const cx = 256;
+        const cy = 256;
+
+        // 1. Soft atmospheric outer corona
+        const outerGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, 256);
+        outerGrad.addColorStop(0, "rgba(255, 255, 255, 0.88)");
+        outerGrad.addColorStop(0.12, "rgba(205, 235, 255, 0.55)");
+        outerGrad.addColorStop(0.35, "rgba(105, 185, 255, 0.18)");
+        outerGrad.addColorStop(0.70, "rgba(50, 120, 255, 0.04)");
+        outerGrad.addColorStop(1.0, "rgba(0, 0, 0, 0)");
+        ctx.fillStyle = outerGrad;
+        ctx.fillRect(0, 0, 512, 512);
+
+        // 2. High-intensity 4-point diffraction cross flares
+        ctx.save();
+        ctx.translate(cx, cy);
+
+        for (let angle = 0; angle < Math.PI; angle += Math.PI / 2) {
+          ctx.rotate(angle);
+          const rayGrad = ctx.createLinearGradient(-240, 0, 240, 0);
+          rayGrad.addColorStop(0, "rgba(255, 255, 255, 0)");
+          rayGrad.addColorStop(0.38, "rgba(200, 235, 255, 0.28)");
+          rayGrad.addColorStop(0.50, "rgba(255, 255, 255, 1.0)");
+          rayGrad.addColorStop(0.62, "rgba(200, 235, 255, 0.28)");
+          rayGrad.addColorStop(1.0, "rgba(255, 255, 255, 0)");
+
+          ctx.fillStyle = rayGrad;
+          ctx.fillRect(-240, -2, 480, 4);
+
+          // Subtle diamond wider flare
+          const wideGrad = ctx.createLinearGradient(-120, 0, 120, 0);
+          wideGrad.addColorStop(0, "rgba(255, 255, 255, 0)");
+          wideGrad.addColorStop(0.5, "rgba(255, 255, 255, 0.55)");
+          wideGrad.addColorStop(1.0, "rgba(255, 255, 255, 0)");
+          ctx.fillStyle = wideGrad;
+          ctx.fillRect(-120, -5.5, 240, 11);
+
+          ctx.rotate(-angle);
+        }
+        ctx.restore();
+
+        // 3. Ultra-brilliant pinpoint white core
+        const coreGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, 32);
+        coreGrad.addColorStop(0, "rgba(255, 255, 255, 1.0)");
+        coreGrad.addColorStop(0.35, "rgba(255, 255, 255, 0.98)");
+        coreGrad.addColorStop(0.75, "rgba(225, 245, 255, 0.55)");
+        coreGrad.addColorStop(1.0, "rgba(180, 220, 255, 0)");
+        ctx.fillStyle = coreGrad;
+        ctx.beginPath();
+        ctx.arc(cx, cy, 32, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      const tex = new THREE.CanvasTexture(canvas);
+      tex.generateMipmaps = true;
+      tex.minFilter = THREE.LinearMipmapLinearFilter;
+      tex.magFilter = THREE.LinearFilter;
+      return tex;
     };
 
     // Soft feathered Corona Glow Texture (Natural rich fiery orange glow)
@@ -95,44 +170,223 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
       return new THREE.CanvasTexture(canvas);
     };
 
-    // 4. Subtle Foreground Twinkle Starfield (Soft Circular Points, Additive Blending)
-    const starCount = 1200;
-    const starGeom = new THREE.BufferGeometry();
-    const starPos = new Float32Array(starCount * 3);
-    const starCols = new Float32Array(starCount * 3);
+    // ==========================================
+    // 4. Multi-Layered Starfield (Varied Sizes & Speeds)
+    // ==========================================
+    const starTexture4K = create4KStarTexture();
+    const starSpikeTexture4K = create4KBrightSpikeTexture();
 
-    for (let i = 0; i < starCount; i++) {
-      starPos[i * 3] = (Math.random() - 0.5) * 120;
-      starPos[i * 3 + 1] = (Math.random() - 0.5) * 80;
-      // Deep space background: firmly behind planets and sun to prevent camera-clipping artifacts
-      starPos[i * 3 + 2] = -25 - Math.random() * 45;
+    // Layer 1: Deep Distant Micro Stars (2,800 stars, tiny size 0.24, calm slow drift)
+    const deepStarCount = 2800;
+    const deepStarGeom = new THREE.BufferGeometry();
+    const deepStarPos = new Float32Array(deepStarCount * 3);
+    const deepStarCols = new Float32Array(deepStarCount * 3);
 
-      const isCyan = Math.random() > 0.45;
-      if (isCyan) {
-        starCols[i * 3] = 0.55 + Math.random() * 0.25;
-        starCols[i * 3 + 1] = 0.82 + Math.random() * 0.18;
-        starCols[i * 3 + 2] = 1.0;
+    for (let i = 0; i < deepStarCount; i++) {
+      deepStarPos[i * 3] = (Math.random() - 0.5) * 155;
+      deepStarPos[i * 3 + 1] = (Math.random() - 0.5) * 105;
+      deepStarPos[i * 3 + 2] = -35 - Math.random() * 45; // Deep behind planets (-35 to -80)
+
+      const colType = Math.random();
+      if (colType < 0.60) {
+        // Pure crisp diamond white
+        deepStarCols[i * 3] = 0.95 + Math.random() * 0.05;
+        deepStarCols[i * 3 + 1] = 0.95 + Math.random() * 0.05;
+        deepStarCols[i * 3 + 2] = 1.0;
+      } else if (colType < 0.85) {
+        // Celestial cyan-blue
+        deepStarCols[i * 3] = 0.60 + Math.random() * 0.20;
+        deepStarCols[i * 3 + 1] = 0.82 + Math.random() * 0.18;
+        deepStarCols[i * 3 + 2] = 1.0;
       } else {
-        starCols[i * 3] = 1.0;
-        starCols[i * 3 + 1] = 0.92 + Math.random() * 0.08;
-        starCols[i * 3 + 2] = 0.65 + Math.random() * 0.35;
+        // Soft golden amber
+        deepStarCols[i * 3] = 1.0;
+        deepStarCols[i * 3 + 1] = 0.90 + Math.random() * 0.10;
+        deepStarCols[i * 3 + 2] = 0.65 + Math.random() * 0.25;
       }
     }
-    starGeom.setAttribute("position", new THREE.BufferAttribute(starPos, 3));
-    starGeom.setAttribute("color", new THREE.BufferAttribute(starCols, 3));
+    deepStarGeom.setAttribute("position", new THREE.BufferAttribute(deepStarPos, 3));
+    deepStarGeom.setAttribute("color", new THREE.BufferAttribute(deepStarCols, 3));
 
-    const starTexture = createStarTexture();
-    const starMaterial = new THREE.PointsMaterial({
-      size: 0.32,
-      map: starTexture,
+    const deepStarMat = new THREE.PointsMaterial({
+      size: 0.24,
+      map: starTexture4K,
       vertexColors: true,
       transparent: true,
       opacity: 0.85,
-      blending: THREE.AdditiveBlending, // Guarantees 0 dark/grey quads - stars only add soft celestial light
+      blending: THREE.AdditiveBlending,
       depthWrite: false
     });
-    const starPoints = new THREE.Points(starGeom, starMaterial);
-    scene.add(starPoints);
+    const deepStarPoints = new THREE.Points(deepStarGeom, deepStarMat);
+    scene.add(deepStarPoints);
+
+    // Layer 2: Mid-Field Luminescent Stars (850 stars, medium size 0.68, moderate speed)
+    const midStarCount = 850;
+    const midStarGeom = new THREE.BufferGeometry();
+    const midStarPos = new Float32Array(midStarCount * 3);
+    const midStarCols = new Float32Array(midStarCount * 3);
+
+    for (let i = 0; i < midStarCount; i++) {
+      midStarPos[i * 3] = (Math.random() - 0.5) * 130;
+      midStarPos[i * 3 + 1] = (Math.random() - 0.5) * 85;
+      midStarPos[i * 3 + 2] = -24 - Math.random() * 26; // -24 to -50
+
+      const colType = Math.random();
+      if (colType < 0.45) {
+        // Electric celestial blue
+        midStarCols[i * 3] = 0.50 + Math.random() * 0.25;
+        midStarCols[i * 3 + 1] = 0.80 + Math.random() * 0.20;
+        midStarCols[i * 3 + 2] = 1.0;
+      } else if (colType < 0.75) {
+        // Pure radiant white
+        midStarCols[i * 3] = 1.0;
+        midStarCols[i * 3 + 1] = 1.0;
+        midStarCols[i * 3 + 2] = 1.0;
+      } else {
+        // Warm golden star
+        midStarCols[i * 3] = 1.0;
+        midStarCols[i * 3 + 1] = 0.85 + Math.random() * 0.12;
+        midStarCols[i * 3 + 2] = 0.50 + Math.random() * 0.30;
+      }
+    }
+    midStarGeom.setAttribute("position", new THREE.BufferAttribute(midStarPos, 3));
+    midStarGeom.setAttribute("color", new THREE.BufferAttribute(midStarCols, 3));
+
+    const midStarMat = new THREE.PointsMaterial({
+      size: 0.68,
+      map: starTexture4K,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.90,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    });
+    const midStarPoints = new THREE.Points(midStarGeom, midStarMat);
+    scene.add(midStarPoints);
+
+    // Layer 3: Large Radiant Stars with 4K Diffraction Spikes (130 stars, large size 1.85, faster speed)
+    const largeStarCount = 130;
+    const largeStarGeom = new THREE.BufferGeometry();
+    const largeStarPos = new Float32Array(largeStarCount * 3);
+    const largeStarCols = new Float32Array(largeStarCount * 3);
+
+    for (let i = 0; i < largeStarCount; i++) {
+      largeStarPos[i * 3] = (Math.random() - 0.5) * 110;
+      largeStarPos[i * 3 + 1] = (Math.random() - 0.5) * 75;
+      largeStarPos[i * 3 + 2] = -18 - Math.random() * 20; // -18 to -38
+
+      const isWarm = Math.random() > 0.60;
+      if (isWarm) {
+        largeStarCols[i * 3] = 1.0;
+        largeStarCols[i * 3 + 1] = 0.88 + Math.random() * 0.10;
+        largeStarCols[i * 3 + 2] = 0.55 + Math.random() * 0.35;
+      } else {
+        largeStarCols[i * 3] = 0.70 + Math.random() * 0.25;
+        largeStarCols[i * 3 + 1] = 0.90 + Math.random() * 0.10;
+        largeStarCols[i * 3 + 2] = 1.0;
+      }
+    }
+    largeStarGeom.setAttribute("position", new THREE.BufferAttribute(largeStarPos, 3));
+    largeStarGeom.setAttribute("color", new THREE.BufferAttribute(largeStarCols, 3));
+
+    const largeStarMat = new THREE.PointsMaterial({
+      size: 1.85,
+      map: starSpikeTexture4K,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.92,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    });
+    const largeStarPoints = new THREE.Points(largeStarGeom, largeStarMat);
+    scene.add(largeStarPoints);
+
+    // Layer 4: Prominent Supergiant Stars with Dynamic Twinkle (30 individual gems)
+    interface SupergiantStar {
+      mesh: THREE.Sprite;
+      baseScale: number;
+      pulseSpeed: number; // Faster vs slower twinkle frequency
+      phase: number;
+    }
+    const supergiantGroup = new THREE.Group();
+    const supergiants: SupergiantStar[] = [];
+    const supergiantCount = 30;
+
+    for (let i = 0; i < supergiantCount; i++) {
+      const spriteMat = new THREE.SpriteMaterial({
+        map: starSpikeTexture4K,
+        color: new THREE.Color().setHSL(0.55 + (Math.random() - 0.5) * 0.25, 0.75, 0.95),
+        transparent: true,
+        opacity: 0.95,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+      });
+      const sprite = new THREE.Sprite(spriteMat);
+      const sx = (Math.random() - 0.5) * 95;
+      const sy = (Math.random() - 0.5) * 65;
+      const sz = -16 - Math.random() * 18; // -16 to -34
+      sprite.position.set(sx, sy, sz);
+
+      // Varied base size between 2.2 and 3.4
+      const baseScale = 2.2 + Math.random() * 1.2;
+      sprite.scale.set(baseScale, baseScale, 1);
+      supergiantGroup.add(sprite);
+
+      // Varied pulsing speed: some fast (3.2 - 5.0), some slow (1.0 - 2.0)
+      const pulseSpeed = i % 2 === 0 ? 1.0 + Math.random() * 1.2 : 3.2 + Math.random() * 2.0;
+
+      supergiants.push({
+        mesh: sprite,
+        baseScale,
+        pulseSpeed,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+    scene.add(supergiantGroup);
+
+    // Dynamic Cosmic Meteors / Shooting Stars (2 meteors that streak across space)
+    interface ShootingStar {
+      mesh: THREE.Line;
+      active: boolean;
+      curX: number;
+      curY: number;
+      curZ: number;
+      vx: number;
+      vy: number;
+      vz: number;
+      length: number;
+      timer: number;
+      delay: number;
+    }
+    const shootingStars: ShootingStar[] = [];
+    for (let s = 0; s < 2; s++) {
+      const lineGeom = new THREE.BufferGeometry();
+      const linePos = new Float32Array(6);
+      lineGeom.setAttribute("position", new THREE.BufferAttribute(linePos, 3));
+      const lineMat = new THREE.LineBasicMaterial({
+        color: 0xbae6fd,
+        transparent: true,
+        opacity: 0,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+      });
+      const lineMesh = new THREE.Line(lineGeom, lineMat);
+      scene.add(lineMesh);
+
+      shootingStars.push({
+        mesh: lineMesh,
+        active: false,
+        curX: 0,
+        curY: 0,
+        curZ: -20,
+        vx: -0.9,
+        vy: -0.5,
+        vz: 0,
+        length: 4.5,
+        timer: 0,
+        delay: 2.5 + s * 4.5
+      });
+    }
 
     // 5. The Massive Blazing Sun with Natural Rich Fiery Orange Color (Pure RGBA, ToneMapped False to retain vivid saturation)
     const sunGroup = new THREE.Group();
@@ -433,10 +687,78 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
         }
       });
 
-      // Background stars slow drift
-      starPoints.rotation.y += 0.0001;
+      // ==========================================
+      // Multi-Speed Starfield Motion & Twinkling
+      // (कुनैको अलिक छिटो र कुनैको अलिक ढिलो)
+      // ==========================================
 
-      // Mouse Parallax Easing
+      // Layer 1 (Deep Micro Stars): Calm, very slow drift
+      deepStarPoints.rotation.y += 0.00007;
+      deepStarPoints.rotation.x += 0.00002;
+
+      // Layer 2 (Mid-Field Stars): Moderate cosmic drift
+      midStarPoints.rotation.y += 0.00022;
+      midStarPoints.rotation.z += 0.00004;
+
+      // Layer 3 (Large Radiant Stars): Faster dynamic drift
+      largeStarPoints.rotation.y += 0.00048;
+      largeStarPoints.rotation.x -= 0.00006;
+
+      // Layer 4 (Supergiant Stars): Pulsing and twinkling at differential speeds
+      supergiantGroup.rotation.y += 0.00062;
+      supergiants.forEach((sg) => {
+        const pulse = Math.sin(elapsed * sg.pulseSpeed + sg.phase);
+        const dynamicScale = sg.baseScale * (1 + 0.22 * pulse);
+        sg.mesh.scale.set(dynamicScale, dynamicScale, 1);
+        (sg.mesh.material as THREE.SpriteMaterial).opacity = 0.75 + 0.25 * pulse;
+      });
+
+      // Cosmic Meteors / Shooting Stars (Fast streaks gliding across space)
+      shootingStars.forEach((star) => {
+        star.timer += 0.016;
+        if (!star.active && star.timer > star.delay) {
+          star.active = true;
+          star.curX = 18 + Math.random() * 25;
+          star.curY = 14 + Math.random() * 12;
+          star.curZ = -18 - Math.random() * 10;
+          star.timer = 0;
+          (star.mesh.material as THREE.LineBasicMaterial).opacity = 0.95;
+        }
+
+        if (star.active) {
+          star.curX += star.vx;
+          star.curY += star.vy;
+          star.curZ += star.vz;
+          const posAttr = star.mesh.geometry.attributes.position as THREE.BufferAttribute;
+          posAttr.setXYZ(0, star.curX, star.curY, star.curZ);
+          posAttr.setXYZ(1, star.curX - star.vx * star.length, star.curY - star.vy * star.length, star.curZ);
+          posAttr.needsUpdate = true;
+
+          const mat = star.mesh.material as THREE.LineBasicMaterial;
+          mat.opacity -= 0.022;
+          if (mat.opacity <= 0.02 || star.curX < -35) {
+            star.active = false;
+            mat.opacity = 0;
+            star.timer = 0;
+            star.delay = 3.5 + Math.random() * 6.0;
+          }
+        }
+      });
+
+      // Multi-Layer Differential Mouse Parallax (Deep 3D depth)
+      deepStarPoints.position.x = mouseX * 0.15;
+      deepStarPoints.position.y = -mouseY * 0.10;
+
+      midStarPoints.position.x = mouseX * 0.35;
+      midStarPoints.position.y = -mouseY * 0.20;
+
+      largeStarPoints.position.x = mouseX * 0.70;
+      largeStarPoints.position.y = -mouseY * 0.40;
+
+      supergiantGroup.position.x = mouseX * 0.90;
+      supergiantGroup.position.y = -mouseY * 0.50;
+
+      // Mouse Parallax Easing on Camera
       camera.position.x += (mouseX * 0.6 - camera.position.x) * 0.03;
       camera.position.y += (-mouseY * 0.35 - camera.position.y) * 0.03;
       camera.lookAt(0, 0, 0);
@@ -447,15 +769,27 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
     animate();
     setIsReady(true);
 
-    // 10. Cleanup
+    // 10. Comprehensive Cleanup
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("resize", handleResize);
 
-      starGeom.dispose();
-      starMaterial.dispose();
-      starTexture.dispose();
+      // Starfield Cleanups
+      starTexture4K.dispose();
+      starSpikeTexture4K.dispose();
+      deepStarGeom.dispose();
+      deepStarMat.dispose();
+      midStarGeom.dispose();
+      midStarMat.dispose();
+      largeStarGeom.dispose();
+      largeStarMat.dispose();
+      supergiants.forEach((sg) => (sg.mesh.material as THREE.Material).dispose());
+      shootingStars.forEach((s) => {
+        s.mesh.geometry.dispose();
+        (s.mesh.material as THREE.Material).dispose();
+      });
+
       earthCloudsTexture.dispose();
       sunGeom.dispose();
       sunMat.dispose();
@@ -472,7 +806,7 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
 
   return (
     <div className="relative w-full min-h-[640px] md:min-h-[760px] lg:min-h-screen overflow-hidden bg-slate-950 flex items-center">
-      {/* 0. User Provided Deep Blue Cosmic Space Background Image */}
+      {/* 0. User Provided Deep Cosmic Space Background Image with 4K Depth */}
       <div
         className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat pointer-events-none z-0"
         style={{
@@ -481,7 +815,16 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
         }}
       />
 
-      {/* Subtle overlay for natural lighting and depth */}
+      {/* 4K Celestial Nebula Glow Gradient Overlay */}
+      <div
+        className="absolute inset-0 pointer-events-none z-0 opacity-75"
+        style={{
+          background:
+            "radial-gradient(ellipse at 20% 50%, rgba(20, 35, 75, 0.60) 0%, transparent 60%), radial-gradient(ellipse at 85% 30%, rgba(30, 20, 60, 0.50) 0%, transparent 50%), radial-gradient(circle at 50% 80%, rgba(10, 15, 40, 0.75) 0%, transparent 70%)",
+        }}
+      />
+
+      {/* Subtle darkening overlay for natural lighting and text readability */}
       <div className="absolute inset-0 bg-slate-950/20 pointer-events-none z-0" />
 
       {/* 1. Three.js Canvas Container (Massive Orange Sun on far left, realistic planets orbiting with visible orbit lines) */}
