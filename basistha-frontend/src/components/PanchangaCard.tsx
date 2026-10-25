@@ -27,11 +27,11 @@ export const PanchangaCard: React.FC<PanchangaCardProps> = ({ panchang }) => {
       {/* Sun times grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 bg-amber-50/70 p-3 rounded-xl border border-amber-200/60 text-xs">
         <div>
-          <span className="text-slate-500">सूर्योदय (Sunrise):</span>
+          <span className="text-slate-500">सूर्योदय (काठमाडौँ):</span>
           <p className="text-sm font-bold text-amber-900">{panchang.sunrise}</p>
         </div>
         <div>
-          <span className="text-slate-500">सूर्यास्त (Sunset):</span>
+          <span className="text-slate-500">सूर्यास्त (काठमाडौँ):</span>
           <p className="text-sm font-bold text-amber-900">{panchang.sunset}</p>
         </div>
         <div>

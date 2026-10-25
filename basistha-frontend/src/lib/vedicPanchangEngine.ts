@@ -451,19 +451,44 @@ function computeSiderealPlanets(gregDate: Date, lang: Locale = "ne"): {
   const jupMean = (34.35 + 3034.90 * T) % 360.0;
   const jupSid = (jupMean - ayanamsha + 360.0) % 360.0;
 
-  // Sun Rise & Set for Kathmandu (27.7172 N, 85.3240 E, UTC+5:45)
+  // Official Kathmandu Sunrise & Sunset (Latitude: 27.7172 N, Longitude: 85.3240 E, Nepal Standard Time: UTC+5:45)
+  // Fully accounts for NOAA Equation of Time (Et) and Nepal Standard Meridian (86.25° E) correction
   const dayOfYear = Math.floor((gregDate.getTime() - new Date(Date.UTC(y, 0, 1)).getTime()) / (1000 * 60 * 60 * 24)) + 1;
-  const declRad = (23.45 * Math.sin(((360.0 / 365.0) * (dayOfYear - 81) * Math.PI) / 180.0) * Math.PI) / 180.0;
+  const gamma = (2 * Math.PI / 365.0) * (dayOfYear - 1);
+
+  // Equation of Time in minutes (NOAA Solar Algorithm)
+  const eqtime = 229.18 * (
+    0.000075 +
+    0.001868 * Math.cos(gamma) -
+    0.032077 * Math.sin(gamma) -
+    0.014615 * Math.cos(2 * gamma) -
+    0.040849 * Math.sin(2 * gamma)
+  );
+
+  // Solar declination in radians
+  const decl = 0.006918 -
+    0.399912 * Math.cos(gamma) +
+    0.070257 * Math.sin(gamma) -
+    0.006758 * Math.cos(2 * gamma) +
+    0.000907 * Math.sin(2 * gamma) -
+    0.002697 * Math.cos(3 * gamma) +
+    0.00148 * Math.sin(3 * gamma);
+
   const latRad = (27.7172 * Math.PI) / 180.0;
+  const zenith = (90.833 * Math.PI) / 180.0; // 90° 50' accounting for atmospheric refraction & solar disk
 
-  const cosH0 = (Math.cos((90.833 * Math.PI) / 180.0) - Math.sin(latRad) * Math.sin(declRad)) / (Math.cos(latRad) * Math.cos(declRad));
-  const clampedCosH0 = Math.max(-1.0, Math.min(1.0, cosH0));
-  const hHours = (Math.acos(clampedCosH0) * 180.0) / Math.PI / 15.0;
+  const cosHa = (Math.cos(zenith) - Math.sin(latRad) * Math.sin(decl)) / (Math.cos(latRad) * Math.cos(decl));
+  const clampedCosHa = Math.max(-1.0, Math.min(1.0, cosHa));
+  const haDeg = (Math.acos(clampedCosHa) * 180.0) / Math.PI;
 
-  // Solar noon in local Kathmandu time (+5.75 hrs)
-  const solarNoonLocal = 12.0 - 85.3240 / 15.0 + 5.75;
-  const riseLocal = solarNoonLocal - hHours;
-  const setLocal = solarNoonLocal + hHours;
+  // Kathmandu Longitude 85.3240° E, Nepal Standard Time Meridian = 15° * 5.75 = 86.25° E
+  const ktmLon = 85.3240;
+  const ktmTz = 5.75;
+  const sunriseMinKtm = 720 - 4 * (ktmLon - 15 * ktmTz) - haDeg * 4 - eqtime;
+  const sunsetMinKtm = 720 - 4 * (ktmLon - 15 * ktmTz) + haDeg * 4 - eqtime;
+
+  const riseLocal = sunriseMinKtm / 60.0;
+  const setLocal = sunsetMinKtm / 60.0;
 
   const formatSolarTime = (hoursDecimal: number, ampm: "AM" | "PM") => {
     const totalMins = Math.round(hoursDecimal * 60);

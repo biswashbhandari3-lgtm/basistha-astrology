@@ -368,17 +368,29 @@ export function NepaliPanchangCalendar() {
                   </div>
                 </div>
 
-                {/* Sun Timings Grid */}
-                <div className="w-full grid grid-cols-2 gap-2 pt-2 border-t border-amber-200/60 text-xs">
-                  <div className="flex items-center justify-center gap-1.5 py-1 px-2 rounded-lg bg-white/80 border border-amber-100">
-                    <span className="text-amber-500">☀️</span>
-                    <span className="text-slate-500 text-[10px]">{strings.panchang.sunrise}:</span>
-                    <span className="font-bold text-slate-800">{panchangData.sunrise}</span>
+                {/* Sun Timings Grid (Official Kathmandu Nepal Standard Time) */}
+                <div className="w-full flex flex-col gap-1.5 pt-2 border-t border-amber-200/60 text-xs">
+                  <div className="text-[10px] text-amber-800/80 font-semibold text-center flex items-center justify-center gap-1">
+                    <span>📍</span>
+                    <span>
+                      {language === "en"
+                        ? "Kathmandu Official Time (NST, UTC+5:45)"
+                        : language === "sa"
+                        ? "काष्ठमण्डप-मानकसमयः (UTC+५:४५)"
+                        : "काठमाडौँ आधिकारिक मानक समय (UTC+५:४५)"}
+                    </span>
                   </div>
-                  <div className="flex items-center justify-center gap-1.5 py-1 px-2 rounded-lg bg-white/80 border border-amber-100">
-                    <span className="text-orange-500">🌅</span>
-                    <span className="text-slate-500 text-[10px]">{strings.panchang.sunset}:</span>
-                    <span className="font-bold text-slate-800">{panchangData.sunset}</span>
+                  <div className="w-full grid grid-cols-2 gap-2">
+                    <div className="flex items-center justify-center gap-1.5 py-1 px-2 rounded-lg bg-white/80 border border-amber-100">
+                      <span className="text-amber-500">☀️</span>
+                      <span className="text-slate-500 text-[10px]">{strings.panchang.sunrise}:</span>
+                      <span className="font-bold text-slate-800">{panchangData.sunrise}</span>
+                    </div>
+                    <div className="flex items-center justify-center gap-1.5 py-1 px-2 rounded-lg bg-white/80 border border-amber-100">
+                      <span className="text-orange-500">🌅</span>
+                      <span className="text-slate-500 text-[10px]">{strings.panchang.sunset}:</span>
+                      <span className="font-bold text-slate-800">{panchangData.sunset}</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -652,18 +664,18 @@ export function NepaliPanchangCalendar() {
               </span>
             </div>
 
-            {/* 4. Astronomical Information Rows (Sunrise, Sunset, Ishtakal) */}
+            {/* 4. Astronomical Information Rows (Kathmandu Official Sunrise, Sunset, Ishtakal) */}
             <div className="w-full pt-4 border-t border-amber-200/60 flex flex-col gap-2.5 text-xs text-left">
               <div className="flex items-center justify-between text-slate-700">
                 <span className="flex items-center gap-1.5 text-slate-500">
-                  <span className="text-amber-500">☀️</span> {strings.panchang.sunrise}:
+                  <span className="text-amber-500">☀️</span> {strings.panchang.sunrise} ({language === "en" ? "KTM" : "काठमाडौँ"}):
                 </span>
                 <span className="font-bold text-slate-900">{panchangData.sunrise}</span>
               </div>
 
               <div className="flex items-center justify-between text-slate-700">
                 <span className="flex items-center gap-1.5 text-slate-500">
-                  <span className="text-orange-500">🌅</span> {strings.panchang.sunset}:
+                  <span className="text-orange-500">🌅</span> {strings.panchang.sunset} ({language === "en" ? "KTM" : "काठमाडौँ"}):
                 </span>
                 <span className="font-bold text-slate-900">{panchangData.sunset}</span>
               </div>

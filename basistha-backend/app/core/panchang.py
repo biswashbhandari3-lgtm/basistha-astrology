@@ -83,29 +83,50 @@ RAHUKAAL_INTERVALS = {
 }
 
 def calc_approx_sun_times(year: int, month: int, day: int, lat: float, lon: float, tz_offset: float) -> Tuple[datetime, datetime]:
-    """Calculate local Sunrise and Sunset times."""
-    # Approximate solar noon and equation of time
+    """
+    Calculate official Kathmandu (Nepal Standard Time, UTC+5:45) Sunrise and Sunset times
+    using NOAA Solar Calculation with Equation of Time (Et) and Meridian Longitude correction.
+    """
     d = datetime(year, month, day)
     day_of_year = d.timetuple().tm_yday
-    # Solar declination
-    decl = 23.45 * math.sin(math.radians((360.0 / 365.0) * (day_of_year - 81)))
-    decl_rad = math.radians(decl)
+    
+    # Fractional year in radians
+    gamma = 2 * math.pi / 365.0 * (day_of_year - 1)
+    
+    # Equation of Time in minutes (NOAA Solar Algorithm)
+    eqtime = 229.18 * (
+        0.000075 +
+        0.001868 * math.cos(gamma) -
+        0.032077 * math.sin(gamma) -
+        0.014615 * math.cos(2 * gamma) -
+        0.040849 * math.sin(2 * gamma)
+    )
+    
+    # Solar Declination in radians (NOAA)
+    decl = (
+        0.006918 -
+        0.399912 * math.cos(gamma) +
+        0.070257 * math.sin(gamma) -
+        0.006758 * math.cos(2 * gamma) +
+        0.000907 * math.sin(2 * gamma) -
+        0.002697 * math.cos(3 * gamma) +
+        0.00148 * math.sin(3 * gamma)
+    )
+    
     lat_rad = math.radians(lat)
+    zenith_rad = math.radians(90.833) # 90° 50' accounting for standard refraction and solar disk
     
-    # Hour angle for zenith 90°50' (accounting for refraction and semi-diameter)
-    cos_h = (math.cos(math.radians(90.833)) - math.sin(lat_rad) * math.sin(decl_rad)) / (math.cos(lat_rad) * math.cos(decl_rad))
-    cos_h = max(-1.0, min(1.0, cos_h))
-    h_hours = math.degrees(math.acos(cos_h)) / 15.0
+    cos_ha = (math.cos(zenith_rad) - math.sin(lat_rad) * math.sin(decl)) / (math.cos(lat_rad) * math.cos(decl))
+    cos_ha = max(-1.0, min(1.0, cos_ha))
+    ha_deg = math.degrees(math.acos(cos_ha))
     
-    solar_noon_utc = 12.0 - (lon / 15.0)
-    rise_utc = solar_noon_utc - h_hours
-    set_utc = solar_noon_utc + h_hours
+    # Solar time calculation in minutes from midnight local time
+    # Longitude offset relative to standard meridian (15° * tz_offset)
+    sunrise_min = 720.0 - 4.0 * (lon - 15.0 * tz_offset) - ha_deg * 4.0 - eqtime
+    sunset_min = 720.0 - 4.0 * (lon - 15.0 * tz_offset) + ha_deg * 4.0 - eqtime
     
-    rise_local = rise_utc + tz_offset
-    set_local = set_utc + tz_offset
-    
-    rise_dt = d + timedelta(hours=rise_local)
-    set_dt = d + timedelta(hours=set_local)
+    rise_dt = d + timedelta(minutes=sunrise_min)
+    set_dt = d + timedelta(minutes=sunset_min)
     return rise_dt, set_dt
 
 def get_panchang(year: int, month: int, day: int, lat: float, lon: float, tz_offset: float = 5.75) -> Dict[str, Any]:
