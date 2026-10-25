@@ -137,22 +137,58 @@ def get_panchang(year: int, month: int, day: int, lat: float, lon: float, tz_off
     sun_lon, _ = calc_planet_position(jd, PLANET_IDS["SUN"], ayan_val)
     moon_lon, _ = calc_planet_position(jd, PLANET_IDS["MOON"], ayan_val)
     
+    # Sunrise & Sunset
+    rise_dt, set_dt = calc_approx_sun_times(year, month, day, lat, lon, tz_offset)
+    day_duration = (set_dt - rise_dt).total_seconds() / 3600.0
+    night_duration = 24.0 - day_duration
+    day_ghati = (day_duration / 24.0) * 60.0
+    dinmaan_ghati = int(day_ghati)
+    dinmaan_pala = int((day_ghati - dinmaan_ghati) * 60)
+
+    # Astronomical planetary positions and speeds at Sunrise for exact Ghati-Pala calculation
+    jd_rise = get_julian_day(year, month, day, rise_dt.hour, rise_dt.minute, rise_dt.second, tz_offset)
+    ayan_rise = get_ayanamsha_value(jd_rise, "LAHIRI")
+    sun_lon_rise, sun_speed_rise = calc_planet_position(jd_rise, PLANET_IDS["SUN"], ayan_rise)
+    moon_lon_rise, moon_speed_rise = calc_planet_position(jd_rise, PLANET_IDS["MOON"], ayan_rise)
+
     # 1. Tithi: (Moon - Sun) / 12
-    diff = (moon_lon - sun_lon) % 360.0
-    tithi_num = int(diff / 12.0) + 1
-    tithi_rem = (diff % 12.0) / 12.0
+    diff_rise = (moon_lon_rise - sun_lon_rise) % 360.0
+    tithi_num = int(diff_rise / 12.0) + 1
+    tithi_bhukta = diff_rise % 12.0
+    tithi_bhogya = 12.0 - tithi_bhukta
+    rel_speed = max(0.1, moon_speed_rise - sun_speed_rise)
+    tithi_rem_hrs = (tithi_bhogya / rel_speed) * 24.0
+    tithi_ghati_total = (tithi_rem_hrs / 24.0) * 60.0
+    t_ghati = int(tithi_ghati_total)
+    t_pala = int((tithi_ghati_total - t_ghati) * 60)
+    t_end_dt = rise_dt + timedelta(hours=tithi_rem_hrs)
     
     # 2. Nakshatra: Moon / (13° 20')
-    nak_num = int(moon_lon / (360.0 / 27.0))
-    nak_rem = (moon_lon % (360.0 / 27.0)) / (360.0 / 27.0)
+    nak_span = 360.0 / 27.0
+    nak_num = int(moon_lon_rise / nak_span)
+    nak_bhukta = moon_lon_rise % nak_span
+    nak_bhogya = nak_span - nak_bhukta
+    moon_spd = max(0.1, moon_speed_rise)
+    nak_rem_hrs = (nak_bhogya / moon_spd) * 24.0
+    nak_ghati_total = (nak_rem_hrs / 24.0) * 60.0
+    n_ghati = int(nak_ghati_total)
+    n_pala = int((nak_ghati_total - n_ghati) * 60)
+    n_end_dt = rise_dt + timedelta(hours=nak_rem_hrs)
     
     # 3. Yoga: (Sun + Moon) / (13° 20')
-    sum_deg = (sun_lon + moon_lon) % 360.0
-    yoga_num = int(sum_deg / (360.0 / 27.0))
-    yoga_rem = (sum_deg % (360.0 / 27.0)) / (360.0 / 27.0)
+    sum_deg_rise = (sun_lon_rise + moon_lon_rise) % 360.0
+    yoga_num = int(sum_deg_rise / nak_span)
+    yoga_bhukta = sum_deg_rise % nak_span
+    yoga_bhogya = nak_span - yoga_bhukta
+    sum_spd = max(0.1, sun_speed_rise + moon_speed_rise)
+    yoga_rem_hrs = (yoga_bhogya / sum_spd) * 24.0
+    yoga_ghati_total = (yoga_rem_hrs / 24.0) * 60.0
+    y_ghati = int(yoga_ghati_total)
+    y_pala = int((yoga_ghati_total - y_ghati) * 60)
+    y_end_dt = rise_dt + timedelta(hours=yoga_rem_hrs)
     
     # 4. Karana: (Moon - Sun) / 6
-    karana_idx = int(diff / 6.0)
+    karana_idx = int(diff_rise / 6.0)
     if karana_idx == 0:
         karana_num = 10 # Kimstughna
     elif karana_idx >= 57:
@@ -160,17 +196,17 @@ def get_panchang(year: int, month: int, day: int, lat: float, lon: float, tz_off
         karana_num = fixed_map.get(karana_idx, 7)
     else:
         karana_num = (karana_idx - 1) % 7
-    karana_rem = (diff % 6.0) / 6.0
+    karana_bhukta = diff_rise % 6.0
+    karana_bhogya = 6.0 - karana_bhukta
+    karana_rem_hrs = (karana_bhogya / rel_speed) * 24.0
+    karana_ghati_total = (karana_rem_hrs / 24.0) * 60.0
+    k_ghati = int(karana_ghati_total)
+    k_pala = int((karana_ghati_total - k_ghati) * 60)
+    k_end_dt = rise_dt + timedelta(hours=karana_rem_hrs)
     
     # 5. Vara
     d = datetime(year, month, day)
     weekday = (d.weekday() + 1) % 7 # 0 = Sunday
-    
-    # Sunrise & Sunset
-    rise_dt, set_dt = calc_approx_sun_times(year, month, day, lat, lon, tz_offset)
-    day_duration = (set_dt - rise_dt).total_seconds() / 3600.0
-    night_duration = 24.0 - day_duration
-    day_ghati = (day_duration / 24.0) * 60.0
     
     # Abhijit Muhurta (8th muhurta of day = around midday)
     midday = rise_dt + timedelta(hours=day_duration / 2.0)
@@ -197,7 +233,8 @@ def get_panchang(year: int, month: int, day: int, lat: float, lon: float, tz_off
         "date_str": d.strftime("%Y-%m-%d"),
         "sunrise": rise_dt.strftime("%H:%M:%S"),
         "sunset": set_dt.strftime("%H:%M:%S"),
-        "day_length_ghati": f"{int(day_ghati)} घटी {int((day_ghati % 1.0) * 60)} पला",
+        "day_length_ghati": f"{dinmaan_ghati} घटी {dinmaan_pala:02d} पला",
+        "dinmaan_ghati": f"{dinmaan_ghati:02d}:{dinmaan_pala:02d}",
         "day_length_hours": f"{int(day_duration)}h {int((day_duration % 1.0) * 60)}m",
         "night_length_hours": f"{int(night_duration)}h {int((night_duration % 1.0) * 60)}m",
         "vara": {
@@ -210,25 +247,37 @@ def get_panchang(year: int, month: int, day: int, lat: float, lon: float, tz_off
             "name": TITHI_NAMES[tithi_num - 1],
             "name_ne": TITHI_NAMES_NE[tithi_num - 1],
             "number": tithi_num,
-            "progress_percentage": round(tithi_rem * 100.0, 2)
+            "progress_percentage": round((tithi_bhukta / 12.0) * 100.0, 2),
+            "ghati": f"{t_ghati} घटी {t_pala:02d} पला",
+            "ghati_val": f"{t_ghati:02d}:{t_pala:02d}",
+            "end_time": t_end_dt.strftime("%H:%M")
         },
         "nakshatra": {
             "name": NAKSHATRA_NAMES[nak_num],
             "name_ne": NAKSHATRA_NAMES_NE[nak_num],
             "number": nak_num + 1,
-            "progress_percentage": round(nak_rem * 100.0, 2)
+            "progress_percentage": round((nak_bhukta / nak_span) * 100.0, 2),
+            "ghati": f"{n_ghati} घटी {n_pala:02d} पला",
+            "ghati_val": f"{n_ghati:02d}:{n_pala:02d}",
+            "end_time": n_end_dt.strftime("%H:%M")
         },
         "yoga": {
             "name": YOGA_NAMES[yoga_num],
             "name_ne": YOGA_NAMES_NE[yoga_num],
             "number": yoga_num + 1,
-            "progress_percentage": round(yoga_rem * 100.0, 2)
+            "progress_percentage": round((yoga_bhukta / nak_span) * 100.0, 2),
+            "ghati": f"{y_ghati} घटी {y_pala:02d} पला",
+            "ghati_val": f"{y_ghati:02d}:{y_pala:02d}",
+            "end_time": y_end_dt.strftime("%H:%M")
         },
         "karana": {
             "name": KARANA_NAMES[karana_num],
             "name_ne": KARANA_NAMES_NE[karana_num],
             "number": karana_num + 1,
-            "progress_percentage": round(karana_rem * 100.0, 2)
+            "progress_percentage": round((karana_bhukta / 6.0) * 100.0, 2),
+            "ghati": f"{k_ghati} घटी {k_pala:02d} पला",
+            "ghati_val": f"{k_ghati:02d}:{k_pala:02d}",
+            "end_time": k_end_dt.strftime("%H:%M")
         },
         "abhijit_muhurta": {
             "start": abhijit_start.strftime("%H:%M"),

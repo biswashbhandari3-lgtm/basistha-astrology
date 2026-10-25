@@ -241,7 +241,7 @@ export function NepaliPanchangCalendar() {
             <div className="relative z-10 text-xs font-bold text-slate-800 text-center leading-relaxed px-1 my-1">
               <span>{panchangData.tithi}</span>{" "}
               <span className="text-[11px] font-medium text-slate-600">
-                ({panchangData.tithiEnd}, {panchangData.nextTithi})
+                ({panchangData.tithiGhati} {strings.panchang.ghati}, {panchangData.tithiEnd}, {panchangData.nextTithi})
               </span>
             </div>
 
@@ -267,6 +267,9 @@ export function NepaliPanchangCalendar() {
               </div>
               <div className="font-serif text-purple-900 font-bold">
                 🕉️ {panchangData.samvatsar}
+              </div>
+              <div className="text-[10px] text-slate-600 font-medium">
+                ⏱️ {language === "en" ? "Dinmaan" : "दिनमान"}: <span className="text-amber-900 font-bold">{panchangData.dinmaanStr}</span> ({panchangData.dinmaanGhati} {strings.panchang.ghati})
               </div>
             </div>
           </div>
@@ -472,32 +475,12 @@ export function NepaliPanchangCalendar() {
               <span className="text-lg">🌙</span>
               <div className="flex flex-col min-w-0">
                 <span className="text-[10px] text-slate-500 font-semibold">{strings.panchang.tithi}</span>
-                <span className="text-xs font-bold text-slate-900 truncate">{panchangData.tithi.split(" ")[0]}</span>
-                <span className="text-[10px] text-slate-500 truncate">{panchangData.tithiEnd.split(" ")[0]} सम्म</span>
+                <span className="text-xs font-bold text-slate-900 truncate">{panchangData.tithi.replace(/ तिथि(ः)?/g, "")}</span>
+                <span className="text-[10px] text-slate-500 truncate">{panchangData.tithiGhati} {strings.panchang.ghati}</span>
               </div>
             </div>
 
-            {/* 2. Yoga */}
-            <div className="flex items-center gap-2 p-2 rounded-xl bg-slate-50/80 border border-slate-100">
-              <span className="text-lg">🌼</span>
-              <div className="flex flex-col min-w-0">
-                <span className="text-[10px] text-slate-500 font-semibold">{strings.panchang.yoga}</span>
-                <span className="text-xs font-bold text-slate-900 truncate">{panchangData.yoga}</span>
-                <span className="text-[10px] text-slate-500 truncate">{panchangData.yogaGhati} {strings.panchang.ghati}</span>
-              </div>
-            </div>
-
-            {/* 3. Karana */}
-            <div className="flex items-center gap-2 p-2 rounded-xl bg-slate-50/80 border border-slate-100">
-              <span className="text-lg">⚖️</span>
-              <div className="flex flex-col min-w-0">
-                <span className="text-[10px] text-slate-500 font-semibold">{strings.panchang.karana}</span>
-                <span className="text-xs font-bold text-slate-900 truncate">{panchangData.karana}</span>
-                <span className="text-[10px] text-slate-500 truncate">{panchangData.karanaGhati}</span>
-              </div>
-            </div>
-
-            {/* 4. Nakshatra */}
+            {/* 2. Nakshatra */}
             <div className="flex items-center gap-2 p-2 rounded-xl bg-slate-50/80 border border-slate-100">
               <span className="text-lg">⭐</span>
               <div className="flex flex-col min-w-0">
@@ -507,21 +490,43 @@ export function NepaliPanchangCalendar() {
               </div>
             </div>
 
-            {/* 5. Sunrise */}
+            {/* 3. Yoga */}
+            <div className="flex items-center gap-2 p-2 rounded-xl bg-slate-50/80 border border-slate-100">
+              <span className="text-lg">🌼</span>
+              <div className="flex flex-col min-w-0">
+                <span className="text-[10px] text-slate-500 font-semibold">{strings.panchang.yoga}</span>
+                <span className="text-xs font-bold text-slate-900 truncate">{panchangData.yoga}</span>
+                <span className="text-[10px] text-slate-500 truncate">{panchangData.yogaGhati} {strings.panchang.ghati}</span>
+              </div>
+            </div>
+
+            {/* 4. Karana */}
+            <div className="flex items-center gap-2 p-2 rounded-xl bg-slate-50/80 border border-slate-100">
+              <span className="text-lg">⚖️</span>
+              <div className="flex flex-col min-w-0">
+                <span className="text-[10px] text-slate-500 font-semibold">{strings.panchang.karana}</span>
+                <span className="text-xs font-bold text-slate-900 truncate">{panchangData.karana}</span>
+                <span className="text-[10px] text-slate-500 truncate">{panchangData.karanaGhati} {strings.panchang.ghati}</span>
+              </div>
+            </div>
+
+            {/* 5. Dinmaan */}
+            <div className="flex items-center gap-2 p-2 rounded-xl bg-slate-50/80 border border-slate-100">
+              <span className="text-lg">⏱️</span>
+              <div className="flex flex-col min-w-0">
+                <span className="text-[10px] text-slate-500 font-semibold">{language === "en" ? "Dinmaan" : "दिनमान"}</span>
+                <span className="text-xs font-bold text-amber-900 truncate">{panchangData.dinmaanGhati} {strings.panchang.ghati}</span>
+                <span className="text-[10px] text-slate-500 truncate">{panchangData.dinmaanStr}</span>
+              </div>
+            </div>
+
+            {/* 6. Sunrise & Sunset */}
             <div className="flex items-center gap-2 p-2 rounded-xl bg-slate-50/80 border border-slate-100">
               <span className="text-lg">☀️</span>
               <div className="flex flex-col min-w-0">
                 <span className="text-[10px] text-slate-500 font-semibold">{strings.panchang.sunrise}</span>
                 <span className="text-xs font-bold text-amber-900 truncate">{panchangData.sunrise}</span>
-              </div>
-            </div>
-
-            {/* 6. Sunset */}
-            <div className="flex items-center gap-2 p-2 rounded-xl bg-slate-50/80 border border-slate-100">
-              <span className="text-lg">🌅</span>
-              <div className="flex flex-col min-w-0">
-                <span className="text-[10px] text-slate-500 font-semibold">{strings.panchang.sunset}</span>
-                <span className="text-xs font-bold text-orange-900 truncate">{panchangData.sunset}</span>
+                <span className="text-[10px] text-slate-500 truncate">{strings.panchang.sunset}: {panchangData.sunset}</span>
               </div>
             </div>
           </div>

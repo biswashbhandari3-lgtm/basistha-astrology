@@ -76,13 +76,14 @@ export interface PanchangData {
   sunrise: string;
   sunset: string;
   day_length_ghati: string;
+  dinmaan_ghati?: string;
   day_length_hours: string;
   night_length_hours: string;
   vara: { name: string; name_ne: string; number: number; progress_percentage: number };
-  tithi: { name: string; name_ne: string; number: number; progress_percentage: number };
-  nakshatra: { name: string; name_ne: string; number: number; progress_percentage: number };
-  yoga: { name: string; name_ne: string; number: number; progress_percentage: number };
-  karana: { name: string; name_ne: string; number: number; progress_percentage: number };
+  tithi: { name: string; name_ne: string; number: number; progress_percentage: number; ghati?: string; ghati_val?: string; end_time?: string };
+  nakshatra: { name: string; name_ne: string; number: number; progress_percentage: number; ghati?: string; ghati_val?: string; end_time?: string };
+  yoga: { name: string; name_ne: string; number: number; progress_percentage: number; ghati?: string; ghati_val?: string; end_time?: string };
+  karana: { name: string; name_ne: string; number: number; progress_percentage: number; ghati?: string; ghati_val?: string; end_time?: string };
   abhijit_muhurta: { start: string; end: string };
   rahukaal: { start: string; end: string };
   choghadiya_day: Array<{ order: number; name: string; name_ne: string; start: string; end: string }>;

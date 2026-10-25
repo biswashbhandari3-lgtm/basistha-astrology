@@ -53,6 +53,9 @@ export const PanchangaCard: React.FC<PanchangaCardProps> = ({ panchang }) => {
           <span className="text-[11px] font-semibold text-slate-500">१. तिथि (Tithi)</span>
           <h4 className="font-bold text-slate-800 text-sm mt-1">{panchang.tithi.name_ne}</h4>
           <span className="text-[10px] text-slate-500">{panchang.tithi.name}</span>
+          {panchang.tithi.ghati && (
+            <span className="text-[10px] font-bold text-amber-900 mt-1">{panchang.tithi.ghati} ({panchang.tithi.end_time} सम्म)</span>
+          )}
           <div className="w-full bg-slate-200 h-1.5 rounded-full mt-2 overflow-hidden">
             <div className="bg-vedic-saffron h-full rounded-full" style={{ width: `${panchang.tithi.progress_percentage}%` }}></div>
           </div>
@@ -63,6 +66,7 @@ export const PanchangaCard: React.FC<PanchangaCardProps> = ({ panchang }) => {
           <span className="text-[11px] font-semibold text-slate-500">२. वार (Vara)</span>
           <h4 className="font-bold text-slate-800 text-sm mt-1">{panchang.vara.name_ne}</h4>
           <span className="text-[10px] text-slate-500">{panchang.vara.name}</span>
+          <span className="text-[10px] font-bold text-emerald-800 mt-1">अहोरात्रमान ६० घटी</span>
           <div className="w-full bg-slate-200 h-1.5 rounded-full mt-2 overflow-hidden">
             <div className="bg-emerald-500 h-full rounded-full w-full"></div>
           </div>
@@ -73,6 +77,9 @@ export const PanchangaCard: React.FC<PanchangaCardProps> = ({ panchang }) => {
           <span className="text-[11px] font-semibold text-slate-500">३. नक्षत्र (Nakshatra)</span>
           <h4 className="font-bold text-slate-800 text-sm mt-1">{panchang.nakshatra.name_ne}</h4>
           <span className="text-[10px] text-slate-500">{panchang.nakshatra.name}</span>
+          {panchang.nakshatra.ghati && (
+            <span className="text-[10px] font-bold text-amber-900 mt-1">{panchang.nakshatra.ghati} ({panchang.nakshatra.end_time} सम्म)</span>
+          )}
           <div className="w-full bg-slate-200 h-1.5 rounded-full mt-2 overflow-hidden">
             <div className="bg-vedic-saffron h-full rounded-full" style={{ width: `${panchang.nakshatra.progress_percentage}%` }}></div>
           </div>
@@ -83,6 +90,9 @@ export const PanchangaCard: React.FC<PanchangaCardProps> = ({ panchang }) => {
           <span className="text-[11px] font-semibold text-slate-500">४. योग (Yoga)</span>
           <h4 className="font-bold text-slate-800 text-sm mt-1">{panchang.yoga.name_ne}</h4>
           <span className="text-[10px] text-slate-500">{panchang.yoga.name}</span>
+          {panchang.yoga.ghati && (
+            <span className="text-[10px] font-bold text-amber-900 mt-1">{panchang.yoga.ghati} ({panchang.yoga.end_time} सम्म)</span>
+          )}
           <div className="w-full bg-slate-200 h-1.5 rounded-full mt-2 overflow-hidden">
             <div className="bg-vedic-saffron h-full rounded-full" style={{ width: `${panchang.yoga.progress_percentage}%` }}></div>
           </div>
@@ -93,6 +103,9 @@ export const PanchangaCard: React.FC<PanchangaCardProps> = ({ panchang }) => {
           <span className="text-[11px] font-semibold text-slate-500">५. करण (Karana)</span>
           <h4 className="font-bold text-slate-800 text-sm mt-1">{panchang.karana.name_ne}</h4>
           <span className="text-[10px] text-slate-500">{panchang.karana.name}</span>
+          {panchang.karana.ghati && (
+            <span className="text-[10px] font-bold text-amber-900 mt-1">{panchang.karana.ghati} ({panchang.karana.end_time} सम्म)</span>
+          )}
           <div className="w-full bg-slate-200 h-1.5 rounded-full mt-2 overflow-hidden">
             <div className="bg-vedic-saffron h-full rounded-full" style={{ width: `${panchang.karana.progress_percentage}%` }}></div>
           </div>
