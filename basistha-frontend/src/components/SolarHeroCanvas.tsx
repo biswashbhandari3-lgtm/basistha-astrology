@@ -47,6 +47,13 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
     const uranusTexture = textureLoader.load("/textures/uranus.jpg");
     const neptuneTexture = textureLoader.load("/textures/neptune.jpg");
 
+    // Configure texture filtering for optimal sharpness
+    [earthTexture, jupiterTexture, saturnTexture, marsTexture, venusTexture, mercuryTexture, uranusTexture, neptuneTexture].forEach((tex) => {
+      tex.generateMipmaps = true;
+      tex.minFilter = THREE.LinearMipmapLinearFilter;
+      tex.magFilter = THREE.LinearFilter;
+    });
+
     // Soft feathered Corona Glow Texture (No hard geometric bands)
     const createSoftCoronaTexture = () => {
       const canvas = document.createElement("canvas");
@@ -107,7 +114,7 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
     const sunY = 0;
     sunGroup.position.set(sunX, sunY, 0);
 
-    // Sun Disk: Increased size (25.5 x 25.5), using NormalBlending to retain authentic fiery orange color
+    // Sun Disk: (25.5 x 25.5), using NormalBlending to retain authentic fiery orange color
     const sunGeom = new THREE.PlaneGeometry(25.5, 25.5);
     const sunMat = new THREE.MeshBasicMaterial({
       map: sunRealTexture,
@@ -142,7 +149,7 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
     const ambientLight = new THREE.AmbientLight(0x8ca0ba, 2.2);
     scene.add(ambientLight);
 
-    // 6. The 8 Planets (Larger Sizes, Realistic Textures, Orbiting AROUND the Sun via Top/Bottom, No Orbit Lines)
+    // 6. The 8 Planets (Larger Sizes, Realistic Textures, Orbiting AROUND the Sun via Top/Bottom, WITH Luminous Orbit Lines)
     interface PlanetNode {
       mesh: THREE.Mesh;
       group: THREE.Group;
@@ -159,7 +166,6 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
       isRevealed: boolean;
     }
 
-    // Larger planet sizes and realistic orbits configured to loop around top and bottom of Sun
     const planetsConfig = [
       { name: "Mercury", size: 0.52, color: 0xc4b5a5, texture: mercuryTexture, rx: 9.5,  ry: 6.2,  rz: 2.2, orbitSpeed: 0.016, rotSpeed: 0.024, initialAngle: 0.05, revealTime: 0.25 },
       { name: "Venus",   size: 0.82, color: 0xf59e0b, texture: venusTexture,   rx: 12.2, ry: 7.8,  rz: 2.6, orbitSpeed: 0.012, rotSpeed: 0.018, initialAngle: 0.16, revealTime: 0.60 },
@@ -173,11 +179,37 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
 
     const planetNodes: PlanetNode[] = [];
     const planetsContainer = new THREE.Group();
+    const orbitLinesGroup = new THREE.Group();
 
     // Orbital plane tilt: -16 degrees to make orbits naturally sweep across top-left, center, and bottom
     const globalOrbitTilt = -0.28;
 
     planetsConfig.forEach((cfg) => {
+      // 1. Draw Visible Luminous Orbit Line
+      const orbitPoints: THREE.Vector3[] = [];
+      const segments = 128;
+      for (let j = 0; j <= segments; j++) {
+        const theta = (j / segments) * Math.PI * 2;
+        const cosT = Math.cos(theta);
+        const sinT = Math.sin(theta);
+        const lx = cfg.rx * cosT;
+        const ly = cfg.ry * sinT;
+        const ox = sunX + lx * Math.cos(globalOrbitTilt) - ly * Math.sin(globalOrbitTilt);
+        const oy = sunY + lx * Math.sin(globalOrbitTilt) + ly * Math.cos(globalOrbitTilt);
+        const oz = cfg.rz * sinT;
+        orbitPoints.push(new THREE.Vector3(ox, oy, oz));
+      }
+      const orbitGeom = new THREE.BufferGeometry().setFromPoints(orbitPoints);
+      const orbitMat = new THREE.LineBasicMaterial({
+        color: 0x60a5fa, // Luminous celestial cyan-blue as in the photo
+        transparent: true,
+        opacity: 0.38,
+        blending: THREE.AdditiveBlending
+      });
+      const orbitLine = new THREE.Line(orbitGeom, orbitMat);
+      orbitLinesGroup.add(orbitLine);
+
+      // 2. Planet Group & Positioning
       const pGroup = new THREE.Group();
 
       // Calculate initial position on tilted orbital ellipse
@@ -194,13 +226,13 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
       // Start initially scaled to 0 for sequential reveal
       pGroup.scale.set(0.001, 0.001, 0.001);
 
-      // Planet Sphere Mesh
-      const pGeom = new THREE.SphereGeometry(cfg.size, 36, 36);
+      // Planet Sphere Mesh (Smooth 48x48 segments, white base so photorealistic textures pop)
+      const pGeom = new THREE.SphereGeometry(cfg.size, 48, 48);
       const pMat = new THREE.MeshStandardMaterial({
-        color: cfg.color,
+        color: 0xffffff,
         map: cfg.texture || null,
         roughness: 0.35,
-        metalness: 0.08,
+        metalness: 0.05,
         transparent: true,
         opacity: 0
       });
@@ -208,7 +240,6 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
 
       // Saturn: Stable, wobble-free concentric ring in Saturn's equatorial plane
       if (cfg.hasRing) {
-        // Sub-group for Saturn to isolate planet spin from the ring tilt
         const saturnSubGroup = new THREE.Group();
         // Saturn's authentic 26.7 degree axial tilt
         saturnSubGroup.rotation.z = THREE.MathUtils.degToRad(26.7);
@@ -252,6 +283,7 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
       });
     });
 
+    scene.add(orbitLinesGroup);
     scene.add(planetsContainer);
 
     // 7. Subtle Mouse Parallax
@@ -372,7 +404,7 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
       {/* Subtle overlay for natural lighting and depth */}
       <div className="absolute inset-0 bg-slate-950/20 pointer-events-none z-0" />
 
-      {/* 1. Three.js Canvas Container (Massive Orange Sun on far left, realistic planets orbiting around it) */}
+      {/* 1. Three.js Canvas Container (Massive Orange Sun on far left, realistic planets orbiting with visible orbit lines) */}
       <div
         ref={containerRef}
         className="absolute inset-0 w-full h-full pointer-events-none z-10"
