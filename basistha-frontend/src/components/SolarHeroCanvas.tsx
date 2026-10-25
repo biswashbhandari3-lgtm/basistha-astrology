@@ -31,10 +31,10 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.15;
+    renderer.toneMappingExposure = 1.2;
     container.appendChild(renderer.domElement);
 
-    // 3. Texture Loader for Photorealistic Assets
+    // 3. Texture Loader for User Photorealistic Sun
     const textureLoader = new THREE.TextureLoader();
     const sunRealTexture = textureLoader.load("/sun-real.png");
 
@@ -53,17 +53,37 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
       return texture;
     };
 
-    // Earth Texture (Blue oceans, green/brown continents, swirling white clouds)
+    // Soft feathered Corona Glow Texture (No solid geometric ring)
+    const createSoftCoronaTexture = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = 512;
+      canvas.height = 512;
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        // Tight, gentle radial gradient fading smoothly to 0% opacity
+        const grad = ctx.createRadialGradient(256, 256, 175, 256, 256, 252);
+        grad.addColorStop(0, "rgba(255, 190, 40, 0.55)");
+        grad.addColorStop(0.25, "rgba(255, 135, 20, 0.28)");
+        grad.addColorStop(0.65, "rgba(255, 80, 10, 0.08)");
+        grad.addColorStop(1, "rgba(255, 50, 0, 0)");
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, 512, 512);
+      }
+      const texture = new THREE.CanvasTexture(canvas);
+      return texture;
+    };
+
+    // Earth Texture (Blue oceans, vibrant continents, swirling clouds)
     const earthTexture = createTexture((ctx, w, h) => {
-      ctx.fillStyle = "#1e3a8a"; // Deep blue ocean
+      ctx.fillStyle = "#1d4ed8"; // Rich blue ocean
       ctx.fillRect(0, 0, w, h);
-      ctx.fillStyle = "#166534"; // Green continents
-      for (let i = 0; i < 45; i++) {
+      ctx.fillStyle = "#15803d"; // Green continents
+      for (let i = 0; i < 48; i++) {
         ctx.beginPath();
         ctx.arc(Math.random() * w, Math.random() * h, Math.random() * 38 + 14, 0, Math.PI * 2);
         ctx.fill();
       }
-      ctx.fillStyle = "rgba(255, 255, 255, 0.45)"; // Atmosphere clouds
+      ctx.fillStyle = "rgba(255, 255, 255, 0.5)"; // Atmospheric cloud bands
       for (let i = 0; i < 70; i++) {
         ctx.beginPath();
         ctx.ellipse(Math.random() * w, Math.random() * h, Math.random() * 45 + 15, Math.random() * 10 + 3, Math.random() * Math.PI, 0, Math.PI * 2);
@@ -71,7 +91,7 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
       }
     });
 
-    // Jupiter Texture (Distinct atmospheric cloud bands & Great Red Spot)
+    // Jupiter Texture (Distinct atmospheric stripes & Great Red Spot)
     const jupiterTexture = createTexture((ctx, w, h) => {
       const colors = ["#b45309", "#fef3c7", "#d97706", "#fde68a", "#92400e", "#fffbeb", "#78350f", "#fef3c7"];
       const bandHeight = h / colors.length;
@@ -105,8 +125,8 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
     }
     const ringTexture = new THREE.CanvasTexture(ringCanvas);
 
-    // 4. Starfield & Cosmic Dust (Subtle foreground twinkle stars)
-    const starCount = 1400;
+    // 4. Starfield & Cosmic Dust
+    const starCount = 1200;
     const starGeom = new THREE.BufferGeometry();
     const starPos = new Float32Array(starCount * 3);
     const starCols = new Float32Array(starCount * 3);
@@ -131,22 +151,22 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
     starGeom.setAttribute("color", new THREE.BufferAttribute(starCols, 3));
 
     const starMaterial = new THREE.PointsMaterial({
-      size: 0.2,
+      size: 0.18,
       vertexColors: true,
       transparent: true,
-      opacity: 0.8
+      opacity: 0.75
     });
     const starPoints = new THREE.Points(starGeom, starMaterial);
     scene.add(starPoints);
 
     // 5. The User's Photorealistic Blazing Sun (Positioned on the Far Left Edge)
     const sunGroup = new THREE.Group();
-    const sunX = -17.5;
+    const sunX = -17.0;
     const sunY = 0;
     sunGroup.position.set(sunX, sunY, 0);
 
     // Main Sun Disk with User's Uploaded Sun Photo
-    const sunGeom = new THREE.PlaneGeometry(21.5, 21.5);
+    const sunGeom = new THREE.PlaneGeometry(18.5, 18.5);
     const sunMat = new THREE.MeshBasicMaterial({
       map: sunRealTexture,
       transparent: true,
@@ -156,69 +176,81 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
     const sunMesh = new THREE.Mesh(sunGeom, sunMat);
     sunGroup.add(sunMesh);
 
-    // Soft Pulsating Coronal Glow Behind Sun
-    const coronaGeom = new THREE.RingGeometry(8.5, 15.5, 64);
+    // Small, tight, natural feathered coronal glow (No giant solid rings)
+    const coronaTexture = createSoftCoronaTexture();
+    const coronaGeom = new THREE.PlaneGeometry(21.0, 21.0);
     const coronaMat = new THREE.MeshBasicMaterial({
-      color: 0xffaa00,
-      side: THREE.DoubleSide,
+      map: coronaTexture,
       transparent: true,
-      opacity: 0.32,
-      blending: THREE.AdditiveBlending
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      side: THREE.DoubleSide
     });
     const coronaMesh = new THREE.Mesh(coronaGeom, coronaMat);
-    coronaMesh.position.z = -0.1;
+    coronaMesh.position.z = -0.05;
     sunGroup.add(coronaMesh);
 
     scene.add(sunGroup);
 
-    // Directional Solar Light from Sun Position
-    const sunPointLight = new THREE.PointLight(0xffeedd, 3.8, 110, 0.45);
-    sunPointLight.position.set(sunX + 5, sunY, 4);
+    // Directional Solar Light & Ambient Illumination
+    const sunPointLight = new THREE.PointLight(0xffeedd, 3.2, 100, 0.4);
+    sunPointLight.position.set(sunX + 4, sunY, 3);
     scene.add(sunPointLight);
 
-    const ambientLight = new THREE.AmbientLight(0x223355, 1.4);
+    // Stronger ambient lighting so dark side of planets is softly illuminated by starlight
+    const ambientLight = new THREE.AmbientLight(0x7c8ba1, 1.9);
     scene.add(ambientLight);
 
-    // 6. The 8 Planets (Sequential Reveal, Fast Interval, Spinning on Own Axis, NO Orbit Lines)
+    // 6. The 8 Planets (Revolving in Orbits around the Sun, Spinning on Own Axis, NO Orbit Lines)
     interface PlanetNode {
       mesh: THREE.Mesh;
       group: THREE.Group;
-      targetScale: number;
-      revealTime: number; // in seconds
+      radiusX: number;
+      radiusY: number;
+      radiusZ: number;
+      angle: number;
+      orbitSpeed: number;
       rotSpeed: number;
-      baseY: number;
-      floatPhase: number;
+      revealTime: number;
+      targetScale: number;
+      currentScale: number;
       isRevealed: boolean;
     }
 
-    // Positions matching the visual arc between the Sun and the Right Hero Text
+    // Planetary Orbits centered around the Sun (sunX = -17.0, sunY = 0)
+    // Initial angles staggered so they start distributed across the field, then visibly revolve along their paths
     const planetsConfig = [
-      { name: "Mercury", size: 0.36, color: 0xb5a796, x: -8.8, y: -0.25, rotSpeed: 0.022, revealTime: 0.25 },
-      { name: "Venus",   size: 0.58, color: 0xeab308, x: -6.6, y: 0.08,  rotSpeed: 0.016, revealTime: 0.60 },
-      { name: "Earth",   size: 0.68, color: 0x38bdf8, texture: earthTexture, x: -4.3, y: 0.35, rotSpeed: 0.018, revealTime: 0.95 },
-      { name: "Mars",    size: 0.48, color: 0xef4444, x: -2.2, y: 0.45,  rotSpeed: 0.014, revealTime: 1.30 },
-      { name: "Jupiter", size: 1.48, color: 0xf59e0b, texture: jupiterTexture, x: 0.6, y: 0.40, rotSpeed: 0.012, revealTime: 1.65 },
-      { name: "Saturn",  size: 1.18, color: 0xfde68a, x: 4.1, y: 0.18,   rotSpeed: 0.010, revealTime: 2.00, hasRing: true },
-      { name: "Uranus",  size: 0.86, color: 0x38bdf8, x: 7.6, y: -0.15,  rotSpeed: 0.009, revealTime: 2.35 },
-      { name: "Neptune", size: 0.82, color: 0x2563eb, x: 10.5, y: -0.50, rotSpeed: 0.008, revealTime: 2.70 }
+      { name: "Mercury", size: 0.36, color: 0xb5a796, rx: 8.5,  ry: 5.2,  rz: 1.8, orbitSpeed: 0.016, rotSpeed: 0.024, initialAngle: 0.04, revealTime: 0.25 },
+      { name: "Venus",   size: 0.58, color: 0xeab308, rx: 11.2, ry: 6.8,  rz: 2.2, orbitSpeed: 0.012, rotSpeed: 0.018, initialAngle: 0.16, revealTime: 0.60 },
+      { name: "Earth",   size: 0.68, color: 0x38bdf8, rx: 14.0, ry: 8.4,  rz: 2.8, orbitSpeed: 0.009, rotSpeed: 0.020, initialAngle: 0.28, revealTime: 0.95, texture: earthTexture },
+      { name: "Mars",    size: 0.48, color: 0xef4444, rx: 16.8, ry: 10.0, rz: 3.2, orbitSpeed: 0.0075, rotSpeed: 0.016, initialAngle: 0.40, revealTime: 1.30 },
+      { name: "Jupiter", size: 1.45, color: 0xf59e0b, rx: 20.2, ry: 11.8, rz: 3.8, orbitSpeed: 0.0055, rotSpeed: 0.014, initialAngle: 0.52, revealTime: 1.65, texture: jupiterTexture },
+      { name: "Saturn",  size: 1.15, color: 0xfde68a, rx: 24.2, ry: 13.6, rz: 4.2, orbitSpeed: 0.0042, rotSpeed: 0.012, initialAngle: 0.64, revealTime: 2.00, hasRing: true },
+      { name: "Uranus",  size: 0.86, color: 0x38bdf8, rx: 28.2, ry: 15.4, rz: 4.8, orbitSpeed: 0.0032, rotSpeed: 0.010, initialAngle: 0.76, revealTime: 2.35 },
+      { name: "Neptune", size: 0.82, color: 0x2563eb, rx: 32.2, ry: 17.2, rz: 5.2, orbitSpeed: 0.0024, rotSpeed: 0.009, initialAngle: 0.88, revealTime: 2.70 }
     ];
 
     const planetNodes: PlanetNode[] = [];
     const planetsContainer = new THREE.Group();
 
-    planetsConfig.forEach((cfg, idx) => {
+    planetsConfig.forEach((cfg) => {
       const pGroup = new THREE.Group();
-      pGroup.position.set(cfg.x, cfg.y, 0);
 
-      // Start initially hidden (scale = 0)
+      // Start initially at starting orbit angle
+      const initX = sunX + cfg.rx * Math.cos(cfg.initialAngle);
+      const initY = sunY + cfg.ry * Math.sin(cfg.initialAngle);
+      const initZ = cfg.rz * Math.sin(cfg.initialAngle);
+      pGroup.position.set(initX, initY, initZ);
+
+      // Start initially scaled down to 0
       pGroup.scale.set(0.001, 0.001, 0.001);
 
       const pGeom = new THREE.SphereGeometry(cfg.size, 32, 32);
       const pMat = new THREE.MeshStandardMaterial({
         color: cfg.color,
         map: cfg.texture || null,
-        roughness: 0.42,
-        metalness: 0.12,
+        roughness: 0.38,
+        metalness: 0.08,
         transparent: true,
         opacity: 0
       });
@@ -231,7 +263,7 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
           map: ringTexture,
           side: THREE.DoubleSide,
           transparent: true,
-          opacity: 0.85
+          opacity: 0.88
         });
         const saturnRing = new THREE.Mesh(ringGeom, ringMat);
         saturnRing.rotation.x = Math.PI / 2.3;
@@ -245,11 +277,15 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
       planetNodes.push({
         mesh: pMesh,
         group: pGroup,
-        targetScale: 1.0,
-        revealTime: cfg.revealTime,
+        radiusX: cfg.rx,
+        radiusY: cfg.ry,
+        radiusZ: cfg.rz,
+        angle: cfg.initialAngle,
+        orbitSpeed: cfg.orbitSpeed * 0.55, // Clear, graceful orbital revolution speed
         rotSpeed: cfg.rotSpeed,
-        baseY: cfg.y,
-        floatPhase: idx * 0.8,
+        revealTime: cfg.revealTime,
+        targetScale: 1.0,
+        currentScale: 0.001,
         isRevealed: false
       });
     });
@@ -277,7 +313,7 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
     };
     window.addEventListener("resize", handleResize);
 
-    // 9. Animation Loop (Sequential Reveal + Axial Spin)
+    // 9. Animation Loop (Revolving in Orbits + Axial Spin + Sequential Reveal)
     let animId: number;
     const clock = new THREE.Clock();
 
@@ -285,23 +321,21 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
       animId = requestAnimationFrame(animate);
       const elapsed = clock.getElapsedTime();
 
-      // Slow majestic rotation of Sun's surface & Corona pulse
+      // Slow majestic rotation of Sun's surface
       sunMesh.rotation.z += 0.0006;
-      coronaMesh.rotation.z -= 0.0008;
-      coronaMesh.scale.setScalar(1 + Math.sin(elapsed * 1.8) * 0.04);
+      coronaMesh.rotation.z -= 0.0007;
+      coronaMesh.scale.setScalar(1 + Math.sin(elapsed * 1.5) * 0.025);
 
-      // Sequential Reveal & Axial Spin for each Planet
+      // Animate each planet: Sequential Reveal, Orbital Revolution, and Axial Spin
       planetNodes.forEach((p) => {
+        // 1. Sequential Reveal
         if (elapsed >= p.revealTime) {
           p.isRevealed = true;
-          // Smooth zoom-in scale animation
-          const currentScale = p.group.scale.x;
-          if (currentScale < 0.99) {
-            const nextScale = currentScale + (p.targetScale - currentScale) * 0.12;
-            p.group.scale.set(nextScale, nextScale, nextScale);
-            // Fade in material opacity
+          if (p.currentScale < 0.99) {
+            p.currentScale += (p.targetScale - p.currentScale) * 0.14;
+            p.group.scale.set(p.currentScale, p.currentScale, p.currentScale);
             if (p.mesh.material instanceof THREE.MeshStandardMaterial) {
-              p.mesh.material.opacity = Math.min(1, p.mesh.material.opacity + 0.08);
+              p.mesh.material.opacity = Math.min(1, p.mesh.material.opacity + 0.1);
             }
           } else {
             p.group.scale.set(1, 1, 1);
@@ -311,11 +345,14 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
           }
         }
 
-        // Each Planet Spins on its OWN AXIS
-        p.mesh.rotation.y += p.rotSpeed;
+        // 2. Active Revolution in its Orbit around the Sun (sunX = -17.0, sunY = 0)
+        p.angle += p.orbitSpeed;
+        p.group.position.x = sunX + p.radiusX * Math.cos(p.angle);
+        p.group.position.y = sunY + p.radiusY * Math.sin(p.angle);
+        p.group.position.z = p.radiusZ * Math.sin(p.angle);
 
-        // Gentle cosmic zero-g float
-        p.group.position.y = p.baseY + Math.sin(elapsed * 1.4 + p.floatPhase) * 0.08;
+        // 3. Continuous Axial Spin on its own axis
+        p.mesh.rotation.y += p.rotSpeed;
       });
 
       // Background stars slow drift
@@ -344,6 +381,7 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
       sunMat.dispose();
       coronaGeom.dispose();
       coronaMat.dispose();
+      coronaTexture.dispose();
 
       if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
@@ -366,7 +404,7 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
       {/* Subtle overlay for natural lighting and depth */}
       <div className="absolute inset-0 bg-slate-950/20 pointer-events-none z-0" />
 
-      {/* 1. Three.js Canvas Container (Sun on far left, planets sequentially spinning on axis) */}
+      {/* 1. Three.js Canvas Container (Sun on far left, planets orbiting in space) */}
       <div
         ref={containerRef}
         className="absolute inset-0 w-full h-full pointer-events-none z-10"
