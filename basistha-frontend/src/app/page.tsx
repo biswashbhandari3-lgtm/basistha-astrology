@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { RoyalGlassNavbar } from "@/components/RoyalGlassNavbar";
 import { NepaliPanchangCalendar } from "@/components/NepaliPanchangCalendar";
+import { useLanguage } from "@/context/LanguageContext";
 
 // Dynamically load Three.js Canvas to guarantee client-only SSR compatibility
 const SolarHeroCanvas = dynamic(
@@ -13,6 +14,8 @@ const SolarHeroCanvas = dynamic(
 );
 
 export default function HomePage() {
+  const { strings } = useLanguage();
+
   return (
     <div className="min-h-screen flex flex-col bg-[#f7f9fd] text-slate-900 selection:bg-blue-600 selection:text-white">
       {/* 1. Royal Blue Glassmorphic Floating Navbar */}
@@ -29,21 +32,21 @@ export default function HomePage() {
           <NepaliPanchangCalendar />
         </section>
 
-        {/* 3. Features & Vedic Capabilities Showcase (Inspired by Demo Cards in Header Style) */}
+        {/* 3. Features & Vedic Capabilities Showcase */}
         <section className="max-w-7xl mx-auto px-6 py-20 lg:py-28">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-200/60 text-blue-700 text-xs font-bold tracking-wider uppercase mb-4 shadow-sm">
               <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
-              आधुनिक खगोल तथा वैदिक सिद्धान्त
+              {strings.features.badge}
             </span>
             <h2
               className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight leading-tight mb-4"
               style={{ fontFamily: "'Cinzel', 'Georgia', serif" }}
             >
-              Precision Astrology for the Modern World
+              {strings.features.title}
             </h2>
             <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-              NASA JPL Swiss Ephemeris को उच्च परिशुद्ध गणितीय इन्जिन र पराशर, जैमिनी तथा ताजिक परम्पराको अद्वितीय समन्वय।
+              {strings.features.subtitle}
             </p>
           </div>
 
@@ -56,17 +59,17 @@ export default function HomePage() {
                   📅
                 </div>
                 <h3 className="text-lg font-bold text-slate-900 mb-2">
-                  दैनिक पञ्चाङ्ग तथा मुहूर्त
+                  {strings.features.card1Title}
                 </h3>
                 <p className="text-slate-500 text-xs leading-relaxed">
-                  तिथि, वार, नक्षत्र, योग, करण, सूर्योदय/सूर्यास्त, चौघडिया, होरा तथा राहुकालको सटीक समय गणना।
+                  {strings.features.card1Desc}
                 </p>
               </div>
               <Link
                 href="/panchangam"
                 className="mt-6 inline-flex items-center text-xs font-bold text-blue-600 group-hover:text-blue-700"
               >
-                <span>पञ्चाङ्ग हेर्नुहोस्</span>
+                <span>{strings.features.card1Btn}</span>
                 <span className="ml-1 transition-transform group-hover:translate-x-1">→</span>
               </Link>
             </div>
@@ -78,17 +81,17 @@ export default function HomePage() {
                   🔯
                 </div>
                 <h3 className="text-lg font-bold text-slate-900 mb-2">
-                  लग्न तथा १६ वर्ग कुण्डली
+                  {strings.features.card2Title}
                 </h3>
                 <p className="text-slate-500 text-xs leading-relaxed">
-                  D1 (लग्न), D9 (नवांश) देखि D60 (षष्ट्यंश) सम्म अन्तरक्रियात्मक उत्तर तथा दक्षिण भारतीय चक्र।
+                  {strings.features.card2Desc}
                 </p>
               </div>
               <Link
                 href="/panchangam#charts"
                 className="mt-6 inline-flex items-center text-xs font-bold text-blue-600 group-hover:text-blue-700"
               >
-                <span>कुण्डली बनाउनुहोस्</span>
+                <span>{strings.features.card2Btn}</span>
                 <span className="ml-1 transition-transform group-hover:translate-x-1">→</span>
               </Link>
             </div>
@@ -100,17 +103,17 @@ export default function HomePage() {
                   ⏳
                 </div>
                 <h3 className="text-lg font-bold text-slate-900 mb-2">
-                  विंशोत्तरी तथा योगिनी दशा
+                  {strings.features.card3Title}
                 </h3>
                 <p className="text-slate-500 text-xs leading-relaxed">
-                  महादशा, अन्तर्दशा, प्रत्यन्तर्दशा, सूक्ष्म तथा प्राण दशाको पूर्ण समय तालिका र विश्लेषण।
+                  {strings.features.card3Desc}
                 </p>
               </div>
               <Link
                 href="/panchangam#dasha"
                 className="mt-6 inline-flex items-center text-xs font-bold text-blue-600 group-hover:text-blue-700"
               >
-                <span>दशा हेर्नुहोस्</span>
+                <span>{strings.features.card3Btn}</span>
                 <span className="ml-1 transition-transform group-hover:translate-x-1">→</span>
               </Link>
             </div>
@@ -122,17 +125,17 @@ export default function HomePage() {
                   🖨️
                 </div>
                 <h3 className="text-lg font-bold text-slate-900 mb-2">
-                  ३-पृष्ठ मुद्रण-योग्य PDF
+                  {strings.features.card4Title}
                 </h3>
                 <p className="text-slate-500 text-xs leading-relaxed">
-                  एक क्लिकमै ग्राहक वा आफन्तका लागि उच्च गुणस्तरीय ३ पृष्ठको पूर्ण जन्मपत्रिका PDF डाउनलोड गर्नुहोस्।
+                  {strings.features.card4Desc}
                 </p>
               </div>
               <Link
                 href="/panchangam"
                 className="mt-6 inline-flex items-center text-xs font-bold text-blue-600 group-hover:text-blue-700"
               >
-                <span>डाउनलोड गर्नुहोस्</span>
+                <span>{strings.features.card4Btn}</span>
                 <span className="ml-1 transition-transform group-hover:translate-x-1">→</span>
               </Link>
             </div>
@@ -148,16 +151,16 @@ export default function HomePage() {
                 className="text-2xl sm:text-3xl font-black tracking-tight mb-3"
                 style={{ fontFamily: "'Cinzel', 'Georgia', serif" }}
               >
-                Begin Your Cosmic Journey
+                {strings.cta.title}
               </h3>
               <p className="text-slate-300 text-xs sm:text-sm leading-relaxed mb-8">
-                आफ्नो वा परिवारको जन्म विवरण प्रविष्ट गर्नुहोस् र उच्च शुद्धताका साथ कुण्डली, फलादेश तथा पञ्चाङ्ग अध्ययन गर्नुहोस्।
+                {strings.cta.subtitle}
               </p>
               <Link
                 href="/panchangam"
                 className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full font-bold text-sm bg-gradient-to-r from-amber-300 via-amber-400 to-orange-400 text-slate-950 hover:from-amber-200 hover:to-orange-300 shadow-lg shadow-amber-500/30 transition-all transform hover:-translate-y-0.5"
               >
-                <span>पञ्चाङ्ग तथा कुण्डली खोल्नुहोस्</span>
+                <span>{strings.cta.btn}</span>
                 <span>→</span>
               </Link>
             </div>
@@ -172,22 +175,20 @@ export default function HomePage() {
             <span className="text-2xl">🕉️</span>
             <div>
               <div className="text-white font-bold text-sm tracking-wider uppercase font-serif">
-                BASISTHA
+                {strings.header.title}
               </div>
               <div className="text-[11px] text-amber-400/80">
-                Vedic Astrology & Panchangam Platform
+                {strings.header.subtitle}
               </div>
             </div>
           </div>
-
-          <p className="text-slate-500 text-center">
-            © {new Date().getFullYear()} Basistha Vedic Astrology. All rights reserved.
-          </p>
-
-          <div className="flex items-center gap-4 text-slate-400">
-            <Link href="/" className="hover:text-white transition-colors">Home</Link>
-            <Link href="/about" className="hover:text-white transition-colors">About</Link>
-            <Link href="/panchangam" className="hover:text-white transition-colors">Panchangam</Link>
+          <div className="text-center md:text-right">
+            <p className="text-slate-400">
+              © {new Date().getFullYear()} {strings.header.title}. {strings.footer.rights}
+            </p>
+            <p className="text-[11px] text-slate-500 mt-0.5">
+              {strings.footer.powered}
+            </p>
           </div>
         </div>
       </footer>

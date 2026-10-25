@@ -2,8 +2,11 @@
 
 import React from "react";
 import { RoyalGlassNavbar } from "@/components/RoyalGlassNavbar";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function AboutPage() {
+  const { strings } = useLanguage();
+
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 pt-28">
       {/* Royal Blue Glassmorphic Navbar */}
@@ -16,12 +19,10 @@ export default function AboutPage() {
             className="text-2xl sm:text-3xl font-bold text-slate-900 mb-3"
             style={{ fontFamily: "'Cinzel', 'Georgia', serif" }}
           >
-            About Basistha Astrology
+            {strings.about.title}
           </h1>
           <p className="text-slate-500 text-sm leading-relaxed mb-6">
-            हाम्रा बारेमा विस्तृत जानकारी चाँडै उपलब्ध हुनेछ।
-            <br />
-            (About us content will be added here soon.)
+            {strings.about.desc}
           </p>
           <div className="w-16 h-0.5 bg-amber-400 mx-auto rounded-full" />
         </div>
@@ -29,9 +30,9 @@ export default function AboutPage() {
 
       <footer className="bg-slate-900 text-slate-400 py-6 border-t border-slate-800 text-center text-xs">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-3">
-          <p>© {new Date().getFullYear()} Basistha Vedic Astrology. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} {strings.header.title}. {strings.footer.rights}</p>
           <p className="text-[11px] text-slate-500">
-            Powered by Basistha Astronomical Engine
+            {strings.footer.powered}
           </p>
         </div>
       </footer>

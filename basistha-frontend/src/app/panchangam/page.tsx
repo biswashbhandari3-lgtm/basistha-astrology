@@ -10,11 +10,13 @@ import { DashaTable } from "@/components/DashaTable";
 import { PdfDownloadButton } from "@/components/PdfDownloadButton";
 import { RoyalGlassNavbar } from "@/components/RoyalGlassNavbar";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
 import { fetchKundaliData, fetchPanchangData, fetchDashaData } from "@/lib/api";
 import { BirthDetails, KundaliData, PanchangData, DashaData } from "@/types/astrology";
 
 export default function PanchangamPage() {
   const { isAuthenticated, openLoginModal } = useAuth();
+  const { strings } = useLanguage();
 
   const [birthDetails, setBirthDetails] = useState<BirthDetails>({
     year: 2026,
@@ -94,10 +96,10 @@ export default function PanchangamPage() {
         <div>
           <h1 className="text-xl md:text-2xl font-black text-slate-900 flex items-center gap-2">
             <span>📅</span>
-            <span>वैदिक पञ्चाङ्ग तथा जन्मकुण्डली ड्यासबोर्ड</span>
+            <span>{strings.dashboard.title}</span>
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            Swiss Ephemeris उच्च-परिशुद्ध खगोलीय इन्जिन • १६ वर्ग कुण्डली • विंशोत्तरी दशा
+            {strings.dashboard.subtitle}
           </p>
         </div>
 
@@ -113,7 +115,7 @@ export default function PanchangamPage() {
             onClick={handlePrint}
             className="bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
           >
-            <span>🖨️</span> प्रिन्ट
+            <span>🖨️</span> {strings.dashboard.printReport}
           </button>
         </div>
       </div>
@@ -151,12 +153,12 @@ export default function PanchangamPage() {
         {/* Dashboard Navigation Tabs */}
         <nav className="no-print flex overflow-x-auto gap-2 border-b border-amber-200 pb-2 scrollbar-none">
           {[
-            { id: "panchang", label: "दैनिक पञ्चाङ्ग (Panchanga)", icon: "📅", requiresAuth: false },
-            { id: "charts", label: "कुण्डली चक्र (Charts)", icon: "🔯", requiresAuth: true },
-            { id: "planets", label: "ग्रह स्पष्ट (Planetary Positions)", icon: "🪐", requiresAuth: true },
-            { id: "dasha", label: "दशा प्रणाली (Dasha System)", icon: "⏳", requiresAuth: true },
-            { id: "strengths", label: "षड्बल र अष्टकवर्ग (Strengths)", icon: "📊", requiresAuth: true },
-            { id: "varshaphala", label: "ताजिक वर्षफल (Annual Chart)", icon: "🎯", requiresAuth: true }
+            { id: "panchang", label: strings.dashboard.tabPanchang, icon: "📅", requiresAuth: false },
+            { id: "charts", label: strings.dashboard.tabCharts, icon: "🔯", requiresAuth: true },
+            { id: "planets", label: strings.dashboard.tabPlanets, icon: "🪐", requiresAuth: true },
+            { id: "dasha", label: strings.dashboard.tabDasha, icon: "⏳", requiresAuth: true },
+            { id: "strengths", label: strings.dashboard.tabStrengths, icon: "📊", requiresAuth: true },
+            { id: "varshaphala", label: strings.dashboard.tabVarshaphala, icon: "🎯", requiresAuth: true }
           ].map(tab => (
             <button
               key={tab.id}

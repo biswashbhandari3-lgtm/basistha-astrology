@@ -5,23 +5,12 @@ import Link from "next/link";
 import {
   calculateDayPanchang,
   gregorianToBS,
-  toDevanagari,
-  NEPALI_MONTHS,
-  WEEKDAY_NAMES
 } from "@/lib/vedicPanchangEngine";
-
-// Weekdays short headers
-const WEEKDAY_HEADERS = [
-  { short: "आ", full: "आइतवार" },
-  { short: "सो", full: "सोमवार" },
-  { short: "मं", full: "मङ्गलबार" },
-  { short: "बु", full: "बुधवार" },
-  { short: "बि", full: "बिहीवार" },
-  { short: "शु", full: "शुक्रवार" },
-  { short: "श", full: "शनिवार" },
-];
+import { useLanguage } from "@/context/LanguageContext";
 
 export function NepaliPanchangCalendar() {
+  const { language, strings, formatNumber } = useLanguage();
+
   // Compute today's BS date initially
   const todayBS = useMemo(() => {
     const now = new Date();
@@ -50,10 +39,10 @@ export function NepaliPanchangCalendar() {
     return () => clearInterval(interval);
   }, []);
 
-  // Dynamically calculate full Panchang data for the selected gate, month, and year!
+  // Dynamically calculate full Panchang data for the selected gate, month, year, and language!
   const panchangData = useMemo(() => {
-    return calculateDayPanchang(selectedYear, selectedMonth, selectedGate);
-  }, [selectedYear, selectedMonth, selectedGate]);
+    return calculateDayPanchang(selectedYear, selectedMonth, selectedGate, language);
+  }, [selectedYear, selectedMonth, selectedGate, language]);
 
   // Calendar matrix calculations
   const totalDays = panchangData.totalDaysInMonth;
@@ -81,13 +70,13 @@ export function NepaliPanchangCalendar() {
       // Go to previous month
       if (selectedMonth > 1) {
         const prevMonth = selectedMonth - 1;
-        const prevPanchang = calculateDayPanchang(selectedYear, prevMonth, 1);
+        const prevPanchang = calculateDayPanchang(selectedYear, prevMonth, 1, language);
         setSelectedMonth(prevMonth);
         setSelectedGate(prevPanchang.totalDaysInMonth);
       } else {
         const prevYear = selectedYear - 1;
         const prevMonth = 12;
-        const prevPanchang = calculateDayPanchang(prevYear, prevMonth, 1);
+        const prevPanchang = calculateDayPanchang(prevYear, prevMonth, 1, language);
         setSelectedYear(prevYear);
         setSelectedMonth(prevMonth);
         setSelectedGate(prevPanchang.totalDaysInMonth);
@@ -126,12 +115,19 @@ export function NepaliPanchangCalendar() {
   const minuteAngle = (minutes + seconds / 60) * 6;
   const secondAngle = seconds * 6;
 
-  // Format 12-hour digital time in Devanagari
+  // Format 12-hour digital time
   const displayHours = hours % 12 === 0 ? 12 : hours % 12;
   const isPM = hours >= 12;
-  const formattedDigitalTime = `${toDevanagari(String(displayHours).padStart(2, "0"))}:${toDevanagari(
+  const ampmStr =
+    language === "en"
+      ? isPM ? "PM" : "AM"
+      : language === "sa"
+      ? isPM ? "अपरान्हम् (PM)" : "पूर्वाह्नम् (AM)"
+      : isPM ? "अपरान्ह (PM)" : "पूर्वाह्न (AM)";
+
+  const formattedDigitalTime = `${formatNumber(String(displayHours).padStart(2, "0"))}:${formatNumber(
     String(minutes).padStart(2, "0")
-  )}:${toDevanagari(String(seconds).padStart(2, "0"))} ${isPM ? "अपरान्ह (PM)" : "पूर्वाह्न (AM)"}`;
+  )}:${formatNumber(String(seconds).padStart(2, "0"))} ${ampmStr}`;
 
   // Live Ishtakal calculation (from sunrise 06:09 AM)
   const currentTotalMinutes = hours * 60 + minutes + seconds / 60;
@@ -143,7 +139,40 @@ export function NepaliPanchangCalendar() {
   const totalPalas = (totalGhadis - ghadi) * 60;
   const pala = Math.floor(totalPalas);
   const vipala = Math.floor((totalPalas - pala) * 60);
-  const formattedIshtakal = `${toDevanagari(ghadi)} घडी ${toDevanagari(pala)} पला ${toDevanagari(vipala)} विपला`;
+  const formattedIshtakal = `${formatNumber(ghadi)} ${strings.panchang.ghati} ${formatNumber(pala)} ${strings.panchang.pala} ${formatNumber(vipala)} ${strings.panchang.vipala}`;
+
+  // Clock numerals based on language
+  const clockNumbers = language === "en"
+    ? [
+        { num: "12", angle: 0 },
+        { num: "1", angle: 30 },
+        { num: "2", angle: 60 },
+        { num: "3", angle: 90 },
+        { num: "4", angle: 120 },
+        { num: "5", angle: 150 },
+        { num: "6", angle: 180 },
+        { num: "7", angle: 210 },
+        { num: "8", angle: 240 },
+        { num: "9", angle: 270 },
+        { num: "10", angle: 300 },
+        { num: "11", angle: 330 },
+      ]
+    : [
+        { num: "१२", angle: 0 },
+        { num: "१", angle: 30 },
+        { num: "२", angle: 60 },
+        { num: "३", angle: 90 },
+        { num: "४", angle: 120 },
+        { num: "५", angle: 150 },
+        { num: "६", angle: 180 },
+        { num: "७", angle: 210 },
+        { num: "८", angle: 240 },
+        { num: "९", angle: 270 },
+        { num: "१०", angle: 300 },
+        { num: "११", angle: 330 },
+      ];
+
+  const clockCenterLabel = language === "en" ? "NEPAL" : language === "sa" ? "नेपालम्" : "नेपाल";
 
   return (
     <div className="w-full bg-[#fdfbf7] border-y border-amber-200/60 py-10 lg:py-16 px-4 sm:px-6 lg:px-12 text-slate-900 selection:bg-amber-600 selection:text-white">
@@ -154,13 +183,13 @@ export function NepaliPanchangCalendar() {
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100/70 border border-amber-300/50 text-amber-900 text-xs font-bold uppercase tracking-wider mb-2">
               <span className="w-2 h-2 rounded-full bg-amber-600 animate-pulse" />
-              दैनिक पञ्चाङ्ग तथा पात्रो
+              {strings.features.card1Title}
             </div>
             <h2
               className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight"
               style={{ fontFamily: "'Cinzel', 'Georgia', serif" }}
             >
-              नेपाली वैदिक क्यालेन्डर
+              {strings.panchang.title}
             </h2>
           </div>
 
@@ -169,7 +198,7 @@ export function NepaliPanchangCalendar() {
               href="/panchangam"
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 shadow-md shadow-orange-900/10 transition-all transform hover:-translate-y-0.5"
             >
-              <span>विस्तृत पञ्चाङ्ग हेर्नुहोस्</span>
+              <span>{strings.features.card1Btn}</span>
               <span className="text-base">→</span>
             </Link>
           </div>
@@ -193,15 +222,14 @@ export function NepaliPanchangCalendar() {
                     onChange={(e) => {
                       const newMonth = parseInt(e.target.value, 10);
                       setSelectedMonth(newMonth);
-                      // Clamp gate to new month max days
-                      const targetPanchang = calculateDayPanchang(selectedYear, newMonth, 1);
+                      const targetPanchang = calculateDayPanchang(selectedYear, newMonth, 1, language);
                       if (selectedGate > targetPanchang.totalDaysInMonth) {
                         setSelectedGate(targetPanchang.totalDaysInMonth);
                       }
                     }}
                     className="appearance-none bg-amber-50/80 hover:bg-amber-100/80 border border-amber-200/80 rounded-xl px-4 py-2 pr-8 text-sm font-bold text-slate-800 cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-amber-400"
                   >
-                    {NEPALI_MONTHS.map((m, idx) => (
+                    {strings.months.map((m, idx) => (
                       <option key={m} value={idx + 1}>
                         {m}
                       </option>
@@ -219,7 +247,7 @@ export function NepaliPanchangCalendar() {
                     onChange={(e) => {
                       const newYear = parseInt(e.target.value, 10);
                       setSelectedYear(newYear);
-                      const targetPanchang = calculateDayPanchang(newYear, selectedMonth, 1);
+                      const targetPanchang = calculateDayPanchang(newYear, selectedMonth, 1, language);
                       if (selectedGate > targetPanchang.totalDaysInMonth) {
                         setSelectedGate(targetPanchang.totalDaysInMonth);
                       }
@@ -228,7 +256,7 @@ export function NepaliPanchangCalendar() {
                   >
                     {[2080, 2081, 2082, 2083, 2084, 2085].map((y) => (
                       <option key={y} value={y}>
-                        {toDevanagari(y)} वि.सं.
+                        {formatNumber(y)} {strings.panchang.bs}
                       </option>
                     ))}
                   </select>
@@ -240,10 +268,7 @@ export function NepaliPanchangCalendar() {
                 {/* Tradition Pill */}
                 <div className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-100/50 border border-amber-200 text-[11px] font-semibold text-amber-950">
                   <span className="w-2 h-2 rounded-full bg-amber-500" />
-                  <span>शुद्ध सूर्यसिद्धान्त (मूल पारम्परिक)</span>
-                  <span className="bg-amber-700 text-white px-2 py-0.5 rounded-full text-[9px] font-bold">
-                    अयनांश मानक
-                  </span>
+                  <span>{strings.panchang.standard}</span>
                 </div>
               </div>
 
@@ -254,14 +279,14 @@ export function NepaliPanchangCalendar() {
                   onClick={handleJumpToToday}
                   className="px-3.5 py-1.5 rounded-xl border border-amber-300 bg-amber-50 hover:bg-amber-100 text-xs font-bold text-amber-900 transition-colors shadow-xs"
                 >
-                  आज
+                  {strings.panchang.today}
                 </button>
                 <div className="flex items-center rounded-xl border border-amber-200 bg-amber-50/50 overflow-hidden">
                   <button
                     type="button"
                     onClick={handlePrevDay}
                     className="px-2.5 py-1.5 hover:bg-amber-100 text-xs font-bold text-slate-700 transition-colors cursor-pointer"
-                    title="अघिल्लो दिन"
+                    title="Previous Day"
                   >
                     ❮
                   </button>
@@ -270,7 +295,7 @@ export function NepaliPanchangCalendar() {
                     type="button"
                     onClick={handleNextDay}
                     className="px-2.5 py-1.5 hover:bg-amber-100 text-xs font-bold text-slate-700 transition-colors cursor-pointer"
-                    title="पछिल्लो दिन"
+                    title="Next Day"
                   >
                     ❯
                   </button>
@@ -287,10 +312,10 @@ export function NepaliPanchangCalendar() {
                 {/* Big Date Header */}
                 <div className="flex flex-col items-center">
                   <h3 className="text-4xl sm:text-5xl font-black text-slate-900 tracking-tight leading-none mb-1">
-                    {toDevanagari(panchangData.dayBS)} {panchangData.monthName}
+                    {formatNumber(panchangData.dayBS)} {panchangData.monthName}
                   </h3>
                   <p className="text-sm font-bold text-slate-700">
-                    {panchangData.dayOfWeekName}, {toDevanagari(panchangData.yearBS)}
+                    {panchangData.dayOfWeekName}, {formatNumber(panchangData.yearBS)}
                   </p>
                   <p className="text-xs text-slate-500 font-mono tracking-wider mt-0.5">
                     {panchangData.gregorianDateStr}
@@ -320,7 +345,7 @@ export function NepaliPanchangCalendar() {
                   </span>
                 </div>
 
-                {/* Special Festival Banner (If applicable on that selected day) */}
+                {/* Special Festival Banner */}
                 {panchangData.festival ? (
                   <div className="w-full py-2 px-3 rounded-xl bg-amber-100/90 border border-amber-300 text-amber-950 font-bold text-xs flex items-center justify-center gap-1.5 shadow-xs animate-in fade-in duration-300">
                     <span className="text-red-600 text-sm">🚩</span>
@@ -328,14 +353,14 @@ export function NepaliPanchangCalendar() {
                   </div>
                 ) : (
                   <div className="w-full py-1.5 px-3 rounded-xl bg-slate-100/60 border border-slate-200/70 text-slate-500 font-medium text-[11px]">
-                    सामान्य दिन (दैनिक नित्यकर्म)
+                    {strings.panchang.regularDay}
                   </div>
                 )}
 
                 {/* Ayana & Ritu & Samvatsar */}
                 <div className="flex flex-col items-center gap-1 text-[11px] text-slate-600 pt-1 border-t border-amber-200/60 w-full">
                   <div className="font-semibold text-emerald-800">
-                    {panchangData.ayana} {panchangData.ritu}
+                    {panchangData.ayana} | {panchangData.ritu}
                   </div>
                   <div className="flex items-center gap-1 font-serif text-purple-900 font-bold">
                     <span className="text-amber-500">🕉️</span>
@@ -347,12 +372,12 @@ export function NepaliPanchangCalendar() {
                 <div className="w-full grid grid-cols-2 gap-2 pt-2 border-t border-amber-200/60 text-xs">
                   <div className="flex items-center justify-center gap-1.5 py-1 px-2 rounded-lg bg-white/80 border border-amber-100">
                     <span className="text-amber-500">☀️</span>
-                    <span className="text-slate-500 text-[10px]">सूर्योदय:</span>
+                    <span className="text-slate-500 text-[10px]">{strings.panchang.sunrise}:</span>
                     <span className="font-bold text-slate-800">{panchangData.sunrise}</span>
                   </div>
                   <div className="flex items-center justify-center gap-1.5 py-1 px-2 rounded-lg bg-white/80 border border-amber-100">
                     <span className="text-orange-500">🌅</span>
-                    <span className="text-slate-500 text-[10px]">सूर्यास्त:</span>
+                    <span className="text-slate-500 text-[10px]">{strings.panchang.sunset}:</span>
                     <span className="font-bold text-slate-800">{panchangData.sunset}</span>
                   </div>
                 </div>
@@ -365,7 +390,7 @@ export function NepaliPanchangCalendar() {
                 <div className="relative z-10 w-full overflow-hidden">
                   {/* Weekday Headers */}
                   <div className="grid grid-cols-7 text-center font-bold text-xs pb-2 border-b border-slate-200">
-                    {WEEKDAY_HEADERS.map((w, idx) => (
+                    {strings.weekdaysShort.map((w, idx) => (
                       <div
                         key={w.short}
                         className={`py-1 ${idx === 6 ? "text-red-600" : "text-slate-700"}`}
@@ -376,27 +401,27 @@ export function NepaliPanchangCalendar() {
                     ))}
                   </div>
 
-                  {/* Calendar Days Matrix */}
-                  <div className="grid grid-cols-7 text-center py-2 gap-y-1 gap-x-1 sm:gap-x-2">
+                  {/* 7-Column Days Matrix */}
+                  <div className="grid grid-cols-7 gap-1 pt-2 text-center text-sm">
                     {/* Previous Month Overflow */}
                     {prevMonthDays.map((d) => (
                       <div
                         key={`prev-${d}`}
                         className="py-2 text-xs font-medium text-slate-300 pointer-events-none"
                       >
-                        {toDevanagari(d)}
+                        {formatNumber(d)}
                       </div>
                     ))}
 
-                    {/* Current Month Active Days */}
+                    {/* Current Month Days (1 to TotalDays) */}
                     {daysArray.map((d) => {
                       const isSelected = d === selectedGate;
-                      const dayOfWeek = (startDayOffset + d - 1) % 7;
-                      const isSaturday = dayOfWeek === 6;
+                      const cellDayOfWeek = (startDayOffset + d - 1) % 7;
+                      const isSaturday = cellDayOfWeek === 6;
 
                       return (
                         <button
-                          key={`cur-${d}`}
+                          key={d}
                           type="button"
                           onClick={() => setSelectedGate(d)}
                           className={`group relative py-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center cursor-pointer ${
@@ -407,7 +432,7 @@ export function NepaliPanchangCalendar() {
                               : "text-slate-800 hover:bg-amber-50"
                           }`}
                         >
-                          <span>{toDevanagari(d)}</span>
+                          <span>{formatNumber(d)}</span>
                         </button>
                       );
                     })}
@@ -418,54 +443,52 @@ export function NepaliPanchangCalendar() {
                         key={`next-${d}`}
                         className="py-2 text-xs font-medium text-slate-300 pointer-events-none"
                       >
-                        {toDevanagari(d)}
+                        {formatNumber(d)}
                       </div>
                     ))}
                   </div>
                 </div>
 
-                {/* 6 Micro Panchanga Cards Row (Dynamically calculated for selected day!) */}
+                {/* 6 Micro Panchanga Cards Row */}
                 <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 pt-2 border-t border-slate-200 text-center">
                   {/* Nakshatra */}
                   <div className="p-2 rounded-xl bg-slate-50 border border-slate-200/80 flex flex-col justify-center">
-                    <span className="text-[10px] font-medium text-slate-500">नक्षत्र</span>
+                    <span className="text-[10px] font-medium text-slate-500">{strings.panchang.nakshatra}</span>
                     <span className="text-xs font-bold text-slate-800">{panchangData.nakshatra}</span>
                     <span className="text-[9px] text-amber-700 font-mono">{panchangData.nakshatraGhati}</span>
                   </div>
 
                   {/* Yoga */}
                   <div className="p-2 rounded-xl bg-slate-50 border border-slate-200/80 flex flex-col justify-center">
-                    <span className="text-[10px] font-medium text-slate-500">योग</span>
+                    <span className="text-[10px] font-medium text-slate-500">{strings.panchang.yoga}</span>
                     <span className="text-xs font-bold text-slate-800">{panchangData.yoga}</span>
                     <span className="text-[9px] text-amber-700 font-mono">{panchangData.yogaGhati}</span>
                   </div>
 
                   {/* Karana */}
                   <div className="p-2 rounded-xl bg-slate-50 border border-slate-200/80 flex flex-col justify-center">
-                    <span className="text-[10px] font-medium text-slate-500">करण</span>
+                    <span className="text-[10px] font-medium text-slate-500">{strings.panchang.karana}</span>
                     <span className="text-xs font-bold text-slate-800">{panchangData.karana}</span>
                     <span className="text-[9px] text-amber-700 font-mono">{panchangData.karanaGhati}</span>
                   </div>
 
                   {/* Chandra */}
                   <div className="p-2 rounded-xl bg-slate-50 border border-slate-200/80 flex flex-col justify-center">
-                    <span className="text-[10px] font-medium text-slate-500">चन्द्र</span>
+                    <span className="text-[10px] font-medium text-slate-500">{strings.panchang.chandra}</span>
                     <span className="text-xs font-bold text-slate-800">{panchangData.chandraRashi}</span>
                     <span className="text-[9px] text-amber-700 font-semibold">{panchangData.chandraEndTime}</span>
                   </div>
 
                   {/* Surya */}
                   <div className="p-2 rounded-xl bg-slate-50 border border-slate-200/80 flex flex-col justify-center">
-                    <span className="text-[10px] font-medium text-slate-500">सूर्य</span>
+                    <span className="text-[10px] font-medium text-slate-500">{strings.panchang.surya}</span>
                     <span className="text-xs font-bold text-slate-800">{panchangData.suryaRashi}</span>
-                    <span className="text-[9px] text-slate-400">राशि</span>
                   </div>
 
                   {/* Guru */}
                   <div className="p-2 rounded-xl bg-slate-50 border border-slate-200/80 flex flex-col justify-center">
-                    <span className="text-[10px] font-medium text-slate-500">गुरु</span>
+                    <span className="text-[10px] font-medium text-slate-500">{strings.panchang.guru}</span>
                     <span className="text-xs font-bold text-slate-800">{panchangData.guruRashi}</span>
-                    <span className="text-[9px] text-slate-400">राशि</span>
                   </div>
                 </div>
 
@@ -474,23 +497,20 @@ export function NepaliPanchangCalendar() {
                   <div className="flex items-center gap-3">
                     <span className="inline-flex items-center gap-1.5">
                       <span className="w-2.5 h-2.5 rounded-xs bg-[#964013]" />
-                      <span>छानिएको गते</span>
+                      <span>{language === "en" ? "Selected Date" : language === "sa" ? "चयनित-दिनाङ्कः" : "छानिएको गते"}</span>
                     </span>
                     <span className="inline-flex items-center gap-1.5 text-red-600 font-bold">
-                      <span>१</span>
-                      <span>शनिवार / बिदा</span>
+                      <span>{formatNumber(1)}</span>
+                      <span>{language === "en" ? "Saturday / Holiday" : language === "sa" ? "शनिवासरः / अवकाशः" : "शनिवार / बिदा"}</span>
                     </span>
                   </div>
-                  <span className="text-[10px] text-slate-400 italic">
-                    कुनै पनि गते क्लिक गरी पञ्चाङ्ग हेर्नुहोस्
-                  </span>
                 </div>
               </div>
             </div>
           </div>
 
           {/* ═══════════════════════════════════════════════════════════════
-              RIGHT CONTAINER (4 COLS): Live Devanagari Analog Clock + NST
+              RIGHT CONTAINER (4 COLS): Live Devanagari/English Analog Clock + NST
              ═══════════════════════════════════════════════════════════════ */}
           <div className="lg:col-span-4 bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-7 border border-amber-200/70 shadow-xl shadow-amber-950/5 flex flex-col items-center justify-between gap-6 text-center">
             
@@ -498,14 +518,14 @@ export function NepaliPanchangCalendar() {
             <div className="flex flex-col items-center gap-1">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-50 border border-red-200 text-red-700 text-xs font-bold">
                 <span className="w-2 h-2 rounded-full bg-red-600 animate-ping" />
-                <span>प्रत्यक्ष (Live)</span>
+                <span>{language === "en" ? "Live" : language === "sa" ? "प्रत्यक्षम्" : "प्रत्यक्ष"}</span>
               </div>
               <p className="text-[11px] font-medium text-slate-500 mt-0.5">
-                नेपाल मानक समय (NST, UTC+०५:४५)
+                {strings.panchang.liveTime}
               </p>
             </div>
 
-            {/* 2. Devanagari Round Analog Clock */}
+            {/* 2. Round Analog Clock */}
             <div className="relative w-56 h-56 sm:w-64 sm:h-64 flex items-center justify-center my-2">
               <svg className="w-full h-full drop-shadow-md" viewBox="0 0 200 200">
                 {/* Clock Face Circle */}
@@ -550,21 +570,8 @@ export function NepaliPanchangCalendar() {
                   );
                 })}
 
-                {/* 12 Devanagari Numerals */}
-                {[
-                  { num: "१२", angle: 0 },
-                  { num: "१", angle: 30 },
-                  { num: "२", angle: 60 },
-                  { num: "३", angle: 90 },
-                  { num: "४", angle: 120 },
-                  { num: "५", angle: 150 },
-                  { num: "६", angle: 180 },
-                  { num: "७", angle: 210 },
-                  { num: "८", angle: 240 },
-                  { num: "९", angle: 270 },
-                  { num: "१०", angle: 300 },
-                  { num: "११", angle: 330 },
-                ].map(({ num, angle }) => {
+                {/* 12 Numerals */}
+                {clockNumbers.map(({ num, angle }) => {
                   const rad = (angle * Math.PI) / 180;
                   const x = 100 + 70 * Math.sin(rad);
                   const y = 100 - 70 * Math.cos(rad) + 4.5;
@@ -574,7 +581,7 @@ export function NepaliPanchangCalendar() {
                       x={x}
                       y={y}
                       textAnchor="middle"
-                      fill={num === "१२" || num === "३" || num === "६" || num === "९" ? "#964013" : "#374151"}
+                      fill={num === "१२" || num === "12" || num === "३" || num === "3" || num === "६" || num === "6" || num === "९" || num === "9" ? "#964013" : "#374151"}
                       fontSize={num.length > 1 ? "11.5" : "12.5"}
                       fontWeight="bold"
                       fontFamily="'Cinzel', 'Georgia', serif"
@@ -594,7 +601,7 @@ export function NepaliPanchangCalendar() {
                   fontWeight="bold"
                   opacity="0.85"
                 >
-                  नेपाल
+                  {clockCenterLabel}
                 </text>
 
                 {/* Hour Hand */}
@@ -635,13 +642,13 @@ export function NepaliPanchangCalendar() {
               </svg>
             </div>
 
-            {/* 3. Big Devanagari Digital Clock Display */}
+            {/* 3. Digital Clock Display */}
             <div className="flex flex-col items-center">
               <span className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight font-serif">
                 {formattedDigitalTime}
               </span>
               <span className="text-xs font-semibold text-slate-600 mt-1">
-                वि.सं. {toDevanagari(panchangData.yearBS)} {panchangData.monthName} {toDevanagari(panchangData.dayBS)} गते, {panchangData.dayOfWeekName}
+                {strings.panchang.bs} {formatNumber(panchangData.yearBS)} {panchangData.monthName} {formatNumber(panchangData.dayBS)} {strings.panchang.gate}, {panchangData.dayOfWeekName}
               </span>
             </div>
 
@@ -649,21 +656,21 @@ export function NepaliPanchangCalendar() {
             <div className="w-full pt-4 border-t border-amber-200/60 flex flex-col gap-2.5 text-xs text-left">
               <div className="flex items-center justify-between text-slate-700">
                 <span className="flex items-center gap-1.5 text-slate-500">
-                  <span className="text-amber-500">☀️</span> सूर्योदय (काठमाडौँ):
+                  <span className="text-amber-500">☀️</span> {strings.panchang.sunrise}:
                 </span>
-                <span className="font-bold text-slate-900">{panchangData.sunrise.replace(" AM", "")}</span>
+                <span className="font-bold text-slate-900">{panchangData.sunrise}</span>
               </div>
 
               <div className="flex items-center justify-between text-slate-700">
                 <span className="flex items-center gap-1.5 text-slate-500">
-                  <span className="text-orange-500">🌅</span> सूर्यास्त:
+                  <span className="text-orange-500">🌅</span> {strings.panchang.sunset}:
                 </span>
-                <span className="font-bold text-slate-900">{panchangData.sunset.replace(" PM", "")}</span>
+                <span className="font-bold text-slate-900">{panchangData.sunset}</span>
               </div>
 
               <div className="flex items-center justify-between text-slate-700 pt-1 border-t border-slate-100">
                 <span className="flex items-center gap-1.5 text-slate-500">
-                  <span className="text-purple-600">🕒</span> इष्टकाल:
+                  <span className="text-purple-600">🕒</span> {strings.panchang.ishtakal}:
                 </span>
                 <span className="font-bold text-purple-900 font-mono text-[11px]">
                   {formattedIshtakal}

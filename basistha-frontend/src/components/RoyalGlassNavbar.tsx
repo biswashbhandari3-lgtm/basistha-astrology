@@ -1,14 +1,18 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { HeaderUserBadge } from "./HeaderUserBadge";
+import { useLanguage } from "@/context/LanguageContext";
+import { Locale } from "@/lib/translations";
 
 export function RoyalGlassNavbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [language, setLanguage] = useState<"ne" | "en">("en");
+  const [langDropdownOpen, setLangDropdownOpen] = useState(false);
+  const langDropdownRef = useRef<HTMLDivElement>(null);
+  const { language, setLanguage, strings } = useLanguage();
   const pathname = usePathname();
 
   useEffect(() => {
@@ -20,14 +24,33 @@ export function RoyalGlassNavbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Close language dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (langDropdownRef.current && !langDropdownRef.current.contains(e.target as Node)) {
+        setLangDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const languageOptions: { code: Locale; label: string; flag: string }[] = [
+    { code: "ne", label: "नेपाली", flag: "🇳🇵" },
+    { code: "en", label: "English", flag: "🌐" },
+    { code: "sa", label: "संस्कृतम्", flag: "🕉️" },
+  ];
+
+  const currentLangObj = languageOptions.find((l) => l.code === language) || languageOptions[0];
+
   const navLinks = [
-    { label: language === "en" ? "Home" : "गृहपृष्ठ", href: "/" },
-    { label: language === "en" ? "About" : "हाम्रा बारेमा", href: "/about" },
-    { label: language === "en" ? "Panchangam" : "पञ्चाङ्ग", href: "/panchangam" },
-    { label: language === "en" ? "Horoscope" : "कुण्डली", href: "/panchangam#charts" },
-    { label: language === "en" ? "Rashifal" : "राशिफल", href: "/panchangam#planets" },
-    { label: language === "en" ? "Resources" : "स्रोतहरू", href: "/panchangam#dasha" },
-    { label: language === "en" ? "Contact" : "सम्पर्क", href: "/about#contact" },
+    { label: strings.nav.home, href: "/" },
+    { label: strings.nav.about, href: "/about" },
+    { label: strings.nav.panchangam, href: "/panchangam" },
+    { label: strings.nav.horoscope, href: "/panchangam#charts" },
+    { label: strings.nav.rashifal, href: "/panchangam#planets" },
+    { label: strings.nav.resources, href: "/panchangam#dasha" },
+    { label: strings.nav.contact, href: "/about#contact" },
   ];
 
   return (
@@ -63,14 +86,14 @@ export function RoyalGlassNavbar() {
                 }`}
                 style={{ fontFamily: "'Cinzel', 'Georgia', serif" }}
               >
-                BASISTHA
+                {strings.header.title}
               </span>
               <span
                 className={`text-[10px] font-medium tracking-tight -mt-0.5 ${
                   isScrolled ? "text-amber-700" : "text-amber-300/80"
                 }`}
               >
-                Vedic Astrology & Panchangam
+                {strings.header.subtitle}
               </span>
             </div>
           </Link>
@@ -113,24 +136,57 @@ export function RoyalGlassNavbar() {
 
           {/* Right Header Actions */}
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* Language Selector Dropdown */}
-            <button
-              type="button"
-              onClick={() => setLanguage(language === "en" ? "ne" : "en")}
-              className={`hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all border ${
-                isScrolled
-                  ? "bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-300/60"
-                  : "bg-white/10 hover:bg-white/20 text-white border-white/20"
-              }`}
-              title="भाषा परिवर्तन गर्नुहोस् / Switch Language"
-            >
-              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                <circle cx="12" cy="12" r="9" />
-                <path d="M3.6 9h16.8M3.6 15h16.8M12 3a14.5 14.5 0 0 1 0 18M12 3a14.5 14.5 0 0 0 0 18" />
-              </svg>
-              <span>{language === "en" ? "English" : "नेपाली"}</span>
-              <span className="text-[10px] opacity-70">▾</span>
-            </button>
+            {/* Language Selector Dropdown (Supports Nepali, English, Sanskrit) */}
+            <div className="relative hidden sm:block" ref={langDropdownRef}>
+              <button
+                type="button"
+                onClick={() => setLangDropdownOpen(!langDropdownOpen)}
+                className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all border ${
+                  isScrolled
+                    ? "bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-300/70"
+                    : "bg-white/10 hover:bg-white/20 text-white border-white/25"
+                }`}
+                title="भाषा परिवर्तन गर्नुहोस् / Switch Language / भाषापरिवर्तनम्"
+              >
+                <span>{currentLangObj.flag}</span>
+                <span>{currentLangObj.label}</span>
+                <span className="text-[10px] opacity-70 transition-transform duration-200" style={{ transform: langDropdownOpen ? "rotate(180deg)" : "rotate(0deg)" }}>
+                  ▾
+                </span>
+              </button>
+
+              {/* Language Options Menu */}
+              {langDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-40 rounded-2xl bg-white/95 text-slate-900 shadow-2xl border border-slate-200/80 backdrop-blur-xl p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
+                  <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 py-1 mb-1">
+                    Language / भाषा
+                  </div>
+                  {languageOptions.map((opt) => (
+                    <button
+                      key={opt.code}
+                      type="button"
+                      onClick={() => {
+                        setLanguage(opt.code);
+                        setLangDropdownOpen(false);
+                      }}
+                      className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-colors ${
+                        language === opt.code
+                          ? "bg-amber-500/10 text-amber-700 font-bold"
+                          : "text-slate-700 hover:bg-slate-100"
+                      }`}
+                    >
+                      <span className="flex items-center gap-2">
+                        <span>{opt.flag}</span>
+                        <span>{opt.label}</span>
+                      </span>
+                      {language === opt.code && (
+                        <span className="text-amber-600 text-xs font-bold">✓</span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
 
             {/* Quick Link to Panchangam/Explore */}
             <Link
@@ -141,7 +197,7 @@ export function RoyalGlassNavbar() {
                   : "bg-white text-slate-900 hover:bg-amber-50 shadow-black/20"
               }`}
             >
-              <span>{language === "en" ? "Explore Now" : "अन्वेषण गर्नुहोस्"}</span>
+              <span>{strings.nav.explore}</span>
               <span className="ml-1 text-[11px]">→</span>
             </Link>
 
@@ -181,24 +237,41 @@ export function RoyalGlassNavbar() {
               key={link.label}
               href={link.href}
               onClick={() => setMobileMenuOpen(false)}
-              className="px-4 py-3 rounded-2xl text-sm font-semibold hover:bg-blue-50 hover:text-blue-700 transition-colors"
+              className="px-4 py-2.5 rounded-2xl text-sm font-semibold hover:bg-blue-50 hover:text-blue-700 transition-colors"
             >
               {link.label}
             </Link>
           ))}
-          <div className="pt-2 border-t border-slate-200 flex items-center justify-between">
-            <button
-              onClick={() => setLanguage(language === "en" ? "ne" : "en")}
-              className="px-4 py-2 rounded-xl text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200"
-            >
-              🌐 {language === "en" ? "Switch to नेपाली" : "Switch to English"}
-            </button>
+          <div className="pt-3 border-t border-slate-200 flex flex-col gap-2">
+            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-1">
+              भाषा / Language
+            </div>
+            <div className="grid grid-cols-3 gap-1.5">
+              {languageOptions.map((opt) => (
+                <button
+                  key={opt.code}
+                  type="button"
+                  onClick={() => {
+                    setLanguage(opt.code);
+                    setMobileMenuOpen(false);
+                  }}
+                  className={`py-2 px-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 border transition-all ${
+                    language === opt.code
+                      ? "bg-amber-500 text-white border-amber-600 shadow-sm"
+                      : "bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200"
+                  }`}
+                >
+                  <span>{opt.flag}</span>
+                  <span>{opt.label}</span>
+                </button>
+              ))}
+            </div>
             <Link
               href="/panchangam"
               onClick={() => setMobileMenuOpen(false)}
-              className="px-4 py-2 rounded-xl text-xs font-bold bg-blue-600 text-white"
+              className="mt-2 w-full py-2.5 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white text-center shadow-md"
             >
-              Explore Now →
+              {strings.nav.explore} →
             </Link>
           </div>
         </div>
