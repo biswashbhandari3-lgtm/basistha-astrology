@@ -16,9 +16,8 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
     const container = containerRef.current;
     if (!container) return;
 
-    // 1. Scene, Camera, & Fog
+    // 1. Scene & Camera
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x030712, 0.012);
 
     const aspect = container.clientWidth / container.clientHeight;
     const camera = new THREE.PerspectiveCamera(45, aspect, 0.1, 1000);
@@ -401,17 +400,26 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
 
   return (
     <div className="relative w-full min-h-[640px] md:min-h-[760px] lg:min-h-screen overflow-hidden bg-slate-950 flex items-center">
-      {/* 1. Three.js Canvas Container (Sun on far left, orbiting planets) */}
+      {/* 0. User Provided Deep Blue Cosmic Space Background Image */}
       <div
-        ref={containerRef}
-        className="absolute inset-0 w-full h-full pointer-events-none z-0"
+        className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat pointer-events-none z-0"
         style={{
-          background: "radial-gradient(ellipse at 15% 50%, #172554 0%, #030712 65%, #020617 100%)"
+          backgroundImage: "url('/hero-space-bg.jpg')",
+          backgroundPosition: "center center",
         }}
       />
 
+      {/* Subtle overlay for natural lighting and depth */}
+      <div className="absolute inset-0 bg-slate-950/20 pointer-events-none z-0" />
+
+      {/* 1. Three.js Canvas Container (Sun on far left, orbiting planets) */}
+      <div
+        ref={containerRef}
+        className="absolute inset-0 w-full h-full pointer-events-none z-10"
+      />
+
       {/* 2. Soft Vignette Overlay to enhance text contrast on right side */}
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-slate-950/80 pointer-events-none z-10" />
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-slate-950/70 pointer-events-none z-10" />
 
       {/* 3. Hero Content on Right Side (Matching the Photo Placement Exactly) */}
       <div className="relative z-20 w-full max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 flex justify-end">
