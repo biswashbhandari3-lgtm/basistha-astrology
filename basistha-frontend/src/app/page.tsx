@@ -20,7 +20,7 @@ export default function HomePage() {
 
       {/* 2. Full-Bleed Solar System Hero Canvas (Matching Photo) */}
       <main className="flex-1">
-        <section className="relative">
+        <section className="relative w-full overflow-hidden bg-slate-950">
           <SolarHeroCanvas />
         </section>
 

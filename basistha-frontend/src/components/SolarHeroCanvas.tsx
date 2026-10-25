@@ -74,7 +74,7 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
       return new THREE.CanvasTexture(canvas);
     };
 
-    // Soft feathered Corona Glow Texture (No hard geometric bands)
+    // Soft feathered Corona Glow Texture (Natural rich fiery orange glow)
     const createSoftCoronaTexture = () => {
       const canvas = document.createElement("canvas");
       canvas.width = 512;
@@ -82,11 +82,11 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
       const ctx = canvas.getContext("2d");
       if (ctx) {
         // Tight, smooth radial gradient closely hugging the Sun rim
-        const grad = ctx.createRadialGradient(256, 256, 175, 256, 256, 245);
-        grad.addColorStop(0, "rgba(255, 110, 10, 0.50)");
-        grad.addColorStop(0.25, "rgba(255, 80, 0, 0.22)");
-        grad.addColorStop(0.65, "rgba(240, 60, 0, 0.06)");
-        grad.addColorStop(1, "rgba(220, 40, 0, 0)");
+        const grad = ctx.createRadialGradient(256, 256, 185, 256, 256, 250);
+        grad.addColorStop(0, "rgba(255, 125, 20, 0.70)");
+        grad.addColorStop(0.25, "rgba(255, 80, 5, 0.38)");
+        grad.addColorStop(0.60, "rgba(235, 50, 0, 0.12)");
+        grad.addColorStop(1, "rgba(200, 25, 0, 0)");
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, 512, 512);
       }
@@ -132,33 +132,35 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
     const starPoints = new THREE.Points(starGeom, starMaterial);
     scene.add(starPoints);
 
-    // 5. The Massive Blazing Sun with Natural Rich Fiery Orange Color
+    // 5. The Massive Blazing Sun with Natural Rich Fiery Orange Color (Pure RGBA, ToneMapped False to retain vivid saturation)
     const sunGroup = new THREE.Group();
-    // Positioned on far left so its right radiant hemisphere towers across the screen
-    const sunX = -18.5;
+    // Positioned on left side so its radiant body towers across the space without occluding orbits
+    const sunX = -17.5;
     const sunY = 0;
     sunGroup.position.set(sunX, sunY, 0);
 
-    // Sun Disk: (25.5 x 25.5), using NormalBlending to retain authentic fiery orange color
-    const sunGeom = new THREE.PlaneGeometry(25.5, 25.5);
+    // Sun Disk: (21.0 x 21.0, radius 10.5), toneMapped: false prevents washing out into pale yellow/white
+    const sunGeom = new THREE.PlaneGeometry(21.0, 21.0);
     const sunMat = new THREE.MeshBasicMaterial({
       map: sunRealTexture,
       transparent: true,
       blending: THREE.NormalBlending,
-      side: THREE.DoubleSide
+      side: THREE.DoubleSide,
+      toneMapped: false
     });
     const sunMesh = new THREE.Mesh(sunGeom, sunMat);
     sunGroup.add(sunMesh);
 
     // Tight feathered corona halo closely embracing the Sun's perimeter
     const coronaTexture = createSoftCoronaTexture();
-    const coronaGeom = new THREE.PlaneGeometry(28.5, 28.5);
+    const coronaGeom = new THREE.PlaneGeometry(24.5, 24.5);
     const coronaMat = new THREE.MeshBasicMaterial({
       map: coronaTexture,
       transparent: true,
       blending: THREE.AdditiveBlending,
       depthWrite: false,
-      side: THREE.DoubleSide
+      side: THREE.DoubleSide,
+      toneMapped: false
     });
     const coronaMesh = new THREE.Mesh(coronaGeom, coronaMat);
     coronaMesh.position.z = -0.05;
@@ -166,15 +168,15 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
 
     scene.add(sunGroup);
 
-    // Solar Lighting Setup: Strong warm point light from Sun + Rich ambient starlight
-    const sunPointLight = new THREE.PointLight(0xffeedd, 3.5, 120, 0.35);
-    sunPointLight.position.set(sunX + 6, sunY, 5);
+    // Solar Lighting Setup: Warm golden-orange sunlight radiating from Sun + Rich ambient starlight
+    const sunPointLight = new THREE.PointLight(0xff9933, 3.2, 140, 0.4);
+    sunPointLight.position.set(sunX + 5, sunY, 5);
     scene.add(sunPointLight);
 
-    const ambientLight = new THREE.AmbientLight(0x8ca0ba, 2.2);
+    const ambientLight = new THREE.AmbientLight(0x7a92b5, 1.8);
     scene.add(ambientLight);
 
-    // 6. The 8 Planets (Larger Sizes, Realistic NASA Textures, Orbiting AROUND the Sun via Top/Bottom, WITH Luminous Orbit Lines)
+    // 6. The 8 Planets (Orbits strictly outside Sun disk, smoothly curving around top and bottom)
     interface PlanetNode {
       mesh: THREE.Mesh;
       group: THREE.Group;
@@ -192,23 +194,24 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
       isRevealed: boolean;
     }
 
+    // Every semi-minor axis ry is > 10.5 so NO orbit line cuts into the Sun
     const planetsConfig = [
-      { name: "Mercury", size: 0.58, color: 0xc4b5a5, texture: mercuryTexture, rx: 9.5,  ry: 6.2,  rz: 2.2, orbitSpeed: 0.016, rotSpeed: 0.024, initialAngle: 0.05, revealTime: 0.25, roughness: 0.85, tiltZ: 0.03 },
-      { name: "Venus",   size: 0.92, color: 0xf59e0b, texture: venusTexture,   rx: 12.2, ry: 7.8,  rz: 2.6, orbitSpeed: 0.012, rotSpeed: -0.012, initialAngle: 0.16, revealTime: 0.60, roughness: 0.35, tiltZ: 177.3 }, // Retrograde rotation
-      { name: "Earth",   size: 1.08, color: 0x38bdf8, texture: earthTexture,   rx: 15.2, ry: 9.5,  rz: 3.2, orbitSpeed: 0.009, rotSpeed: 0.020, initialAngle: 0.28, revealTime: 0.95, roughness: 0.45, tiltZ: 23.4, hasClouds: true },
-      { name: "Mars",    size: 0.74, color: 0xef4444, texture: marsTexture,    rx: 18.2, ry: 11.2, rz: 3.6, orbitSpeed: 0.0075, rotSpeed: 0.018, initialAngle: 0.40, revealTime: 1.30, roughness: 0.75, tiltZ: 25.2 },
-      { name: "Jupiter", size: 2.35, color: 0xf59e0b, texture: jupiterTexture, rx: 22.0, ry: 13.2, rz: 4.4, orbitSpeed: 0.0055, rotSpeed: 0.026, initialAngle: 0.52, revealTime: 1.65, roughness: 0.55, tiltZ: 3.1 },
-      { name: "Saturn",  size: 1.85, color: 0xfde68a, texture: saturnTexture,  rx: 26.5, ry: 15.2, rz: 5.0, orbitSpeed: 0.0042, rotSpeed: 0.022, initialAngle: 0.64, revealTime: 2.00, roughness: 0.55, hasRing: true },
-      { name: "Uranus",  size: 1.25, color: 0x38bdf8, texture: uranusTexture,  rx: 30.5, ry: 17.2, rz: 5.5, orbitSpeed: 0.0032, rotSpeed: 0.014, initialAngle: 0.76, revealTime: 2.35, roughness: 0.40, tiltZ: 97.8 }, // 98 deg axial tilt
-      { name: "Neptune", size: 1.20, color: 0x2563eb, texture: neptuneTexture, rx: 34.5, ry: 19.2, rz: 6.0, orbitSpeed: 0.0024, rotSpeed: 0.013, initialAngle: 0.88, revealTime: 2.70, roughness: 0.40, tiltZ: 28.3 }
+      { name: "Mercury", size: 0.62, color: 0xc4b5a5, texture: mercuryTexture, rx: 14.5, ry: 11.0, rz: 2.5, orbitSpeed: 0.016, rotSpeed: 0.024, initialAngle: 0.15, revealTime: 0.10, roughness: 0.85, tiltZ: 0.03 },
+      { name: "Venus",   size: 0.94, color: 0xf59e0b, texture: venusTexture,   rx: 17.5, ry: 13.0, rz: 3.0, orbitSpeed: 0.012, rotSpeed: -0.012, initialAngle: 0.35, revealTime: 0.20, roughness: 0.35, tiltZ: 177.3 }, // Retrograde rotation
+      { name: "Earth",   size: 1.12, color: 0x38bdf8, texture: earthTexture,   rx: 20.8, ry: 15.2, rz: 3.5, orbitSpeed: 0.009, rotSpeed: 0.020, initialAngle: 0.50, revealTime: 0.30, roughness: 0.45, tiltZ: 23.4, hasClouds: true },
+      { name: "Mars",    size: 0.78, color: 0xef4444, texture: marsTexture,    rx: 24.0, ry: 17.5, rz: 4.0, orbitSpeed: 0.0075, rotSpeed: 0.018, initialAngle: 0.18, revealTime: 0.40, roughness: 0.75, tiltZ: 25.2 },
+      { name: "Jupiter", size: 2.30, color: 0xf59e0b, texture: jupiterTexture, rx: 27.5, ry: 20.0, rz: 4.5, orbitSpeed: 0.0055, rotSpeed: 0.026, initialAngle: 0.38, revealTime: 0.50, roughness: 0.55, tiltZ: 3.1 },
+      { name: "Saturn",  size: 1.85, color: 0xfde68a, texture: saturnTexture,  rx: 31.5, ry: 22.8, rz: 5.0, orbitSpeed: 0.0042, rotSpeed: 0.022, initialAngle: 0.48, revealTime: 0.60, roughness: 0.55, hasRing: true },
+      { name: "Uranus",  size: 1.25, color: 0x38bdf8, texture: uranusTexture,  rx: 35.5, ry: 25.8, rz: 5.5, orbitSpeed: 0.0032, rotSpeed: 0.014, initialAngle: 0.58, revealTime: 0.70, roughness: 0.40, tiltZ: 97.8 }, // 98 deg axial tilt
+      { name: "Neptune", size: 1.20, color: 0x2563eb, texture: neptuneTexture, rx: 39.5, ry: 28.8, rz: 6.0, orbitSpeed: 0.0024, rotSpeed: 0.013, initialAngle: 0.28, revealTime: 0.80, roughness: 0.40, tiltZ: 28.3 }
     ];
 
     const planetNodes: PlanetNode[] = [];
     const planetsContainer = new THREE.Group();
     const orbitLinesGroup = new THREE.Group();
 
-    // Orbital plane tilt: -16 degrees to make orbits naturally sweep across top-left, center, and bottom
-    const globalOrbitTilt = -0.28;
+    // Orbital plane tilt: -12.6 degrees (-0.22 rad) for natural top and bottom sweep
+    const globalOrbitTilt = -0.22;
 
     planetsConfig.forEach((cfg) => {
       // 1. Draw Visible Luminous Orbit Line
@@ -229,10 +232,12 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
       const orbitMat = new THREE.LineBasicMaterial({
         color: 0x60a5fa, // Luminous celestial cyan-blue as in the photo
         transparent: true,
-        opacity: 0.38,
-        blending: THREE.AdditiveBlending
+        opacity: 0.36,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
       });
       const orbitLine = new THREE.Line(orbitGeom, orbitMat);
+      orbitLinesGroup.add(orbitLine);
       orbitLinesGroup.add(orbitLine);
 
       // 2. Planet Group & Positioning
@@ -539,6 +544,9 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
           </div>
         </div>
       </div>
+
+      {/* Seamless cosmic bottom transition to page */}
+      <div className="absolute bottom-0 inset-x-0 h-28 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent pointer-events-none z-20" />
     </div>
   );
 }
