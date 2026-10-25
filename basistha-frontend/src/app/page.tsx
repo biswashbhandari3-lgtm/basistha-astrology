@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { KundaliForm } from "@/components/KundaliForm";
 import { NorthIndianChart } from "@/components/NorthIndianChart";
 import { SouthIndianChart } from "@/components/SouthIndianChart";
@@ -9,6 +9,7 @@ import { PanchangaCard } from "@/components/PanchangaCard";
 import { DashaTable } from "@/components/DashaTable";
 import { HeaderUserBadge } from "@/components/HeaderUserBadge";
 import { PdfDownloadButton } from "@/components/PdfDownloadButton";
+import { HeroSection } from "@/components/HeroSection";
 import { useAuth } from "@/context/AuthContext";
 import { fetchKundaliData, fetchPanchangData, fetchDashaData } from "@/lib/api";
 import { BirthDetails, KundaliData, PanchangData, DashaData } from "@/types/astrology";
@@ -77,6 +78,17 @@ export default function HomePage() {
     loadData(details);
   };
 
+  const formSectionRef = useRef<HTMLElement>(null);
+
+  const scrollToForm = () => {
+    formSectionRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleOpenPanchang = () => {
+    setActiveTab("panchang");
+    formSectionRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
   const handlePrint = () => {
     if (!isAuthenticated) {
       openLoginModal();
@@ -128,6 +140,9 @@ export default function HomePage() {
 
       {/* Main Container */}
       <main className="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col gap-6">
+        {/* Three.js Interactive Cosmic Universe Hero Section */}
+        <HeroSection onScrollToForm={scrollToForm} onOpenPanchang={handleOpenPanchang} />
+
         {/* Auth Gate Notification Banner if Not Logged In */}
         {!isAuthenticated && (
           <div className="no-print bg-gradient-to-r from-amber-500 to-orange-600 text-white p-4 rounded-2xl shadow-md flex flex-col sm:flex-row justify-between items-center gap-3">
@@ -152,7 +167,7 @@ export default function HomePage() {
         )}
 
         {/* Birth Details Input Form */}
-        <section className="no-print">
+        <section ref={formSectionRef} className="no-print scroll-mt-20">
           <KundaliForm onSubmit={handleFormSubmit} isLoading={isLoading} />
         </section>
 
