@@ -4,6 +4,7 @@ import React from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { RoyalGlassNavbar } from "@/components/RoyalGlassNavbar";
+import { NepaliPanchangCalendar } from "@/components/NepaliPanchangCalendar";
 
 // Dynamically load Three.js Canvas to guarantee client-only SSR compatibility
 const SolarHeroCanvas = dynamic(
@@ -21,6 +22,11 @@ export default function HomePage() {
       <main className="flex-1">
         <section className="relative">
           <SolarHeroCanvas />
+        </section>
+
+        {/* 2.5 Live Daily Nepali Panchang & Devanagari Clock Dashboard */}
+        <section id="daily-panchang" className="scroll-mt-20">
+          <NepaliPanchangCalendar />
         </section>
 
         {/* 3. Features & Vedic Capabilities Showcase (Inspired by Demo Cards in Header Style) */}

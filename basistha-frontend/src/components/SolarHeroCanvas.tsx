@@ -516,17 +516,27 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
             <span className="w-10 sm:w-16 h-[1px] bg-gradient-to-l from-transparent to-amber-400/60" />
           </div>
 
-          {/* Call-to-Action Pill Button: [ Explore Now → ] */}
-          <Link
-            href="/panchangam"
-            onClick={onExploreClick}
-            className="group inline-flex items-center gap-2.5 px-7 py-3 rounded-full text-xs sm:text-sm font-semibold tracking-wide text-white bg-blue-600/30 hover:bg-blue-600/50 border border-blue-400/40 hover:border-blue-300 backdrop-blur-md shadow-lg shadow-blue-900/30 transition-all duration-300 transform hover:-translate-y-0.5"
-          >
-            <span>Explore Now</span>
-            <span className="text-base transition-transform group-hover:translate-x-1">
-              →
-            </span>
-          </Link>
+          {/* Call-to-Action Buttons: [ 📅 पञ्चाङ्ग हेर्नुहोस् ↓ ] & [ कुण्डली सेवा → ] */}
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <a
+              href="#daily-panchang"
+              onClick={onExploreClick}
+              className="group inline-flex items-center gap-2.5 px-7 py-3 rounded-full text-xs sm:text-sm font-bold tracking-wide text-white bg-gradient-to-r from-amber-500/90 to-orange-600/90 hover:from-amber-500 hover:to-orange-600 border border-amber-300/60 hover:border-amber-200 backdrop-blur-md shadow-lg shadow-amber-950/30 transition-all duration-300 transform hover:-translate-y-0.5 cursor-pointer"
+            >
+              <span>📅 पञ्चाङ्ग हेर्नुहोस्</span>
+              <span className="text-sm transition-transform group-hover:translate-y-0.5">
+                ↓
+              </span>
+            </a>
+
+            <Link
+              href="/panchangam#charts"
+              className="group inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs sm:text-sm font-semibold tracking-wide text-white/90 hover:text-white bg-white/10 hover:bg-white/20 border border-white/20 hover:border-white/40 backdrop-blur-md transition-all duration-300 transform hover:-translate-y-0.5"
+            >
+              <span>कुण्डली सेवा</span>
+              <span className="transition-transform group-hover:translate-x-1">→</span>
+            </Link>
+          </div>
         </div>
       </div>
     </div>
