@@ -140,15 +140,18 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
     sunGroup.position.set(sunX, sunY, 0);
 
     // Sun Disk: (21.0 x 21.0, radius 10.5), toneMapped: false prevents washing out into pale yellow/white
+    // depthWrite: false CRUCIAL to prevent cutting/clipping planets orbiting behind/around the solar quad
     const sunGeom = new THREE.PlaneGeometry(21.0, 21.0);
     const sunMat = new THREE.MeshBasicMaterial({
       map: sunRealTexture,
       transparent: true,
       blending: THREE.NormalBlending,
       side: THREE.DoubleSide,
-      toneMapped: false
+      toneMapped: false,
+      depthWrite: false
     });
     const sunMesh = new THREE.Mesh(sunGeom, sunMat);
+    sunMesh.renderOrder = 0;
     sunGroup.add(sunMesh);
 
     // Tight feathered corona halo closely embracing the Sun's perimeter
@@ -164,8 +167,10 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
     });
     const coronaMesh = new THREE.Mesh(coronaGeom, coronaMat);
     coronaMesh.position.z = -0.05;
+    coronaMesh.renderOrder = 0;
     sunGroup.add(coronaMesh);
 
+    sunGroup.renderOrder = 0;
     scene.add(sunGroup);
 
     // Solar Lighting Setup: Warm golden-orange sunlight radiating from Sun + Rich ambient starlight
@@ -238,7 +243,6 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
       });
       const orbitLine = new THREE.Line(orbitGeom, orbitMat);
       orbitLinesGroup.add(orbitLine);
-      orbitLinesGroup.add(orbitLine);
 
       // 2. Planet Group & Positioning
       const pGroup = new THREE.Group();
@@ -253,6 +257,8 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
       const initY = sunY + localX * Math.sin(globalOrbitTilt) + localY * Math.cos(globalOrbitTilt);
       const initZ = cfg.rz * sinA;
       pGroup.position.set(initX, initY, initZ);
+      // In front of Sun when z >= 0, behind Sun when z < 0
+      pGroup.renderOrder = initZ >= 0 ? 5 : -5;
 
       // Start initially hidden and scaled to 0 for sequential reveal
       pGroup.scale.set(0.001, 0.001, 0.001);
@@ -266,10 +272,11 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
         roughness: cfg.roughness ?? 0.45,
         metalness: 0.05,
         transparent: true,
-        opacity: 0
+        opacity: 0,
+        depthWrite: true
       });
       const pMesh = new THREE.Mesh(pGeom, pMat);
-      pMesh.renderOrder = 1;
+      pMesh.renderOrder = 0;
 
       let planetCloudMesh: THREE.Mesh | undefined;
 
@@ -295,7 +302,7 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
         });
         const saturnRing = new THREE.Mesh(ringGeom, ringMat);
         saturnRing.rotation.x = Math.PI / 2; // Flat in equatorial plane of tilted sub-group
-        saturnRing.renderOrder = 2;
+        saturnRing.renderOrder = 1;
         saturnSubGroup.add(saturnRing);
 
         pGroup.add(saturnSubGroup);
@@ -317,7 +324,7 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
             roughness: 0.85
           });
           planetCloudMesh = new THREE.Mesh(cloudGeom, cloudMat);
-          planetCloudMesh.renderOrder = 3;
+          planetCloudMesh.renderOrder = 1;
           subGroup.add(planetCloudMesh);
         }
 
@@ -414,6 +421,8 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
         p.group.position.x = sunX + localX * Math.cos(p.orbitTilt) - localY * Math.sin(p.orbitTilt);
         p.group.position.y = sunY + localX * Math.sin(p.orbitTilt) + localY * Math.cos(p.orbitTilt);
         p.group.position.z = p.radiusZ * sinA;
+        // In front of Sun when z >= 0, behind Sun when z < 0 (never cut or clipped by the solar quad!)
+        p.group.renderOrder = p.group.position.z >= 0 ? 5 : -5;
 
         // 3. Continuous Axial Spin on its OWN axis (Saturn's sphere spins inside its ring, Earth clouds drift)
         p.mesh.rotation.y += p.rotSpeed;
