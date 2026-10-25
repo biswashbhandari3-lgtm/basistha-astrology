@@ -40,7 +40,7 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
     const earthTexture = textureLoader.load("/textures/earth.jpg");
     const jupiterTexture = textureLoader.load("/textures/jupiter.jpg");
     const saturnTexture = textureLoader.load("/textures/saturn.jpg");
-    const saturnRingTexture = textureLoader.load("/textures/saturn-ring.png");
+    const saturnRingTexture = textureLoader.load("/textures/saturn-ring-disc.png");
     const marsTexture = textureLoader.load("/textures/mars.jpg");
     const venusTexture = textureLoader.load("/textures/venus.jpg");
     const mercuryTexture = textureLoader.load("/textures/mercury.jpg");
@@ -48,11 +48,30 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
     const neptuneTexture = textureLoader.load("/textures/neptune.jpg");
 
     // Configure texture filtering for optimal sharpness
-    [earthTexture, jupiterTexture, saturnTexture, marsTexture, venusTexture, mercuryTexture, uranusTexture, neptuneTexture].forEach((tex) => {
+    [earthTexture, jupiterTexture, saturnTexture, saturnRingTexture, marsTexture, venusTexture, mercuryTexture, uranusTexture, neptuneTexture].forEach((tex) => {
       tex.generateMipmaps = true;
       tex.minFilter = THREE.LinearMipmapLinearFilter;
       tex.magFilter = THREE.LinearFilter;
     });
+
+    // Soft circular Star Glow Texture (Guarantees NO square point artifacts)
+    const createStarTexture = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = 64;
+      canvas.height = 64;
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+        grad.addColorStop(0, "rgba(255, 255, 255, 1.0)");
+        grad.addColorStop(0.18, "rgba(240, 248, 255, 0.90)");
+        grad.addColorStop(0.45, "rgba(180, 215, 255, 0.35)");
+        grad.addColorStop(0.75, "rgba(100, 160, 255, 0.08)");
+        grad.addColorStop(1, "rgba(0, 0, 0, 0)");
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, 64, 64);
+      }
+      return new THREE.CanvasTexture(canvas);
+    };
 
     // Soft feathered Corona Glow Texture (No hard geometric bands)
     const createSoftCoronaTexture = () => {
@@ -73,36 +92,41 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
       return new THREE.CanvasTexture(canvas);
     };
 
-    // 4. Subtle Foreground Twinkle Starfield
-    const starCount = 1100;
+    // 4. Subtle Foreground Twinkle Starfield (Soft Circular Points, Additive Blending)
+    const starCount = 1200;
     const starGeom = new THREE.BufferGeometry();
     const starPos = new Float32Array(starCount * 3);
     const starCols = new Float32Array(starCount * 3);
 
     for (let i = 0; i < starCount; i++) {
-      starPos[i * 3] = (Math.random() - 0.5) * 110;
-      starPos[i * 3 + 1] = (Math.random() - 0.5) * 70;
-      starPos[i * 3 + 2] = -10 - Math.random() * 35;
+      starPos[i * 3] = (Math.random() - 0.5) * 120;
+      starPos[i * 3 + 1] = (Math.random() - 0.5) * 80;
+      // Deep space background: firmly behind planets and sun to prevent camera-clipping artifacts
+      starPos[i * 3 + 2] = -25 - Math.random() * 45;
 
       const isCyan = Math.random() > 0.45;
       if (isCyan) {
-        starCols[i * 3] = 0.5 + Math.random() * 0.3;
-        starCols[i * 3 + 1] = 0.8 + Math.random() * 0.2;
+        starCols[i * 3] = 0.55 + Math.random() * 0.25;
+        starCols[i * 3 + 1] = 0.82 + Math.random() * 0.18;
         starCols[i * 3 + 2] = 1.0;
       } else {
         starCols[i * 3] = 1.0;
-        starCols[i * 3 + 1] = 0.9 + Math.random() * 0.1;
-        starCols[i * 3 + 2] = 0.5 + Math.random() * 0.3;
+        starCols[i * 3 + 1] = 0.92 + Math.random() * 0.08;
+        starCols[i * 3 + 2] = 0.65 + Math.random() * 0.35;
       }
     }
     starGeom.setAttribute("position", new THREE.BufferAttribute(starPos, 3));
     starGeom.setAttribute("color", new THREE.BufferAttribute(starCols, 3));
 
+    const starTexture = createStarTexture();
     const starMaterial = new THREE.PointsMaterial({
-      size: 0.18,
+      size: 0.32,
+      map: starTexture,
       vertexColors: true,
       transparent: true,
-      opacity: 0.75
+      opacity: 0.85,
+      blending: THREE.AdditiveBlending, // Guarantees 0 dark/grey quads - stars only add soft celestial light
+      depthWrite: false
     });
     const starPoints = new THREE.Points(starGeom, starMaterial);
     scene.add(starPoints);
@@ -223,8 +247,9 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
       const initZ = cfg.rz * sinA;
       pGroup.position.set(initX, initY, initZ);
 
-      // Start initially scaled to 0 for sequential reveal
+      // Start initially hidden and scaled to 0 for sequential reveal
       pGroup.scale.set(0.001, 0.001, 0.001);
+      pGroup.visible = false;
 
       // Planet Sphere Mesh (Smooth 48x48 segments, white base so photorealistic textures pop)
       const pGeom = new THREE.SphereGeometry(cfg.size, 48, 48);
@@ -237,6 +262,7 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
         opacity: 0
       });
       const pMesh = new THREE.Mesh(pGeom, pMat);
+      pMesh.renderOrder = 1;
 
       // Saturn: Stable, wobble-free concentric ring in Saturn's equatorial plane
       if (cfg.hasRing) {
@@ -247,16 +273,20 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
 
         saturnSubGroup.add(pMesh);
 
-        // Ring Geometry: perfectly centered, flat in equatorial plane
-        const ringGeom = new THREE.RingGeometry(cfg.size * 1.35, cfg.size * 2.55, 96);
-        const ringMat = new THREE.MeshBasicMaterial({
+        // Perfectly centered concentric ring with Cassini division and realistic ringlets
+        const ringGeom = new THREE.RingGeometry(cfg.size * 1.30, cfg.size * 2.55, 128);
+        const ringMat = new THREE.MeshStandardMaterial({
           map: saturnRingTexture,
           side: THREE.DoubleSide,
           transparent: true,
-          opacity: 0.92
+          opacity: 0.96,
+          roughness: 0.45,
+          metalness: 0.05,
+          depthWrite: false // Prevents clipping through planet sphere
         });
         const saturnRing = new THREE.Mesh(ringGeom, ringMat);
         saturnRing.rotation.x = Math.PI / 2; // Flat in equatorial plane of tilted sub-group
+        saturnRing.renderOrder = 2;
         saturnSubGroup.add(saturnRing);
 
         pGroup.add(saturnSubGroup);
@@ -325,6 +355,7 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
         // 1. Sequential Reveal
         if (elapsed >= p.revealTime) {
           p.isRevealed = true;
+          p.group.visible = true;
           if (p.currentScale < 0.99) {
             p.currentScale += (p.targetScale - p.currentScale) * 0.14;
             p.group.scale.set(p.currentScale, p.currentScale, p.currentScale);
@@ -377,6 +408,7 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
 
       starGeom.dispose();
       starMaterial.dispose();
+      starTexture.dispose();
       sunGeom.dispose();
       sunMat.dispose();
       coronaGeom.dispose();
