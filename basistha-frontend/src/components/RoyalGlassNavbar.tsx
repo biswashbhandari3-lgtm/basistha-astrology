@@ -43,15 +43,15 @@ export function RoyalGlassNavbar() {
 
   const currentLangObj = languageOptions.find((l) => l.code === language) || languageOptions[0];
 
-  // Removed horoscope, rashifal, resources per user request
+  // Main Navigation links: Home, Kundali, About, Contact
   const navLinks = [
     { label: strings.nav.home, href: "/" },
-    { label: strings.nav.panchangam, href: "/panchangam" },
+    { label: strings.nav.kundali || "कुण्डली", href: "/kundali" },
     { label: strings.nav.about, href: "/about" },
     { label: strings.nav.contact, href: "/about#contact" },
   ];
 
-  // On non-home pages (e.g. /panchangam, /about) with light background,
+  // On non-home pages (e.g. /kundali, /about) with light background,
   // or on home page when scrolled, use solid, high-contrast light glassmorphism.
   // Only use dark translucent styling when at the very top of the dark solar home hero.
   const isHomePage = pathname === "/";

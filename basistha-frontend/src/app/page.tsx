@@ -66,7 +66,7 @@ export default function HomePage() {
                 </p>
               </div>
               <Link
-                href="/panchangam"
+                href="/kundali"
                 className="mt-6 inline-flex items-center text-xs font-bold text-blue-600 group-hover:text-blue-700"
               >
                 <span>{strings.features.card1Btn}</span>
@@ -88,7 +88,7 @@ export default function HomePage() {
                 </p>
               </div>
               <Link
-                href="/panchangam#charts"
+                href="/kundali#charts"
                 className="mt-6 inline-flex items-center text-xs font-bold text-blue-600 group-hover:text-blue-700"
               >
                 <span>{strings.features.card2Btn}</span>
@@ -110,7 +110,7 @@ export default function HomePage() {
                 </p>
               </div>
               <Link
-                href="/panchangam#dasha"
+                href="/kundali#dasha"
                 className="mt-6 inline-flex items-center text-xs font-bold text-blue-600 group-hover:text-blue-700"
               >
                 <span>{strings.features.card3Btn}</span>
@@ -132,7 +132,7 @@ export default function HomePage() {
                 </p>
               </div>
               <Link
-                href="/panchangam"
+                href="/kundali"
                 className="mt-6 inline-flex items-center text-xs font-bold text-blue-600 group-hover:text-blue-700"
               >
                 <span>{strings.features.card4Btn}</span>
@@ -157,7 +157,7 @@ export default function HomePage() {
                 {strings.cta.subtitle}
               </p>
               <Link
-                href="/panchangam"
+                href="/kundali"
                 className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full font-bold text-sm bg-gradient-to-r from-amber-300 via-amber-400 to-orange-400 text-slate-950 hover:from-amber-200 hover:to-orange-300 shadow-lg shadow-amber-500/30 transition-all transform hover:-translate-y-0.5"
               >
                 <span>{strings.cta.btn}</span>

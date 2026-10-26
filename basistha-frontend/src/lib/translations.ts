@@ -4,6 +4,7 @@ export interface Translations {
   nav: {
     home: string;
     about: string;
+    kundali: string;
     panchangam: string;
     horoscope: string;
     rashifal: string;
@@ -118,6 +119,7 @@ export const translations: Record<Locale, Translations> = {
     nav: {
       home: "गृहपृष्ठ",
       about: "हाम्रा बारेमा",
+      kundali: "कुण्डली",
       panchangam: "पञ्चाङ्ग",
       horoscope: "कुण्डली",
       rashifal: "राशिफल",
@@ -204,7 +206,7 @@ export const translations: Record<Locale, Translations> = {
       powered: "वसिष्ठ खगोलीय इन्जिनद्वारा सञ्चालित"
     },
     dashboard: {
-      title: "वैदिक पञ्चाङ्ग तथा जन्मकुण्डली ड्यासबोर्ड",
+      title: "वैदिक कुण्डली तथा जन्मपत्रिका ड्यासबोर्ड",
       subtitle: "Swiss Ephemeris उच्च-परिशुद्ध खगोलीय इन्जिन • १६ वर्ग कुण्डली • विंशोत्तरी दशा",
       birthForm: "जन्म विवरण फारम",
       tabCharts: "कुण्डली चक्र",
@@ -247,6 +249,7 @@ export const translations: Record<Locale, Translations> = {
     nav: {
       home: "Home",
       about: "About Us",
+      kundali: "Kundali",
       panchangam: "Panchangam",
       horoscope: "Kundali",
       rashifal: "Horoscope",
@@ -377,6 +380,7 @@ export const translations: Record<Locale, Translations> = {
     nav: {
       home: "गृहम्",
       about: "अस्मद्विषये",
+      kundali: "कुण्डली",
       panchangam: "पञ्चाङ्गम्",
       horoscope: "जन्मकुण्डली",
       rashifal: "राशिशुभफलम्",
@@ -463,7 +467,7 @@ export const translations: Record<Locale, Translations> = {
       powered: "वसिष्ठ-खगोलीय-यन्त्रेण सञ्चालितम्"
     },
     dashboard: {
-      title: "वैदिकपञ्चाङ्गं जन्मकुण्डली-फलकम्",
+      title: "वैदिककुण्डली-जन्मपत्रिका-फलकम्",
       subtitle: "स्विस इफेमेरिस उच्चपरिशुद्धयन्त्रम् • षोडशवर्गकुण्डली • विंशोत्तरीदशा",
       birthForm: "जन्मविवरणपत्रम्",
       tabCharts: "कुण्डलीचक्राणि",

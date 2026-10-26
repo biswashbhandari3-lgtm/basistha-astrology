@@ -533,10 +533,10 @@ export function NepaliPanchangCalendar() {
 
           {/* Section 3: Right CTA Button */}
           <Link
-            href="/panchangam"
+            href="/kundali"
             className="w-full lg:w-auto bg-[#0c2340] hover:bg-[#12365e] text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-xl shadow-md flex items-center justify-center gap-2 transition-all shrink-0"
           >
-            <span>{language === "en" ? "Detailed Panchang" : language === "sa" ? "विस्तृतपञ्चाङ्गम्" : "विस्तृत पञ्चाङ्ग"}</span>
+            <span>{language === "en" ? "Detailed Kundali & Panchang" : language === "sa" ? "विस्तृतकुण्डली-पञ्चाङ्गम्" : "विस्तृत कुण्डली तथा पञ्चाङ्ग"}</span>
             <span className="text-base">›</span>
           </Link>
         </div>

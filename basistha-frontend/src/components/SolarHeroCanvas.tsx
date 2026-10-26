@@ -887,7 +887,7 @@ export function SolarHeroCanvas({ onExploreClick }: SolarHeroCanvasProps) {
             </a>
 
             <Link
-              href="/panchangam#charts"
+              href="/kundali#charts"
               className="group inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs sm:text-sm font-semibold tracking-wide text-white/90 hover:text-white bg-white/10 hover:bg-white/20 border border-white/20 hover:border-white/40 backdrop-blur-md transition-all duration-300 transform hover:-translate-y-0.5"
             >
               <span>{strings.hero.kundaliService}</span>
