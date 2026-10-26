@@ -56,20 +56,14 @@ export default function KundaliPage() {
   const loadData = async (details: BirthDetails) => {
     setIsLoading(true);
     try {
-      const pRes = await fetchPanchangData(details);
+      const [pRes, kRes, dRes] = await Promise.all([
+        fetchPanchangData(details),
+        fetchKundaliData(details),
+        fetchDashaData(details)
+      ]);
       setPanchangData(pRes);
-
-      if (isAuthenticated) {
-        const [kRes, dRes] = await Promise.all([
-          fetchKundaliData(details),
-          fetchDashaData(details)
-        ]);
-        setKundaliData(kRes);
-        setDashaData(dRes);
-      } else {
-        setKundaliData(null);
-        setDashaData(null);
-      }
+      setKundaliData(kRes);
+      setDashaData(dRes);
     } catch (err) {
       console.error("Error loading Basistha Kundali data:", err);
     } finally {
@@ -83,18 +77,10 @@ export default function KundaliPage() {
 
   const handleFormSubmit = (details: BirthDetails) => {
     setBirthDetails(details);
-    if (!isAuthenticated) {
-      openLoginModal();
-      return;
-    }
     loadData(details);
   };
 
   const handlePrint = () => {
-    if (!isAuthenticated) {
-      openLoginModal();
-      return;
-    }
     window.print();
   };
 
@@ -165,9 +151,9 @@ export default function KundaliPage() {
         {/* Dashboard Navigation Tabs */}
         <nav className="no-print flex overflow-x-auto gap-2 border-b border-amber-200 pb-2 scrollbar-none">
           {[
-            { id: "charts", label: strings.dashboard.tabCharts, icon: "🔯", requiresAuth: true },
-            { id: "planets", label: strings.dashboard.tabPlanets, icon: "🪐", requiresAuth: true },
-            { id: "dasha", label: strings.dashboard.tabDasha, icon: "⏳", requiresAuth: true },
+            { id: "charts", label: strings.dashboard.tabCharts, icon: "🔯", requiresAuth: false },
+            { id: "planets", label: strings.dashboard.tabPlanets, icon: "🪐", requiresAuth: false },
+            { id: "dasha", label: strings.dashboard.tabDasha, icon: "⏳", requiresAuth: false },
             { id: "panchang", label: strings.dashboard.tabPanchang, icon: "📅", requiresAuth: false },
             { id: "strengths", label: strings.dashboard.tabStrengths, icon: "📊", requiresAuth: true },
             { id: "varshaphala", label: strings.dashboard.tabVarshaphala, icon: "🎯", requiresAuth: true }
@@ -196,8 +182,8 @@ export default function KundaliPage() {
           ))}
         </nav>
 
-        {/* Protected Feature Gate Card (Rendered if not logged in and on a protected tab) */}
-        {!isAuthenticated && activeTab !== "panchang" ? (
+        {/* Protected Feature Gate Card (Rendered if not logged in and on a protected tab like Shadbala/Varshaphala) */}
+        {!isAuthenticated && (activeTab === "strengths" || activeTab === "varshaphala") ? (
           <div className="bg-white p-12 rounded-3xl border-2 border-dashed border-amber-300 text-center flex flex-col items-center justify-center gap-4 shadow-sm my-6">
             <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center text-3xl text-amber-700">
               🔐
@@ -207,7 +193,7 @@ export default function KundaliPage() {
                 यो खण्ड हेर्न लगइन गर्नुहोस्
               </h3>
               <p className="text-xs text-slate-500 mt-2 leading-relaxed">
-                उच्च परिशुद्ध पाराशरी कुण्डली चक्र (D1 देखि D60), विंशोत्तरी दशा, षड्बल, र अष्टकवर्ग हेर्नका लागि तपाईं लगइन हुनु आवश्यक छ।
+                उच्च परिशुद्ध षड्बल (Shadbala), भाव बल, र वर्षफल (Tajika Varshaphala) हेर्नका लागि लगइन गर्नुहोस्।
               </p>
             </div>
             <button
@@ -223,6 +209,39 @@ export default function KundaliPage() {
             {/* 1. Kundali Charts Tab */}
             {activeTab === "charts" && kundaliData && (
               <div className="flex flex-col gap-6">
+                {/* Native Profile Badge */}
+                {birthDetails.name && (
+                  <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200/90 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3 shadow-xs">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-amber-200/80 text-amber-900 font-bold flex items-center justify-center text-lg">
+                        👤
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-slate-900 text-sm md:text-base flex items-center gap-2">
+                          <span>{birthDetails.name} {birthDetails.thar || ""}</span>
+                          {birthDetails.gender && (
+                            <span className="text-[10px] bg-slate-200 text-slate-800 px-2 py-0.5 rounded-full font-semibold">
+                              {birthDetails.gender}
+                            </span>
+                          )}
+                          {birthDetails.gotra && (
+                            <span className="text-[10px] bg-amber-200/90 text-amber-950 px-2.5 py-0.5 rounded-full font-bold">
+                              गोत्र: {birthDetails.gotra}
+                            </span>
+                          )}
+                        </h4>
+                        <p className="text-xs text-slate-600 mt-0.5 flex flex-wrap gap-x-3 gap-y-1">
+                          {birthDetails.father_name && <span>बाबु: <strong>{birthDetails.father_name}</strong></span>}
+                          {birthDetails.mother_name && <span>आमा: <strong>{birthDetails.mother_name}</strong></span>}
+                          {birthDetails.bs_year && (
+                            <span>जन्म: <strong>{birthDetails.bs_year}/{birthDetails.bs_month}/{birthDetails.bs_day} वि.सं.</strong></span>
+                          )}
+                          <span>स्थान: <strong>{birthDetails.city_name}</strong></span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 {/* Varga Selector & Active Ayanamsha Status Bar */}
                 <div className="no-print bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap justify-between items-center gap-4">
                   <div className="flex items-center gap-2">

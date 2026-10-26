@@ -323,10 +323,17 @@ export function calculateJanmaPanchang(
   const fmt = (val: number | string) => (isEn ? String(val) : toDeva(val));
 
   // 1. Birth Date & Time
-  const bs = getBsDate(birth.year, birth.month, birth.day);
+  const bsCalc = getBsDate(birth.year, birth.month, birth.day);
+  const bsYear = birth.bs_year || bsCalc.bsYear;
+  const bsMonth = birth.bs_month || bsCalc.bsMonth;
+  const bsDay = birth.bs_day || bsCalc.bsDay;
+  const bsMonthName = isEn
+    ? ["Baishakh", "Jestha", "Ashadh", "Shrawan", "Bhadra", "Ashwin", "Kartik", "Mangsir", "Poush", "Magh", "Falgun", "Chaitra"][bsMonth - 1]
+    : ["वैशाख", "जेठ", "असार", "साउन", "भदौ", "असोज", "कार्तिक", "मंसिर", "पुस", "माघ", "फागुन", "चैत"][bsMonth - 1];
+
   const bsDateStr = isEn
-    ? `BS ${bs.bsYear} ${bs.bsMonthName} ${bs.bsDay}`
-    : `वि.सं. ${toDeva(bs.bsYear)} ${bs.bsMonthName} ${toDeva(bs.bsDay)} गते`;
+    ? `BS ${bsYear} ${bsMonthName} ${bsDay}`
+    : `वि.सं. ${toDeva(bsYear)} ${bsMonthName} ${toDeva(bsDay)} गते`;
 
   const GREG_MONTHS_NE = ["जनवरी", "फेब्रुअरी", "मार्च", "अप्रिल", "मे", "जुन", "जुलाई", "अगस्ट", "सेप्टेम्बर", "अक्टोबर", "नोभेम्बर", "डिसेम्बर"];
   const GREG_MONTHS_EN = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -427,11 +434,11 @@ export function calculateJanmaPanchang(
   const utcTimeStr = `${fmt(String(utcH12).padStart(2, "0"))}:${fmt(String(utcM).padStart(2, "0"))}:${fmt(String(utcS).padStart(2, "0"))} ${utcAmpm} UTC`;
 
   // 3. Panchang & Astronomical Eras
-  const shakaYear = bs.bsYear - 135;
+  const shakaYear = bsYear - 135;
   const shakSambatStr = isEn ? `Shaka ${shakaYear}` : `शाके ${toDeva(shakaYear)}`;
 
   const pakshaStr = panchang.tithi?.name_ne?.includes("शुक्ल") ? (isEn ? "Shukla Paksha" : "शुक्ल पक्ष") : (isEn ? "Krishna Paksha" : "कृष्ण पक्ष");
-  const chandraMasaStr = `${bs.bsMonthName} (${pakshaStr})`;
+  const chandraMasaStr = `${bsMonthName} (${pakshaStr})`;
 
   // Solar Month (Rashi of Sun)
   const sunRashiNames = isEn
@@ -444,10 +451,10 @@ export function calculateJanmaPanchang(
   const rituNames = isEn
     ? ["Vasanta (Spring)", "Grishma (Summer)", "Varsha (Monsoon)", "Sharad (Autumn)", "Hemanta (Pre-Winter)", "Shishira (Winter)"]
     : ["वसन्त ऋतु", "ग्रीष्म ऋतु", "वर्षा ऋतु", "शरद् ऋतु", "हेमन्त ऋतु", "शिशिर ऋतु"];
-  const rituIdx = Math.floor((bs.bsMonth - 1) / 2) % 6;
+  const rituIdx = Math.floor((bsMonth - 1) / 2) % 6;
   const rituStr = rituNames[rituIdx];
 
-  const isDakshinayana = bs.bsMonth >= 4 && bs.bsMonth <= 9;
+  const isDakshinayana = bsMonth >= 4 && bsMonth <= 9;
   const ayanaStr = isDakshinayana ? (isEn ? "Dakshinayana" : "दक्षिणायन") : (isEn ? "Uttarayana" : "उत्तरायण");
 
   // Surya Siddhanta Elapsed Creation Years (Srishti-gata Varsha)
@@ -624,7 +631,7 @@ export function calculateJanmaPanchang(
   }
 
   // 8. Nepal Sambat
-  const nsYear = bs.bsYear - 937;
+  const nsYear = bsYear - 937;
   const nepalSambatMonth = isEn ? "Kaula Thwa (Kartik Shukla)" : "कौलाथ्व (कार्तिक शुक्ल)";
   const nepalSambatYearStr = isEn ? `NS ${nsYear}` : `ने.सं. ${toDeva(nsYear)}`;
   const nepalSambatFullStr = `${nepalSambatYearStr} ${nepalSambatMonth}`;
@@ -632,9 +639,9 @@ export function calculateJanmaPanchang(
   return {
     birthDateTime: {
       bsDate: bsDateStr,
-      bsYear: bs.bsYear,
-      bsMonth: bs.bsMonth,
-      bsDay: bs.bsDay,
+      bsYear: bsYear,
+      bsMonth: bsMonth,
+      bsDay: bsDay,
       gregDate: gregDateStr,
       birthTimeStr,
       ishtakalaStr,

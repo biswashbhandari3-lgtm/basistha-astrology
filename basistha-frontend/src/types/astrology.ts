@@ -15,6 +15,15 @@ export interface BirthDetails {
   ayanamsha: string;
   house_system: string;
   city_name?: string;
+  name?: string;
+  thar?: string;
+  gender?: string;
+  father_name?: string;
+  mother_name?: string;
+  gotra?: string;
+  bs_year?: number;
+  bs_month?: number;
+  bs_day?: number;
 }
 
 export interface PlanetaryPosition {
