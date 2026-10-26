@@ -305,7 +305,7 @@ export default function KundaliPage() {
 
             {/* 4. Panchanga Card Tab */}
             {activeTab === "panchang" && panchangData && (
-              <PanchangaCard panchang={panchangData} />
+              <PanchangaCard panchang={panchangData} birth={birthDetails} kundali={kundaliData} />
             )}
 
             {/* 5. Strengths (Shadbala & Ashtakavarga) */}

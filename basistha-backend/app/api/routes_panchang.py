@@ -14,5 +14,8 @@ def get_daily_panchang(req: PanchangRequest):
     Computes complete 5 elements of Panchang (Tithi, Vara, Nakshatra, Yoga, Karana),
     Sunrise/Sunset, Abhijit Muhurta, Rahukaal, and Choghadiya.
     """
-    data = get_panchang(req.year, req.month, req.day, req.latitude, req.longitude, req.timezone_offset)
+    data = get_panchang(
+        req.year, req.month, req.day, req.latitude, req.longitude, req.timezone_offset,
+        req.hour or 12, req.minute or 0, req.second or 0
+    )
     return PanchangResponse(**data)

@@ -129,8 +129,8 @@ def calc_approx_sun_times(year: int, month: int, day: int, lat: float, lon: floa
     set_dt = d + timedelta(minutes=sunset_min)
     return rise_dt, set_dt
 
-def get_panchang(year: int, month: int, day: int, lat: float, lon: float, tz_offset: float = 5.75) -> Dict[str, Any]:
-    """Compute complete 5 elements of Panchang + Muhurtas."""
+def get_panchang(year: int, month: int, day: int, lat: float, lon: float, tz_offset: float = 5.75, hour: int = 12, minute: int = 0, second: int = 0) -> Dict[str, Any]:
+    """Compute complete 5 elements of Panchang + Muhurtas + Detailed Astronomical Parameters."""
     jd = get_julian_day(year, month, day, 6, 0, 0.0, tz_offset)
     ayan_val = get_ayanamsha_value(jd, "LAHIRI")
     
@@ -228,6 +228,64 @@ def get_panchang(year: int, month: int, day: int, lat: float, lon: float, tz_off
             "end": end_t.strftime("%H:%M")
         })
         
+    # 1. Ishtakala calculation (from sunrise to given time)
+    birth_dt = d + timedelta(hours=hour, minutes=minute, seconds=second)
+    elapsed_sec = (birth_dt - rise_dt).total_seconds()
+    if elapsed_sec < 0:
+        elapsed_sec += 86400.0
+    ishtakala_ghati_total = (elapsed_sec / 86400.0) * 60.0
+    ishta_g = int(ishtakala_ghati_total)
+    ishta_p = int((ishtakala_ghati_total - ishta_g) * 60)
+    ishta_v = int((((ishtakala_ghati_total - ishta_g) * 60) - ishta_p) * 60)
+    ishtakala_dict = {
+        "ghati": ishta_g,
+        "pala": ishta_p,
+        "vipala": ishta_v,
+        "str": f"{ishta_g} घटी {ishta_p:02d} पला {ishta_v:02d} विपला",
+        "ghati_val": f"{ishta_g:02d}:{ishta_p:02d}:{ishta_v:02d}"
+    }
+
+    # 2. Geographical & Time Corrections
+    std_meridian = 15.0 * tz_offset
+    lmt_diff_mins = 4.0 * (lon - std_meridian)
+    abs_lmt = abs(lmt_diff_mins)
+    lmt_m = int(abs_lmt)
+    lmt_s = int((abs_lmt - lmt_m) * 60)
+    lmt_sign = "+" if lmt_diff_mins >= 0 else "-"
+    lmt_dt = birth_dt + timedelta(minutes=lmt_diff_mins)
+    utc_dt = birth_dt - timedelta(hours=tz_offset)
+    geo_time_dict = {
+        "latitude": f"{int(lat)}° {int((lat % 1) * 60)}' {int((((lat % 1) * 60) % 1) * 60)}\" N",
+        "longitude": f"{int(lon)}° {int((lon % 1) * 60)}' {int((((lon % 1) * 60) % 1) * 60)}\" E",
+        "standard_meridian": f"{int(std_meridian)}° {int((std_meridian % 1) * 60)}' 00\" E",
+        "lmt_correction": f"{lmt_sign}{lmt_m:02d}:{lmt_s:02d}",
+        "dst_correction": "00:00:00",
+        "war_time_correction": "00:00:00",
+        "lmt_time": lmt_dt.strftime("%H:%M:%S"),
+        "utc_time": utc_dt.strftime("%H:%M:%S UTC")
+    }
+
+    # 3. Panchang & Astronomical Eras
+    shaka_year = year - 78
+    srishti_gata = 1955885127 + (year - 2026)
+    ahargana = int(jd - 588465.5)
+    panchang_astro_dict = {
+        "shak_sambat": f"शाके {shaka_year}",
+        "srishti_gata_varsha": f"{srishti_gata:,} वर्ष",
+        "ahargana": f"{ahargana:,} दिन"
+    }
+
+    # 4. Nakshatra Dasha & Bhayata
+    bhayata_total = (nak_bhukta / nak_span) * 60.0
+    bh_g = int(bhayata_total)
+    bh_p = int((bhayata_total - bh_g) * 60)
+    nak_pada = min(4, max(1, int((nak_bhukta / nak_span) * 4) + 1))
+    nakshatra_dasha_dict = {
+        "nakshatra_bhoga": "60 घटी 00 पला (800 कला)",
+        "bhayata": f"{bh_g} घटी {bh_p:02d} पला",
+        "nakshatra_pada": nak_pada
+    }
+
     return {
         "engine_name": "Basistha Astronomical Engine",
         "date_str": d.strftime("%Y-%m-%d"),
@@ -288,5 +346,9 @@ def get_panchang(year: int, month: int, day: int, lat: float, lon: float, tz_off
             "end": (rise_dt + timedelta(hours=part_day * ((weekday * 1.0) % 8 + 1.5))).strftime("%H:%M")
         },
         "choghadiya_day": chog_day_list,
-        "choghadiya_night": []
+        "choghadiya_night": [],
+        "ishtakala": ishtakala_dict,
+        "geo_time": geo_time_dict,
+        "panchang_astro": panchang_astro_dict,
+        "nakshatra_dasha": nakshatra_dasha_dict
     }

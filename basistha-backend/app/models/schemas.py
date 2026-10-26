@@ -71,6 +71,9 @@ class PanchangRequest(BaseModel):
     year: int = Field(..., example=2026)
     month: int = Field(..., example=10)
     day: int = Field(..., example=22)
+    hour: Optional[int] = Field(12, example=14)
+    minute: Optional[int] = Field(0, example=30)
+    second: Optional[int] = Field(0, example=0)
     latitude: float = Field(27.7172, example=27.7172)
     longitude: float = Field(85.3240, example=85.3240)
     timezone_offset: float = Field(5.75, example=5.75)
@@ -80,6 +83,9 @@ class PanchangItem(BaseModel):
     name_ne: str
     number: int
     progress_percentage: float
+    ghati: Optional[str] = None
+    ghati_val: Optional[str] = None
+    end_time: Optional[str] = None
 
 class PanchangResponse(BaseModel):
     engine_name: str = "Basistha Astronomical Engine"
@@ -87,6 +93,7 @@ class PanchangResponse(BaseModel):
     sunrise: str
     sunset: str
     day_length_ghati: str
+    dinmaan_ghati: Optional[str] = None
     day_length_hours: str
     night_length_hours: str
     vara: PanchangItem
@@ -98,6 +105,13 @@ class PanchangResponse(BaseModel):
     rahukaal: Dict[str, str]
     choghadiya_day: List[Dict[str, Any]]
     choghadiya_night: List[Dict[str, Any]]
+    ishtakala: Optional[Dict[str, Any]] = None
+    geo_time: Optional[Dict[str, Any]] = None
+    panchang_astro: Optional[Dict[str, Any]] = None
+    nakshatra_dasha: Optional[Dict[str, Any]] = None
+    solar_astro: Optional[Dict[str, Any]] = None
+    avakahada: Optional[Dict[str, Any]] = None
+    nepal_sambat: Optional[Dict[str, Any]] = None
 
 class DashaPeriod(BaseModel):
     planet: str
