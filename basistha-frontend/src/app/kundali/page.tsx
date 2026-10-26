@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 import { KundaliForm } from "@/components/KundaliForm";
 import { NorthIndianChart } from "@/components/NorthIndianChart";
-import { SouthIndianChart } from "@/components/SouthIndianChart";
 import { PlanetaryTable } from "@/components/PlanetaryTable";
 import { PanchangaCard } from "@/components/PanchangaCard";
 import { DashaTable } from "@/components/DashaTable";
@@ -38,7 +37,6 @@ export default function KundaliPage() {
   const [dashaData, setDashaData] = useState<DashaData | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<"charts" | "planets" | "panchang" | "dasha" | "strengths" | "varshaphala">("charts");
-  const [chartStyle, setChartStyle] = useState<"north" | "south">("north");
   const [vargaType, setVargaType] = useState<"D1" | "D9" | "Moon">("D1");
 
   // Check URL hash on mount or when auth changes
@@ -225,43 +223,51 @@ export default function KundaliPage() {
             {/* 1. Kundali Charts Tab */}
             {activeTab === "charts" && kundaliData && (
               <div className="flex flex-col gap-6">
-                {/* Chart Style & Varga Selector Bar */}
+                {/* Varga Selector & Active Ayanamsha Status Bar */}
                 <div className="no-print bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap justify-between items-center gap-4">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-slate-600">कुण्डली शैली:</span>
-                    <button
-                      onClick={() => setChartStyle("north")}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                        chartStyle === "north"
-                          ? "bg-amber-600 text-white shadow-sm"
-                          : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-                      }`}
-                    >
-                      उत्तर भारतीय (North Indian)
-                    </button>
-                    <button
-                      onClick={() => setChartStyle("south")}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                        chartStyle === "south"
-                          ? "bg-amber-600 text-white shadow-sm"
-                          : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-                      }`}
-                    >
-                      दक्षिण भारतीय (South Indian)
-                    </button>
+                    <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                      <span className="text-amber-600">🕉️</span> वर्ग चक्र छनोट:
+                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        onClick={() => setVargaType("D1")}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                          vargaType === "D1"
+                            ? "bg-amber-600 text-white shadow-sm"
+                            : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                        }`}
+                      >
+                        लग्न कुण्डली (D1)
+                      </button>
+                      <button
+                        onClick={() => setVargaType("D9")}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                          vargaType === "D9"
+                            ? "bg-amber-600 text-white shadow-sm"
+                            : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                        }`}
+                      >
+                        नवांश कुण्डली (D9)
+                      </button>
+                      <button
+                        onClick={() => setVargaType("Moon")}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                          vargaType === "Moon"
+                            ? "bg-amber-600 text-white shadow-sm"
+                            : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                        }`}
+                      >
+                        चन्द्र कुण्डली (Moon)
+                      </button>
+                    </div>
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-slate-600">वर्ग चक्र:</span>
-                    <select
-                      value={vargaType}
-                      onChange={(e) => setVargaType(e.target.value as any)}
-                      className="bg-slate-50 border border-slate-300 rounded-lg px-3 py-1.5 text-xs font-bold text-slate-800 cursor-pointer focus:ring-2 focus:ring-amber-500"
-                    >
-                      <option value="D1">लग्न कुण्डली (D1)</option>
-                      <option value="D9">नवांश कुण्डली (D9)</option>
-                      <option value="Moon">चन्द्र कुण्डली (Moon Chart)</option>
-                    </select>
+                    <span className="text-xs font-medium text-slate-500">प्रयुक्त अयनांश:</span>
+                    <span className="bg-amber-50 text-amber-900 border border-amber-200/80 px-3 py-1 rounded-lg text-xs font-bold">
+                      {kundaliData.ayanamsha_name} ({kundaliData.ayanamsha_value}°)
+                    </span>
                   </div>
                 </div>
 
@@ -277,11 +283,7 @@ export default function KundaliPage() {
                       </span>
                     </h3>
 
-                    {chartStyle === "north" ? (
-                      <NorthIndianChart data={kundaliData} chartType={vargaType} />
-                    ) : (
-                      <SouthIndianChart data={kundaliData} />
-                    )}
+                    <NorthIndianChart data={kundaliData} chartType={vargaType} />
                   </div>
 
                   <div className="flex flex-col gap-4">
