@@ -139,6 +139,25 @@ const CALCULATION_SYSTEMS = [
   { key: "SAYANA", label: "सायन पद्धति (Sayana / 0° Tropical)", color: "bg-slate-400", dot: "⚪" }
 ];
 
+// Helper to determine Nepali time period (प्रहर / समय वेला)
+function getNepaliTimePeriod(h: number): { label: string; icon: string; prahar: string } {
+  if (h >= 4 && h < 6) {
+    return { label: "उषाकाल / ब्रह्ममुहूर्त", icon: "🌅", prahar: "प्रभात वेला" };
+  } else if (h >= 6 && h < 12) {
+    return { label: "बिहानी (पूर्वाह्न)", icon: "☀️", prahar: "बिहानी वेला" };
+  } else if (h === 12) {
+    return { label: "मध्याह्न (Noon)", icon: "🌞", prahar: "मध्याह्न वेला" };
+  } else if (h > 12 && h < 16) {
+    return { label: "दिउँसो (अपराह्न)", icon: "☀️", prahar: "दिउँसो वेला" };
+  } else if (h >= 16 && h < 19) {
+    return { label: "साँझ / गोधूलि वेला", icon: "🌇", prahar: "गोधूलि वेला" };
+  } else if (h >= 19 && h < 24) {
+    return { label: "राति (निशाकाल)", icon: "🌙", prahar: "रात्रि वेला" };
+  } else {
+    return { label: "मध्यरात / उत्तररात्री", icon: "🌌", prahar: "मध्यरात्रि वेला" };
+  }
+}
+
 export const KundaliForm: React.FC<KundaliFormProps> = ({ onSubmit, isLoading }) => {
   // 1. Personal Details
   const [jatakName, setJatakName] = useState<string>("श्री जातक");
@@ -245,10 +264,96 @@ export const KundaliForm: React.FC<KundaliFormProps> = ({ onSubmit, isLoading })
     }
   };
 
-  // Time change handler
+  // Derived 12-hour values & Nepali Period
+  const hour12 = hour % 12 === 0 ? 12 : hour % 12;
+  const isPM = hour >= 12;
+  const ampm = isPM ? "PM" : "AM";
+  const periodInfo = getNepaliTimePeriod(hour);
+
+  // Time change handlers
+  const handleHour12Change = (newH12: number) => {
+    let newH24 = newH12 % 12;
+    if (isPM) newH24 += 12;
+    setHour(newH24);
+    setTimeStr(formatTime12Hour(newH24, minute, second));
+  };
+
+  const handleMinuteChange = (newMin: number) => {
+    const m = Math.max(0, Math.min(59, newMin));
+    setMinute(m);
+    setTimeStr(formatTime12Hour(hour, m, second));
+  };
+
+  const handleSecondChange = (newSec: number) => {
+    const s = Math.max(0, Math.min(59, newSec));
+    setSecond(s);
+    setTimeStr(formatTime12Hour(hour, minute, s));
+  };
+
+  const handleAmpmChange = (newAmpm: "AM" | "PM") => {
+    let newH24 = hour;
+    if (newAmpm === "PM" && hour < 12) {
+      newH24 = hour + 12;
+    } else if (newAmpm === "AM" && hour >= 12) {
+      newH24 = hour - 12;
+    }
+    setHour(newH24);
+    setTimeStr(formatTime12Hour(newH24, minute, second));
+  };
+
+  const handleNativeTimeChange = (val: string) => {
+    if (!val) return;
+    const parts = val.split(":");
+    const h = parseInt(parts[0], 10);
+    const m = parseInt(parts[1], 10);
+    const s = parts[2] ? parseInt(parts[2], 10) : second;
+    if (!isNaN(h) && !isNaN(m)) {
+      const validH = Math.max(0, Math.min(23, h));
+      const validM = Math.max(0, Math.min(59, m));
+      const validS = Math.max(0, Math.min(59, isNaN(s) ? 0 : s));
+      setHour(validH);
+      setMinute(validM);
+      setSecond(validS);
+      setTimeStr(formatTime12Hour(validH, validM, validS));
+    }
+  };
+
+  const handleSetPresetTime = (h: number, m: number, s: number) => {
+    setHour(h);
+    setMinute(m);
+    setSecond(s);
+    setTimeStr(formatTime12Hour(h, m, s));
+  };
+
+  const handleSetCurrentTime = () => {
+    const now = new Date();
+    const h = now.getHours();
+    const m = now.getMinutes();
+    const s = now.getSeconds();
+    setHour(h);
+    setMinute(m);
+    setSecond(s);
+    setTimeStr(formatTime12Hour(h, m, s));
+  };
+
+  const handleAdjustMinutes = (delta: number) => {
+    let totalSeconds = hour * 3600 + minute * 60 + second + delta * 60;
+    const SECONDS_IN_DAY = 24 * 3600;
+    totalSeconds = ((totalSeconds % SECONDS_IN_DAY) + SECONDS_IN_DAY) % SECONDS_IN_DAY;
+    const newH = Math.floor(totalSeconds / 3600);
+    const newM = Math.floor((totalSeconds % 3600) / 60);
+    const newS = totalSeconds % 60;
+    setHour(newH);
+    setMinute(newM);
+    setSecond(newS);
+    setTimeStr(formatTime12Hour(newH, newM, newS));
+  };
+
+  // Direct manual/text time change handler
   const handleTimeChange = (val: string) => {
     setTimeStr(val);
-    const parsed = parseTime12Hour(val);
+    const asciiStr = val.replace(/[०-९]/g, d => String("०१२३४५६७८९".indexOf(d)));
+    const parsed = parseTime12Hour(asciiStr);
     if (parsed) {
       setHour(parsed.hour);
       setMinute(parsed.minute);
@@ -659,31 +764,236 @@ export const KundaliForm: React.FC<KundaliFormProps> = ({ onSubmit, isLoading })
           </div>
         </div>
 
-        {/* Row 4: जन्म समय (घण्टा:मिनेट:सेकेन्ड), जन्म देश (Country), जन्म शहर / स्थान (City) */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-5">
-          {/* Column 1: जन्म समय */}
-          <div>
-            <label className="block text-xs font-bold text-slate-800 mb-1.5">
-              जन्म समय (घण्टा:मिनेट:सेकेन्ड):
-            </label>
-            <div className="relative">
-              <input
-                type="text"
-                value={timeStr}
-                onChange={e => handleTimeChange(e.target.value)}
-                placeholder="01:00:52 PM"
-                className="w-full border border-slate-300 rounded-xl px-3.5 py-2 pr-10 text-sm font-mono text-slate-800 bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none transition-all shadow-sm"
-              />
-              <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400">
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="10" />
-                  <polyline points="12 6 12 12 16 14" />
-                </svg>
+        {/* Row 4: जन्म समय (Time of Birth) - व्यवस्थित, सहज तथा स्पष्ट इन्टरफेस */}
+        <div className="mb-6 p-4 md:p-5 bg-gradient-to-br from-amber-50/70 via-white to-orange-50/40 rounded-2xl border-2 border-amber-200/90 shadow-sm transition-all hover:border-amber-300">
+          {/* Header: Title & Live Time Preview Badge */}
+          <div className="flex flex-wrap items-center justify-between gap-2 pb-3 mb-3.5 border-b border-amber-100/90">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-800 flex items-center justify-center font-bold text-base shadow-xs">
+                🕒
+              </div>
+              <div>
+                <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wide flex items-center gap-2">
+                  <span>जन्म समय (Time of Birth)</span>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-medium lowercase">
+                    {periodInfo.prahar}
+                  </span>
+                </h3>
+                <p className="text-[11px] text-slate-500">
+                  घण्टा, मिनेट, सेकेन्ड र पूर्वाह्न (AM) वा अपराह्न (PM) सजिलै चयन गर्नुहोस्
+                </p>
+              </div>
+            </div>
+
+            {/* Live Status Preview Badge */}
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-amber-100/90 to-orange-100/90 text-amber-950 rounded-xl border border-amber-300/80 text-xs font-medium shadow-xs">
+              <span className="text-sm">{periodInfo.icon}</span>
+              <span className="font-bold">{periodInfo.label}:</span>
+              <span className="font-mono font-bold tracking-wide text-amber-950">
+                {toDeva(String(hour12).padStart(2, "0"))}:{toDeva(String(minute).padStart(2, "0"))}:{toDeva(String(second).padStart(2, "0"))} {ampm}
+              </span>
+              <span className="text-[10px] text-amber-800/80 hidden sm:inline pl-1 border-l border-amber-300/60 font-mono">
+                {String(hour).padStart(2, "0")}:{String(minute).padStart(2, "0")}:{String(second).padStart(2, "0")} (२४-घण्टा)
+              </span>
+            </div>
+          </div>
+
+          {/* Time Selectors Grid: Hour, Minute, Second, AM/PM */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-3 items-end">
+            {/* 1. Hour (1 to 12) */}
+            <div>
+              <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                घण्टा (Hour: १-१२):
+              </label>
+              <div className="relative">
+                <select
+                  value={hour12}
+                  onChange={e => handleHour12Change(parseInt(e.target.value, 10))}
+                  className="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm font-semibold text-slate-800 bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none transition-all shadow-xs cursor-pointer"
+                >
+                  {Array.from({ length: 12 }, (_, i) => i + 1).map(h => (
+                    <option key={h} value={h}>
+                      {toDeva(String(h).padStart(2, "0"))} ({String(h).padStart(2, "0")}) बजे
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* 2. Minute (00 to 59) */}
+            <div>
+              <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                मिनेट (Minute: ००-५९):
+              </label>
+              <div className="relative">
+                <select
+                  value={minute}
+                  onChange={e => handleMinuteChange(parseInt(e.target.value, 10))}
+                  className="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm font-semibold text-slate-800 bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none transition-all shadow-xs cursor-pointer"
+                >
+                  {Array.from({ length: 60 }, (_, i) => i).map(m => (
+                    <option key={m} value={m}>
+                      {toDeva(String(m).padStart(2, "0"))} ({String(m).padStart(2, "0")}) मि.
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* 3. Second (00 to 59) */}
+            <div>
+              <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                सेकेन्ड (Sec: ००-५९):
+              </label>
+              <div className="relative">
+                <select
+                  value={second}
+                  onChange={e => handleSecondChange(parseInt(e.target.value, 10))}
+                  className="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm font-semibold text-slate-800 bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none transition-all shadow-xs cursor-pointer"
+                >
+                  {Array.from({ length: 60 }, (_, i) => i).map(s => (
+                    <option key={s} value={s}>
+                      {toDeva(String(s).padStart(2, "0"))} ({String(s).padStart(2, "0")}) से.
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* 4. AM / PM Toggle Pills */}
+            <div className="col-span-2 sm:col-span-1 md:col-span-2">
+              <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                समय खण्ड (AM / PM):
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleAmpmChange("AM")}
+                  className={`py-2 px-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer border ${
+                    !isPM
+                      ? "bg-gradient-to-r from-amber-600 to-amber-700 border-amber-600 text-white shadow-md ring-2 ring-amber-300 scale-[1.02]"
+                      : "bg-white border-slate-300 text-slate-700 hover:bg-amber-50 hover:border-amber-300"
+                  }`}
+                >
+                  <span>☀️</span>
+                  <span>पूर्वाह्न (AM)</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleAmpmChange("PM")}
+                  className={`py-2 px-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer border ${
+                    isPM
+                      ? "bg-gradient-to-r from-[#8b5e28] to-[#6d451b] border-[#8b5e28] text-white shadow-md ring-2 ring-amber-300 scale-[1.02]"
+                      : "bg-white border-slate-300 text-slate-700 hover:bg-amber-50 hover:border-amber-300"
+                  }`}
+                >
+                  <span>🌙</span>
+                  <span>अपराह्न (PM)</span>
+                </button>
               </div>
             </div>
           </div>
 
-          {/* Column 2: जन्म देश (Country) */}
+          {/* Quick Presets & Direct Input Strip */}
+          <div className="mt-3.5 pt-3 border-t border-amber-100/90 flex flex-wrap items-center justify-between gap-2.5">
+            {/* Quick Presets */}
+            <div className="flex flex-wrap items-center gap-1.5 text-xs">
+              <span className="text-[11px] font-bold text-slate-600 mr-1">
+                द्रुत समय:
+              </span>
+              <button
+                type="button"
+                onClick={handleSetCurrentTime}
+                className="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-lg font-medium transition-all cursor-pointer text-[11px] flex items-center gap-1 active:scale-95 shadow-2xs"
+                title="अहिलेको वास्तविक समय भर्नुहोस्"
+              >
+                <span>🕒</span>
+                <span>अहिले (Now)</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSetPresetTime(6, 0, 0)}
+                className="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-lg font-medium transition-all cursor-pointer text-[11px] flex items-center gap-1 active:scale-95 shadow-2xs"
+              >
+                <span>🌅</span>
+                <span>बिहान ०६:००</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSetPresetTime(12, 0, 0)}
+                className="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-lg font-medium transition-all cursor-pointer text-[11px] flex items-center gap-1 active:scale-95 shadow-2xs"
+              >
+                <span>☀️</span>
+                <span>मध्याह्न १२:००</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSetPresetTime(18, 0, 0)}
+                className="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-lg font-medium transition-all cursor-pointer text-[11px] flex items-center gap-1 active:scale-95 shadow-2xs"
+              >
+                <span>🌇</span>
+                <span>साँझ ०६:००</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSetPresetTime(0, 0, 0)}
+                className="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-lg font-medium transition-all cursor-pointer text-[11px] flex items-center gap-1 active:scale-95 shadow-2xs"
+              >
+                <span>🌙</span>
+                <span>मध्यरात १२:००</span>
+              </button>
+
+              <div className="flex items-center gap-1 ml-1 pl-1 border-l border-amber-200">
+                <button
+                  type="button"
+                  onClick={() => handleAdjustMinutes(-5)}
+                  className="px-2 py-0.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 rounded-md font-mono text-[10px] font-bold active:scale-95 cursor-pointer shadow-2xs"
+                  title="५ मिनेट घटाउनुहोस् (-5 min)"
+                >
+                  -५ मि.
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleAdjustMinutes(5)}
+                  className="px-2 py-0.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 rounded-md font-mono text-[10px] font-bold active:scale-95 cursor-pointer shadow-2xs"
+                  title="५ मिनेट थप्नुहोस् (+5 min)"
+                >
+                  +५ मि.
+                </button>
+              </div>
+            </div>
+
+            {/* Direct input & Browser picker fallback */}
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 bg-white px-2.5 py-1 rounded-xl border border-slate-300 shadow-2xs">
+                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-tight">
+                  सिधा समय:
+                </label>
+                <input
+                  type="text"
+                  value={timeStr}
+                  onChange={e => handleTimeChange(e.target.value)}
+                  placeholder="01:00:52 PM"
+                  className="w-24 text-xs font-mono font-bold text-slate-800 bg-transparent focus:outline-none"
+                  title="वा सिधै समय टाइप गर्नुहोस् (उदा: 01:00:52 PM वा 13:00:52)"
+                />
+                <input
+                  type="time"
+                  step="1"
+                  value={`${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}:${String(second).padStart(2, "0")}`}
+                  onChange={e => handleNativeTimeChange(e.target.value)}
+                  className="w-5 h-5 opacity-70 hover:opacity-100 cursor-pointer text-xs"
+                  title="घडीबाट समय चयन गर्न यहाँ क्लिक गर्नुहोस्"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Row 5: जन्म देश (Country) र जन्म शहर / स्थान (City) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-5">
+          {/* Column 1: जन्म देश (Country) */}
           <div>
             <label className="block text-xs font-bold text-slate-800 mb-1.5">
               जन्म देश (Country):
@@ -701,8 +1011,8 @@ export const KundaliForm: React.FC<KundaliFormProps> = ({ onSubmit, isLoading })
             </select>
           </div>
 
-          {/* Column 3: जन्म शहर / स्थान (City) */}
-          <div>
+          {/* Column 2 & 3: जन्म शहर / स्थान (City) */}
+          <div className="md:col-span-2">
             <label className="block text-xs font-bold text-slate-800 mb-1.5">
               जन्म शहर / स्थान (City):
             </label>
@@ -720,12 +1030,12 @@ export const KundaliForm: React.FC<KundaliFormProps> = ({ onSubmit, isLoading })
           </div>
         </div>
 
-        {/* Row 5: स्थानीय अक्षांश, स्थानीय देशान्तर */}
+        {/* Row 6: स्थानीय अक्षांश, स्थानीय देशान्तर, समय क्षेत्र (Timezone) */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
           {/* Column 1: स्थानीय अक्षांश */}
           <div>
             <label className="block text-xs font-bold text-slate-800 mb-1.5">
-              स्थानीय अक्षांश:
+              स्थानीय अक्षांश (Latitude):
             </label>
             <input
               type="number"
@@ -740,7 +1050,7 @@ export const KundaliForm: React.FC<KundaliFormProps> = ({ onSubmit, isLoading })
           {/* Column 2: स्थानीय देशान्तर */}
           <div>
             <label className="block text-xs font-bold text-slate-800 mb-1.5">
-              स्थानीय देशान्तर:
+              स्थानीय देशान्तर (Longitude):
             </label>
             <input
               type="number"
@@ -750,6 +1060,26 @@ export const KundaliForm: React.FC<KundaliFormProps> = ({ onSubmit, isLoading })
               className="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm font-mono text-slate-800 bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none transition-all shadow-sm"
               required
             />
+          </div>
+
+          {/* Column 3: समय क्षेत्र (Timezone Offset) */}
+          <div>
+            <label className="block text-xs font-bold text-slate-800 mb-1.5">
+              समय क्षेत्र (Timezone UTC):
+            </label>
+            <div className="relative">
+              <input
+                type="number"
+                step="0.25"
+                value={timezoneOffset}
+                onChange={e => setTimezoneOffset(parseFloat(e.target.value) || 0.0)}
+                className="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm font-mono text-slate-800 bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none transition-all shadow-sm"
+                required
+              />
+              <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-500 text-xs font-bold font-mono">
+                {timezoneOffset >= 0 ? `+${timezoneOffset}` : timezoneOffset}h
+              </div>
+            </div>
           </div>
         </div>
 
