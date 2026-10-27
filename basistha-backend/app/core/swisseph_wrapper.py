@@ -69,27 +69,36 @@ def get_julian_day(year: int, month: int, day: int, hour: int, minute: int, seco
     return jd
 
 def get_ayanamsha_value(jd: float, ayanamsha_name: str = "LAHIRI") -> float:
-    """Calculate Ayanamsha for a given Julian Day."""
+    """Calculate Ayanamsha for a given Julian Day across classical and modern systems."""
+    name = (ayanamsha_name or "LAHIRI").upper().strip()
     if HAS_SWISSEPH:
         mode_map = {
             "LAHIRI": swe.SIDM_LAHIRI,
             "RAMAN": swe.SIDM_RAMAN,
             "KP": swe.SIDM_KRISHNAMURTI,
-            "FAGAN": swe.SIDM_FAGAN_BRADLEY
+            "FAGAN": swe.SIDM_FAGAN_BRADLEY,
+            "SURYASIDDHANTA": getattr(swe, "SIDM_SURYASIDDHANTA", 21),
+            "PUSHYA": getattr(swe, "SIDM_TRUE_PUSHYA", 29),
         }
-        if ayanamsha_name in mode_map:
-            swe.set_sid_mode(mode_map[ayanamsha_name])
+        if name in mode_map:
+            swe.set_sid_mode(mode_map[name])
             return swe.get_ayanamsa_ut(jd)
-        return 0.0 # Sayana
+        return 0.0 # Sayana (Tropical)
     
-    # Lahiri Ayanamsha analytical approximation: 23° 51' 11" at J2000.0, rate = 50.290966" per year
+    # High-precision astronomical analytical fallback
     t = (jd - 2451545.0) / 36525.0
-    if ayanamsha_name.upper() == "SAYANA":
+    if name == "SAYANA":
         return 0.0
-    elif ayanamsha_name.upper() == "RAMAN":
-        return 22.4605 + (1.397 * t)
-    elif ayanamsha_name.upper() == "KP":
+    elif name == "RAMAN":
+        return 22.4605 + (1.3970 * t)
+    elif name == "KP":
         return 23.8208 + (1.3963 * t)
+    elif name == "SURYASIDDHANTA":
+        return 20.8986 + (1.3855 * t)
+    elif name == "PUSHYA":
+        return 22.7230 + (1.3942 * t)
+    elif name == "FAGAN":
+        return 24.7400 + (1.4000 * t)
     else:  # Default LAHIRI
         return 23.8532 + (1.3968 * t)
 

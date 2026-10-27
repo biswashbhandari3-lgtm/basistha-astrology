@@ -22,38 +22,47 @@ except ImportError:
 from app.config import settings
 
 _db_pool: Optional[Any] = None
+_last_connect_attempt: float = 0.0
+_CONNECT_COOLDOWN_SEC: float = 30.0
 
 def get_pool():
-    """Initializes and returns the singleton connection pool."""
-    global _db_pool
+    """Initializes and returns the singleton connection pool with reconnect cooldown."""
+    global _db_pool, _last_connect_attempt
     if not HAS_PSYCOPG2:
         return None
-    if _db_pool is None or _db_pool.closed:
+    if _db_pool is not None and not _db_pool.closed:
+        return _db_pool
+
+    now = time.time()
+    if now - _last_connect_attempt < _CONNECT_COOLDOWN_SEC:
+        return None
+    _last_connect_attempt = now
+
+    try:
+        _db_pool = psycopg2.pool.ThreadedConnectionPool(
+            minconn=settings.DB_POOL_MIN,
+            maxconn=settings.DB_POOL_MAX,
+            host=settings.PG_HOST,
+            port=settings.PG_PORT,
+            user=settings.PG_USER,
+            password=settings.PG_PASSWORD,
+            dbname=settings.PG_DBNAME,
+            connect_timeout=2
+        )
+        logger.info("PostgreSQL connection pool initialized successfully.")
+    except Exception as e:
+        logger.warning(f"Could not connect to PostgreSQL ({e}). Trying DATABASE_URL fallback...")
         try:
             _db_pool = psycopg2.pool.ThreadedConnectionPool(
                 minconn=settings.DB_POOL_MIN,
                 maxconn=settings.DB_POOL_MAX,
-                host=settings.PG_HOST,
-                port=settings.PG_PORT,
-                user=settings.PG_USER,
-                password=settings.PG_PASSWORD,
-                dbname=settings.PG_DBNAME,
-                connect_timeout=3
+                dsn=settings.DATABASE_URL,
+                connect_timeout=2
             )
-            logger.info("PostgreSQL connection pool initialized successfully.")
-        except Exception as e:
-            logger.warning(f"Could not connect to PostgreSQL ({e}). Trying DATABASE_URL fallback...")
-            try:
-                _db_pool = psycopg2.pool.ThreadedConnectionPool(
-                    minconn=settings.DB_POOL_MIN,
-                    maxconn=settings.DB_POOL_MAX,
-                    dsn=settings.DATABASE_URL,
-                    connect_timeout=3
-                )
-                logger.info("PostgreSQL connection pool initialized via DATABASE_URL.")
-            except Exception as e2:
-                logger.error(f"Failed to initialize PostgreSQL connection pool: {e2}")
-                _db_pool = None
+            logger.info("PostgreSQL connection pool initialized via DATABASE_URL.")
+        except Exception as e2:
+            logger.warning(f"PostgreSQL connection unavailable: running in offline/analytical mode ({e2})")
+            _db_pool = None
     return _db_pool
 
 @contextmanager

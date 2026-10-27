@@ -43,10 +43,11 @@ export function RoyalGlassNavbar() {
 
   const currentLangObj = languageOptions.find((l) => l.code === language) || languageOptions[0];
 
-  // Main Navigation links: Home, Kundali, About, Contact
+  // Main Navigation links: Home, Kundali, Faladesh, About, Contact
   const navLinks = [
     { label: strings.nav.home, href: "/" },
     { label: strings.nav.kundali || "कुण्डली", href: "/kundali" },
+    { label: "फलादेश", href: "/faladesh" },
     { label: strings.nav.about, href: "/about" },
     { label: strings.nav.contact, href: "/about#contact" },
   ];

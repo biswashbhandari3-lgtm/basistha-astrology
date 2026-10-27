@@ -2,14 +2,17 @@
 Basistha Astrological Engine
 Kundali API Endpoints
 """
-from fastapi import APIRouter
-from app.models.schemas import BirthDetailsRequest, KundaliResponse, LagnaDetails, PlanetaryPosition, BhavaCusp
+import io
+import urllib.parse
+from fastapi import APIRouter, Response, HTTPException
+from app.models.schemas import BirthDetailsRequest, KundaliResponse, LagnaDetails, PlanetaryPosition, BhavaCusp, CheenaPdfRequest
 from app.core.swisseph_wrapper import (
     get_julian_day, get_ayanamsha_value, calc_planet_position,
     calc_lagna_and_houses, get_dms, PLANET_IDS, PLANET_NAMES_NE,
     RASHI_NAMES, RASHI_NAMES_NE, NAKSHATRA_NAMES, NAKSHATRA_NAMES_NE
 )
 from app.core.shodashavarga import get_all_vargas_for_longitude
+from app.core.cheena_pdf import build_cheena_pdf, prepare_cheena_data_from_birth
 
 router = APIRouter(prefix="/kundali", tags=["Kundali (Horoscope)"])
 
@@ -109,3 +112,52 @@ def calculate_kundali(req: BirthDetailsRequest):
         bhavas=bhavas,
         divisional_charts=divisional_charts
     )
+
+@router.post("/pdf")
+@router.post("/cheena-pdf")
+def generate_cheena_pdf_endpoint(req: CheenaPdfRequest):
+    """
+    Generates high-definition, print-ready traditional Nepali Cheena (Janmapatrika) PDF
+    using ReportLab engine with North Indian Diamond Kundali, Panchang, Graha Spashta,
+    Avakahada Chakra, and Vimshottari Dasha.
+    """
+    try:
+        if req.custom_data:
+            data = req.custom_data
+        elif req.year and req.month and req.day:
+            data = prepare_cheena_data_from_birth(
+                year=req.year,
+                month=req.month,
+                day=req.day,
+                hour=req.hour or 12,
+                minute=req.minute or 0,
+                second=req.second or 0.0,
+                latitude=req.latitude or 27.7172,
+                longitude=req.longitude or 85.3240,
+                timezone_offset=req.timezone_offset or 5.75,
+                ayanamsha=req.ayanamsha or "LAHIRI",
+                house_system=req.house_system or "P",
+                name=req.name or "जातक",
+                father_name=req.father_name or "",
+                mother_name=req.mother_name or "",
+                place=req.place or "काठमाडौँ",
+                date_bs=req.date_bs or "",
+                astrologer_name=req.astrologer_name or "वशिष्ठ ज्योतिषी",
+                language=req.language or "ne"
+            )
+        else:
+            raise HTTPException(status_code=400, detail="Missing birth details or custom_data")
+
+        buf = io.BytesIO()
+        build_cheena_pdf(buf, data)
+        pdf_bytes = buf.getvalue()
+
+        filename = f"cheena_{req.name or 'kundali'}.pdf"
+        encoded_filename = urllib.parse.quote(filename)
+        headers = {
+            "Content-Disposition": f"attachment; filename*=UTF-8''{encoded_filename}",
+            "Content-Type": "application/pdf"
+        }
+        return Response(content=pdf_bytes, media_type="application/pdf", headers=headers)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"PDF generation error: {str(e)}")

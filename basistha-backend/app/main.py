@@ -20,7 +20,8 @@ from app.api import (
     routes_shadbala,
     routes_varshaphala,
     routes_matchmaking,
-    routes_database
+    routes_database,
+    routes_phalit
 )
 
 logging.basicConfig(
@@ -95,6 +96,7 @@ app.include_router(routes_shadbala.router, prefix=settings.API_PREFIX)
 app.include_router(routes_varshaphala.router, prefix=settings.API_PREFIX)
 app.include_router(routes_matchmaking.router, prefix=settings.API_PREFIX)
 app.include_router(routes_database.router, prefix=settings.API_PREFIX)
+app.include_router(routes_phalit.router, prefix=settings.API_PREFIX)
 
 @app.on_event("startup")
 def startup_event():

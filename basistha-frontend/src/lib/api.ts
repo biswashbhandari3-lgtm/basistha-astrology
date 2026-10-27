@@ -3,8 +3,8 @@
  * Connects to FastAPI Backend with Precision Local Fallback
  */
 
-import { BirthDetails, KundaliData, PanchangData, DashaData } from "@/types/astrology";
-import { computeKundali, computeVimshottariDasha } from "./kundaliAstroEngine";
+import { BirthDetails, KundaliData, PanchangData, DashaData, PhalitData } from "@/types/astrology";
+import { computeKundali, computeVimshottariDasha, generateClientPhalitFallback } from "./kundaliAstroEngine";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://basistha-api-poxq.onrender.com/api/v1";
 
@@ -94,4 +94,90 @@ export async function fetchDashaData(details: BirthDetails): Promise<DashaData> 
   const moon = kundali.planets.find(p => p.planet_id === 1);
   const birthDate = new Date(Date.UTC(details.year, details.month - 1, details.day, details.hour, details.minute, details.second || 0));
   return computeVimshottariDasha(moon ? moon.longitude : 0, birthDate);
+}
+
+export async function fetchPhalitData(details: BirthDetails): Promise<PhalitData> {
+  try {
+    const res = await fetch(`${API_BASE_URL}/phalit/interpret`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        birth_details: details
+      }),
+    });
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (err) {
+    console.warn("Backend Phalit API not reachable, using analytical fallback:", err);
+  }
+
+  return generateClientPhalitFallback(details);
+}
+
+export interface CheenaDownloadOptions {
+  name?: string;
+  father_name?: string;
+  mother_name?: string;
+  date_bs?: string;
+  place?: string;
+  astrologer_name?: string;
+  language?: string;
+  custom_data?: any;
+}
+
+export async function fetchCheenaPdfBlob(
+  details: BirthDetails,
+  options?: CheenaDownloadOptions
+): Promise<Blob> {
+  const payload = {
+    year: details.year,
+    month: details.month,
+    day: details.day,
+    hour: details.hour,
+    minute: details.minute,
+    second: details.second || 0,
+    latitude: details.latitude,
+    longitude: details.longitude,
+    timezone_offset: details.timezone_offset,
+    ayanamsha: details.ayanamsha || "LAHIRI",
+    house_system: details.house_system || "P",
+    name: options?.name || "जातक",
+    father_name: options?.father_name || "",
+    mother_name: options?.mother_name || "",
+    place: options?.place || details.city_name || "काठमाडौँ",
+    date_bs: options?.date_bs || "",
+    astrologer_name: options?.astrologer_name || "वशिष्ठ ज्योतिषी",
+    language: options?.language || "ne",
+    custom_data: options?.custom_data,
+  };
+
+  const res = await fetch(`${API_BASE_URL}/kundali/pdf`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`PDF generation failed: ${res.statusText} - ${errorText}`);
+  }
+
+  return await res.blob();
+}
+
+export async function downloadCheenaPdf(
+  details: BirthDetails,
+  options?: CheenaDownloadOptions
+): Promise<void> {
+  const blob = await fetchCheenaPdfBlob(details, options);
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  const safeName = (options?.name || "जातक").replace(/\s+/g, "_");
+  a.download = `cheena_${safeName}_${details.year}-${String(details.month).padStart(2, "0")}-${String(details.day).padStart(2, "0")}.pdf`;
+  document.body.appendChild(a);
+  a.click();
+  window.URL.revokeObjectURL(url);
+  document.body.removeChild(a);
 }

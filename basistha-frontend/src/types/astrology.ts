@@ -113,3 +113,53 @@ export interface DashaData {
   balance_of_dasha: { first_lord: string; first_lord_ne: string; balance_years: number; balance_text?: string };
   dasha_tree: DashaPeriod[];
 }
+
+export interface BhaveshInterpretation {
+  bhavesh: number;
+  bhavesh_name_ne: string;
+  in_bhava: number;
+  in_bhava_name_ne: string;
+  parashar_sloka: string;
+}
+
+export interface ClassicalAuthorSloka {
+  author_id: number;
+  author_name_ne: string;
+  sloka: string;
+}
+
+export interface PlanetOccupantPhalit {
+  bhava: number;
+  bhava_name_ne: string;
+  planet: string;
+  planet_ne: string;
+  mansagari_sloka: string;
+  classical_interpretations: ClassicalAuthorSloka[];
+}
+
+export interface BhavaInterpretation {
+  bhava: number;
+  bhava_name_ne: string;
+  rashi_number: number;
+  lord_planet: string;
+  lord_planet_ne: string;
+  lord_placed_in_bhava: number;
+  bhavesh_interpretation?: BhaveshInterpretation | null;
+  planets_present: PlanetOccupantPhalit[];
+}
+
+export interface DashaInterpretation {
+  mahadasha?: string;
+  mahadasha_ne?: string;
+  mahadasha_sloka?: string;
+  antardasha?: string;
+  antardasha_ne?: string;
+  antardasha_sloka?: string;
+}
+
+export interface PhalitData {
+  engine_name: string;
+  lagna_rashi: number;
+  bhava_analysis: BhavaInterpretation[];
+  dasha_interpretation?: DashaInterpretation | null;
+}

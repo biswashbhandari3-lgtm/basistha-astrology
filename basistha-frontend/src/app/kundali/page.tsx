@@ -6,12 +6,14 @@ import { NorthIndianChart } from "@/components/NorthIndianChart";
 import { PlanetaryTable } from "@/components/PlanetaryTable";
 import { PanchangaCard } from "@/components/PanchangaCard";
 import { DashaTable } from "@/components/DashaTable";
+import { FaladeshView } from "@/components/FaladeshView";
 import { PdfDownloadButton } from "@/components/PdfDownloadButton";
+import { CheenaPdfCompartment } from "@/components/CheenaPdfCompartment";
 import { RoyalGlassNavbar } from "@/components/RoyalGlassNavbar";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
-import { fetchKundaliData, fetchPanchangData, fetchDashaData } from "@/lib/api";
-import { BirthDetails, KundaliData, PanchangData, DashaData } from "@/types/astrology";
+import { fetchKundaliData, fetchPanchangData, fetchDashaData, fetchPhalitData } from "@/lib/api";
+import { BirthDetails, KundaliData, PanchangData, DashaData, PhalitData } from "@/types/astrology";
 
 export default function KundaliPage() {
   const { isAuthenticated, openLoginModal } = useAuth();
@@ -35,15 +37,16 @@ export default function KundaliPage() {
   const [kundaliData, setKundaliData] = useState<KundaliData | null>(null);
   const [panchangData, setPanchangData] = useState<PanchangData | null>(null);
   const [dashaData, setDashaData] = useState<DashaData | null>(null);
+  const [phalitData, setPhalitData] = useState<PhalitData | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState<"charts" | "planets" | "panchang" | "dasha" | "strengths" | "varshaphala">("charts");
+  const [activeTab, setActiveTab] = useState<"charts" | "planets" | "panchang" | "dasha" | "faladesh" | "strengths" | "varshaphala">("charts");
   const [vargaType, setVargaType] = useState<"D1" | "D9" | "Moon">("D1");
 
   // Check URL hash on mount or when auth changes
   useEffect(() => {
     if (typeof window !== "undefined" && window.location.hash) {
       const h = window.location.hash.replace("#", "");
-      if (["charts", "planets", "panchang", "dasha", "strengths", "varshaphala"].includes(h)) {
+      if (["charts", "planets", "panchang", "dasha", "faladesh", "strengths", "varshaphala"].includes(h)) {
         setActiveTab(h as any);
       }
     } else if (!isAuthenticated) {
@@ -56,14 +59,16 @@ export default function KundaliPage() {
   const loadData = async (details: BirthDetails) => {
     setIsLoading(true);
     try {
-      const [pRes, kRes, dRes] = await Promise.all([
+      const [pRes, kRes, dRes, phRes] = await Promise.all([
         fetchPanchangData(details),
         fetchKundaliData(details),
-        fetchDashaData(details)
+        fetchDashaData(details),
+        fetchPhalitData(details)
       ]);
       setPanchangData(pRes);
       setKundaliData(kRes);
       setDashaData(dRes);
+      setPhalitData(phRes);
     } catch (err) {
       console.error("Error loading Basistha Kundali data:", err);
     } finally {
@@ -107,7 +112,10 @@ export default function KundaliPage() {
             panchang={panchangData}
             dasha={dashaData}
             birth={birthDetails}
-            personName={birthDetails.city_name ? `जातक (${birthDetails.city_name})` : "जातक"}
+            personName={birthDetails.name || "जातक"}
+            fatherName={birthDetails.father_name || ""}
+            motherName={birthDetails.mother_name || ""}
+            dateBs={birthDetails.bs_year ? `${birthDetails.bs_year}/${String(birthDetails.bs_month).padStart(2, "0")}/${String(birthDetails.bs_day).padStart(2, "0")}` : ""}
           />
           <button
             onClick={handlePrint}
@@ -148,6 +156,20 @@ export default function KundaliPage() {
           <KundaliForm onSubmit={handleFormSubmit} isLoading={isLoading} />
         </section>
 
+        {/* Cheena PDF Actions Compartment (जातक विवरण भरिसकेपछि: Print र View दुवै विकल्प) */}
+        <section className="no-print">
+          <CheenaPdfCompartment
+            birth={birthDetails}
+            kundali={kundaliData}
+            panchang={panchangData}
+            dasha={dashaData}
+            personName={birthDetails.name || "जातक"}
+            fatherName={birthDetails.father_name || ""}
+            motherName={birthDetails.mother_name || ""}
+            dateBs={birthDetails.bs_year ? `${birthDetails.bs_year}/${String(birthDetails.bs_month).padStart(2, "0")}/${String(birthDetails.bs_day).padStart(2, "0")}` : ""}
+          />
+        </section>
+
         {/* Dashboard Navigation Tabs */}
         <nav className="no-print flex overflow-x-auto gap-2 border-b border-amber-200 pb-2 scrollbar-none">
           {[
@@ -155,6 +177,7 @@ export default function KundaliPage() {
             { id: "planets", label: strings.dashboard.tabPlanets, icon: "🪐", requiresAuth: false },
             { id: "dasha", label: strings.dashboard.tabDasha, icon: "⏳", requiresAuth: false },
             { id: "panchang", label: strings.dashboard.tabPanchang, icon: "📅", requiresAuth: false },
+            { id: "faladesh", label: "फलादेश (Predictions)", icon: "🔮", requiresAuth: false },
             { id: "strengths", label: strings.dashboard.tabStrengths, icon: "📊", requiresAuth: true },
             { id: "varshaphala", label: strings.dashboard.tabVarshaphala, icon: "🎯", requiresAuth: true }
           ].map(tab => (
@@ -327,6 +350,16 @@ export default function KundaliPage() {
             {/* 4. Panchanga Card Tab */}
             {activeTab === "panchang" && panchangData && (
               <PanchangaCard panchang={panchangData} birth={birthDetails} kundali={kundaliData} />
+            )}
+
+            {/* 5. Faladesh (Predictions) Tab */}
+            {activeTab === "faladesh" && phalitData && (
+              <FaladeshView
+                phalit={phalitData}
+                birth={birthDetails}
+                kundali={kundaliData}
+                dasha={dashaData}
+              />
             )}
 
             {/* 5. Strengths (Shadbala & Ashtakavarga) */}

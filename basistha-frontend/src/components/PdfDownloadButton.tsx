@@ -1,11 +1,14 @@
 /**
- * Basistha – PDF Download Button
- * Dynamically loads @react-pdf/renderer on the client only.
+ * Basistha – Traditional Nepali Cheena (Janmapatrika) PDF Download
+ * Powered by high-precision ReportLab astronomical generation engine.
  */
 "use client";
 
 import React, { useState } from "react";
 import { KundaliData, PanchangData, DashaData, BirthDetails } from "@/types/astrology";
+import { downloadCheenaPdf } from "@/lib/api";
+import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface Props {
   kundali: KundaliData | null;
@@ -13,6 +16,9 @@ interface Props {
   dasha: DashaData | null;
   birth: BirthDetails;
   personName?: string;
+  fatherName?: string;
+  motherName?: string;
+  dateBs?: string;
 }
 
 export const PdfDownloadButton: React.FC<Props> = ({
@@ -21,103 +27,68 @@ export const PdfDownloadButton: React.FC<Props> = ({
   dasha,
   birth,
   personName = "जातक",
+  fatherName = "",
+  motherName = "",
+  dateBs = "",
 }) => {
-  const [loading, setLoading] = useState(false);
-  const [ready, setReady] = useState(false);
-  const [BlobLink, setBlobLink] = useState<React.ComponentType<any> | null>(null);
-  const [DocComponent, setDocComponent] = useState<React.ReactNode>(null);
+  const { user } = useAuth();
+  const { language } = useLanguage();
+  const [downloading, setDownloading] = useState(false);
+  const [statusMsg, setStatusMsg] = useState<string | null>(null);
 
-  const handlePrepare = async () => {
-    if (!kundali) {
-      alert("कुण्डली डेटा उपलब्ध छैन। कृपया पहिले कुण्डली गणना गर्नुहोस्।");
+  const handleDownload = async () => {
+    if (!kundali && !birth) {
+      alert("कृपया पहिले जन्म विवरण प्रविष्ट गर्नुहोस्।");
       return;
     }
-    setLoading(true);
+
+    setDownloading(true);
+    setStatusMsg(language === "en" ? "Generating Cheena..." : "चिना तयार हुँदैछ…");
+
     try {
-      // Dynamically import to avoid SSR issues
-      const [pdfLib, { KundaliPdfDocument }] = await Promise.all([
-        import("@react-pdf/renderer"),
-        import("./KundaliPdfReport"),
-      ]);
-
-      const { PDFDownloadLink } = pdfLib;
-      const fileName = `${personName.replace(/\s+/g, "_")}_Kundali_${birth.year}-${String(birth.month).padStart(2, "0")}-${String(birth.day).padStart(2, "0")}.pdf`;
-
-      const doc = (
-        <KundaliPdfDocument
-          kundali={kundali}
-          panchang={panchang}
-          dasha={dasha}
-          birth={birth}
-          personName={personName}
-        />
-      );
-
-      setBlobLink(() => PDFDownloadLink);
-      setDocComponent(doc);
-      setReady(true);
-    } catch (err) {
-      console.error("PDF preparation error:", err);
-      alert("PDF तयार गर्न समस्या भयो। पुनः प्रयास गर्नुहोस्।");
+      await downloadCheenaPdf(birth, {
+        name: personName || (language === "en" ? "Native" : "जातक"),
+        father_name: fatherName,
+        mother_name: motherName,
+        date_bs: dateBs,
+        place: birth.city_name || (language === "en" ? "Kathmandu" : "काठमाडौँ"),
+        astrologer_name: user?.name || (language === "en" ? "Vedic Astrologer" : "ज्योतिषाचार्य"),
+        language: language || "ne",
+      });
+      setStatusMsg(language === "en" ? "Download Complete!" : "डाउनलोड सम्पन्न भयो!");
+      setTimeout(() => setStatusMsg(null), 3000);
+    } catch (err: any) {
+      console.error("Cheena PDF Download Error:", err);
+      alert(language === "en" ? `Error downloading PDF: ${err?.message || "Server unreachable"}` : `चिना PDF डाउनलोड गर्दा त्रुटि भयो: ${err?.message || "सर्भरसँग सम्पर्क हुन सकेन।"}`);
+      setStatusMsg(null);
     } finally {
-      setLoading(false);
+      setDownloading(false);
     }
   };
 
-  const fileName = `${personName.replace(/\s+/g, "_")}_Kundali_${birth.year}-${String(birth.month).padStart(2, "0")}-${String(birth.day).padStart(2, "0")}.pdf`;
-
-  if (!ready || !BlobLink || !DocComponent) {
-    return (
-      <button
-        onClick={handlePrepare}
-        disabled={loading || !kundali}
-        className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm shadow-lg transition-all cursor-pointer
-          ${!kundali
-            ? "bg-slate-200 text-slate-400 cursor-not-allowed"
-            : loading
-              ? "bg-amber-400 text-white animate-pulse"
-              : "bg-gradient-to-r from-red-700 to-amber-700 hover:from-red-600 hover:to-amber-600 text-white"
-          }`}
-      >
-        {loading ? (
-          <>
-            <span className="animate-spin text-lg">⚙️</span>
-            PDF तयार हुँदैछ…
-          </>
-        ) : (
-          <>
-            <span>📄</span>
-            कुण्डली PDF डाउनलोड
-          </>
-        )}
-      </button>
-    );
-  }
-
   return (
-    <BlobLink document={DocComponent} fileName={fileName}>
-      {({ loading: pdfLoading }: { loading: boolean }) => (
-        <button
-          disabled={pdfLoading}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm shadow-lg transition-all cursor-pointer
-            ${pdfLoading
-              ? "bg-amber-400 text-white animate-pulse"
-              : "bg-gradient-to-r from-emerald-700 to-teal-600 hover:from-emerald-600 hover:to-teal-500 text-white"
-            }`}
-        >
-          {pdfLoading ? (
-            <>
-              <span className="animate-spin">⚙️</span>
-              PDF बनाउँदैछ…
-            </>
-          ) : (
-            <>
-              <span>⬇️</span>
-              PDF डाउनलोड गर्नुहोस्
-            </>
-          )}
-        </button>
+    <button
+      onClick={handleDownload}
+      disabled={downloading}
+      title={language === "en" ? "Download Traditional Vedic Cheena (Janmapatrika) PDF" : "परम्परागत नेपाली जन्मपत्रिका (चिना) PDF डाउनलोड गर्नुहोस्"}
+      className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer select-none active:scale-95
+        ${
+          downloading
+            ? "bg-amber-500 text-white animate-pulse cursor-wait"
+            : "bg-gradient-to-r from-red-800 via-amber-800 to-amber-700 hover:from-red-700 hover:to-amber-600 text-white border border-amber-500/40 hover:shadow-amber-900/30 hover:shadow-lg"
+        }`}
+    >
+      {downloading ? (
+        <>
+          <span className="animate-spin text-base">⚙️</span>
+          <span>{statusMsg || (language === "en" ? "Preparing PDF..." : "चिना PDF तयार हुँदैछ…")}</span>
+        </>
+      ) : (
+        <>
+          <span className="text-base">📜</span>
+          <span>{language === "en" ? "Download Cheena PDF" : "चिना PDF डाउनलोड"}</span>
+        </>
       )}
-    </BlobLink>
+    </button>
   );
 };

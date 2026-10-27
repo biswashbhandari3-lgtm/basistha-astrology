@@ -18,6 +18,27 @@ class BirthDetailsRequest(BaseModel):
     ayanamsha: str = Field("LAHIRI", example="LAHIRI") # LAHIRI, RAMAN, KP, SAYANA
     house_system: str = Field("P", example="P")        # P = Placidus, W = Whole Sign, O = Sripati
 
+class CheenaPdfRequest(BaseModel):
+    year: Optional[int] = Field(None, example=2026)
+    month: Optional[int] = Field(None, example=10)
+    day: Optional[int] = Field(None, example=22)
+    hour: Optional[int] = Field(12, example=14)
+    minute: Optional[int] = Field(0, example=30)
+    second: Optional[float] = Field(0.0, example=0.0)
+    latitude: Optional[float] = Field(27.7172, example=27.7172)
+    longitude: Optional[float] = Field(85.3240, example=85.3240)
+    timezone_offset: Optional[float] = Field(5.75, example=5.75)
+    ayanamsha: Optional[str] = Field("LAHIRI", example="LAHIRI")
+    house_system: Optional[str] = Field("P", example="P")
+    name: Optional[str] = Field("जातक", example="राम प्रसाद")
+    father_name: Optional[str] = Field("", example="हरि प्रसाद")
+    mother_name: Optional[str] = Field("", example="सीता देवी")
+    place: Optional[str] = Field("काठमाडौँ", example="काठमाडौँ")
+    date_bs: Optional[str] = Field("", example="२०८३/०७/०५")
+    astrologer_name: Optional[str] = Field("वशिष्ठ ज्योतिषी", example="पण्डित धर्मानन्द जोशी")
+    language: Optional[str] = Field("ne", example="ne")
+    custom_data: Optional[Dict[str, Any]] = None
+
 class PlanetaryPosition(BaseModel):
     planet_id: int
     name: str

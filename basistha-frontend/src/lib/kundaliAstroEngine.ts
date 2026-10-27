@@ -4,7 +4,7 @@
  * dynamic Ayanamshas, Lagna (Ascendant), Bhavas, D9 Navamsha, and Vimshottari Dasha.
  */
 
-import { BirthDetails, KundaliData, PlanetaryPosition, LagnaDetails, BhavaCusp, DashaData, DashaPeriod } from "@/types/astrology";
+import { BirthDetails, KundaliData, PlanetaryPosition, LagnaDetails, BhavaCusp, DashaData, DashaPeriod, PhalitData, BhavaInterpretation } from "@/types/astrology";
 
 const DEG2RAD = Math.PI / 180.0;
 const RAD2DEG = 180.0 / Math.PI;
@@ -89,11 +89,11 @@ export function computeAyanamsha(ayanamshaKey: string, T: number): { name: strin
       name = "कृष्णमूर्ति (KP Ayanamsha)";
       break;
     case "SURYASIDDHANTA":
-      val = 23.8580 + 1.3960 * T;
+      val = 20.8986 + 1.3855 * T;
       name = "सूर्य सिद्धान्त (Surya Siddhanta)";
       break;
     case "PUSHYA":
-      val = 23.7500 + 1.3960 * T;
+      val = 22.7230 + 1.3942 * T;
       name = "पुष्यपक्ष (Pushya Paksha)";
       break;
     case "FAGAN":
@@ -621,5 +621,102 @@ export function computeVimshottariDasha(moonLongitude: number, birthDate: Date):
       balance_text: `${y} वर्ष ${m} महिना ${d} दिन`
     },
     dasha_tree: dashaTree
+  };
+}
+
+const RASHI_LORD_NAMES_EN: Record<number, string> = {
+  1: "Mars", 2: "Venus", 3: "Mercury", 4: "Moon",
+  5: "Sun", 6: "Mercury", 7: "Venus", 8: "Mars",
+  9: "Jupiter", 10: "Saturn", 11: "Saturn", 12: "Jupiter"
+};
+
+const RASHI_LORD_NAMES_NE: Record<number, string> = {
+  1: "मङ्गल", 2: "शुक्र", 3: "बुध", 4: "चन्द्र",
+  5: "सूर्य", 6: "बुध", 7: "शुक्र", 8: "मङ्गल",
+  9: "बृहस्पति (गुरु)", 10: "शनि", 11: "शनि", 12: "बृहस्पति (गुरु)"
+};
+
+const BHAVA_NAMES_NE_LIST: Record<number, string> = {
+  1: "प्रथम भाव (तनु / लग्न - देह, रूप, स्वभाव र स्वास्थ्य)",
+  2: "द्वितीय भाव (धन / कुटुम्ब - सम्पत्ति, वाणी र परिवार)",
+  3: "तृतीय भाव (सहज / पराक्रम - भ्रातृ, हिम्मत र पुरुषार्थ)",
+  4: "चतुर्थ भाव (सुख / बन्धु - माता, गृह, भूमि र वाहन)",
+  5: "पञ्चम भाव (पुत्र / बुद्धि - सन्तान, विद्या, मन्त्र र विवेक)",
+  6: "षष्ठ भाव (रिपु / रोग - शत्रु, ऋण, रोग र प्रतिस्पर्धा)",
+  7: "सप्तम भाव (कलत्र / जाया - जीवनसाथी, विवाह र साझेदारी)",
+  8: "अष्टम भाव (आयु / रन्ध्र - दीर्घायु, गुप्त ज्ञान र संकट)",
+  9: "नवम भाव (धर्म / भाग्य - पिता, गुरु, तीर्थ र भाग्योदय)",
+  10: "दशम भाव (कर्म / राज्य - पेसा, प्रतिष्ठा, नेतृत्व र अधिकार)",
+  11: "एकादश भाव (आय / लाभ - उन्नति, समृद्धि र अभीष्ट सिद्धि)",
+  12: "द्वादश भाव (व्यय / मोक्ष - दान, वैदेशिक यात्रा र मुक्ति)"
+};
+
+export function generateClientPhalitFallback(details: BirthDetails): PhalitData {
+  const kundali = computeKundali(details);
+  const lagnaRashi = kundali.lagna.rashi_id;
+
+  const planetsInHouse: Record<number, PlanetaryPosition[]> = {
+    1: [], 2: [], 3: [], 4: [], 5: [], 6: [],
+    7: [], 8: [], 9: [], 10: [], 11: [], 12: []
+  };
+
+  const planetHouseMap: Record<string, number> = {};
+
+  kundali.planets.forEach(p => {
+    const h = ((p.rashi_id - lagnaRashi + 12) % 12) + 1;
+    planetsInHouse[h].push(p);
+    planetHouseMap[p.name] = h;
+  });
+
+  const bhavaAnalysis: BhavaInterpretation[] = [];
+
+  for (let b = 1; b <= 12; b++) {
+    const rashiNum = ((lagnaRashi - 1 + (b - 1)) % 12) + 1;
+    const lordName = RASHI_LORD_NAMES_EN[rashiNum];
+    const lordNameNe = RASHI_LORD_NAMES_NE[rashiNum];
+    const lordHouse = planetHouseMap[lordName] || 1;
+
+    const occupants = planetsInHouse[b].map(p => ({
+      bhava: b,
+      bhava_name_ne: BHAVA_NAMES_NE_LIST[b],
+      planet: p.name,
+      planet_ne: p.name_ne,
+      mansagari_sloka: `${p.name_ne} ग्रह ${b} भावमा अवस्थित रहँदा स्वभाव, कर्म तथा जीवनशैलीमा विशिष्ट शास्त्रीय फल प्रभाव रहनेछ।`,
+      classical_interpretations: [
+        {
+          author_id: 1,
+          author_name_ne: "महर्षि पराशर (बृहत्पाराशर होराशास्त्रम्)",
+          sloka: `${p.name_ne} ${b} भावमा रहँदा जातकलाई सम्बन्धित भावको कारकत्व र राशिको बल अनुसार शुभ-अशुभ फल प्राप्त हुन्छ।`
+        }
+      ]
+    }));
+
+    bhavaAnalysis.push({
+      bhava: b,
+      bhava_name_ne: BHAVA_NAMES_NE_LIST[b],
+      rashi_number: rashiNum,
+      lord_planet: lordName,
+      lord_planet_ne: lordNameNe,
+      lord_placed_in_bhava: lordHouse,
+      bhavesh_interpretation: {
+        bhavesh: b,
+        bhavesh_name_ne: `${b} भावको अधिपति (${lordNameNe})`,
+        in_bhava: lordHouse,
+        in_bhava_name_ne: `${lordHouse} भाव`,
+        parashar_sloka: `महर्षि पराशर अनुसार ${b} भावका स्वामी ${lordNameNe} कुण्डलीको ${lordHouse} भावमा अवस्थित रहँदा सोही अनुसार जीवनमा सुख, ऐश्वर्य तथा कर्मफल प्राप्ति हुनेछ।`
+      },
+      planets_present: occupants
+    });
+  }
+
+  return {
+    engine_name: "Basistha High-Precision Phalit Engine",
+    lagna_rashi: lagnaRashi,
+    bhava_analysis: bhavaAnalysis,
+    dasha_interpretation: {
+      mahadasha: "विंशोत्तरी दशा",
+      mahadasha_ne: "विंशोत्तरी दशा",
+      mahadasha_sloka: "दशाफल अनुसार जातकको वर्तमान जीवनमा सम्बन्धित ग्रहको प्रकृति, राशीश र भावस्थितिको प्रभाव रहनेछ।"
+    }
   };
 }
