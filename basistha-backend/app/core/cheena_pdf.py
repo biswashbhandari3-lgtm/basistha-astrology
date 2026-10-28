@@ -63,47 +63,110 @@ SQLITE_PATH = Path(__file__).resolve().parent.parent / "data" / "phalit_unicode.
 # -------------------------------------------------------------
 # १. फन्ट व्यवस्थापन (Font Setup & OpenType Text Shaping)
 # -------------------------------------------------------------
-FONT_REGULAR = "NotoSansDevanagari"
-FONT_BOLD = "NotoSansDevanagari-Bold"
+FONT_REGULAR = "Kswami"
+FONT_BOLD = "Kswami-Bold"
+FONT_ITALIC = "Kswami-Italic"
+FONT_BOLD_ITALIC = "Kswami-BoldItalic"
 _FONTS_INITIALIZED = False
 
 def setup_fonts():
-    """Registers Google Noto Sans Devanagari TTF fonts."""
-    global FONT_REGULAR, FONT_BOLD, _FONTS_INITIALIZED
+    """Registers Kswami font family provided in the 'font' folder, with fallback to Noto Sans, Kokila, Mangal."""
+    global FONT_REGULAR, FONT_BOLD, FONT_ITALIC, FONT_BOLD_ITALIC, _FONTS_INITIALIZED
     if _FONTS_INITIALIZED:
         return
 
     current_dir = Path(__file__).resolve().parent
-    local_fonts_dir = current_dir.parent / "fonts"
+    backend_dir = current_dir.parent.parent
+    workspace_root = backend_dir.parent
 
-    bundled_reg = local_fonts_dir / "NotoSansDevanagari-Regular.ttf"
-    bundled_bold = local_fonts_dir / "NotoSansDevanagari-Bold.ttf"
-
-    font_candidates = [
-        ("NotoSansDevanagari", "NotoSansDevanagari-Bold", str(bundled_reg), str(bundled_bold)),
-        ("Kokila", "Kokila-Bold", r"C:\Windows\Fonts\kokila.ttf", r"C:\Windows\Fonts\kokilab.ttf"),
-        ("Mangal", "Mangal-Bold", r"C:\Windows\Fonts\mangal.ttf", r"C:\Windows\Fonts\mangalb.ttf"),
+    # Candidate directories to discover fonts
+    font_dirs = [
+        workspace_root / "font",
+        current_dir.parent / "fonts",
+        Path.cwd() / "font",
+        Path.cwd() / "basistha-backend" / "app" / "fonts",
+        backend_dir / "app" / "fonts",
+        Path.cwd().parent / "font",
     ]
 
+    def find_file(candidates: List[str]) -> Optional[str]:
+        for d in font_dirs:
+            if not d.exists():
+                continue
+            for name in candidates:
+                p = d / name
+                if p.is_file():
+                    return str(p)
+        return None
+
+    # Search for Kswami font family files (OTF / TTF)
+    kswami_reg = find_file(["Kswami.otf", "Kswami-Regular.otf", "kswami.otf", "Kswami.ttf"])
+    kswami_bold = find_file(["Kswami-Bold.otf", "kswami-bold.otf", "Kswamib.otf", "Kswami-Bold.ttf"])
+    kswami_italic = find_file(["Knswami-r-italik.otf", "Kswami-r-italik.otf", "Kswami-Italic.otf", "kswami-italic.otf"])
+    kswami_bold_italic = find_file(["Kswami-BoldItalic.otf", "kswami-bolditalic.otf"])
+
     registered = False
-    for reg_name, bold_name, reg_path, bold_path in font_candidates:
-        if os.path.exists(reg_path):
-            try:
-                pdfmetrics.registerFont(TTFont(reg_name, reg_path))
-                if os.path.exists(bold_path):
-                    pdfmetrics.registerFont(TTFont(bold_name, bold_path))
-                else:
-                    pdfmetrics.registerFont(TTFont(bold_name, reg_path))
-                FONT_REGULAR = reg_name
-                FONT_BOLD = bold_name
-                registered = True
-                break
-            except Exception as e:
-                print(f"Font registration warning ({reg_name}): {e}")
+    if kswami_reg:
+        try:
+            pdfmetrics.registerFont(TTFont("Kswami", kswami_reg))
+
+            b_path = kswami_bold or kswami_reg
+            pdfmetrics.registerFont(TTFont("Kswami-Bold", b_path))
+
+            it_path = kswami_italic or kswami_reg
+            pdfmetrics.registerFont(TTFont("Kswami-Italic", it_path))
+
+            bi_path = kswami_bold_italic or b_path
+            pdfmetrics.registerFont(TTFont("Kswami-BoldItalic", bi_path))
+
+            pdfmetrics.registerFontFamily(
+                "Kswami",
+                normal="Kswami",
+                bold="Kswami-Bold",
+                italic="Kswami-Italic",
+                boldItalic="Kswami-BoldItalic"
+            )
+
+            FONT_REGULAR = "Kswami"
+            FONT_BOLD = "Kswami-Bold"
+            FONT_ITALIC = "Kswami-Italic"
+            FONT_BOLD_ITALIC = "Kswami-BoldItalic"
+            registered = True
+        except Exception as e:
+            print(f"Kswami font registration error: {e}")
+
+    if not registered:
+        bundled_reg = current_dir.parent / "fonts" / "NotoSansDevanagari-Regular.ttf"
+        bundled_bold = current_dir.parent / "fonts" / "NotoSansDevanagari-Bold.ttf"
+
+        fallback_candidates = [
+            ("NotoSansDevanagari", "NotoSansDevanagari-Bold", str(bundled_reg), str(bundled_bold)),
+            ("Kokila", "Kokila-Bold", r"C:\Windows\Fonts\kokila.ttf", r"C:\Windows\Fonts\kokilab.ttf"),
+            ("Mangal", "Mangal-Bold", r"C:\Windows\Fonts\mangal.ttf", r"C:\Windows\Fonts\mangalb.ttf"),
+        ]
+
+        for reg_name, bold_name, reg_p, bold_p in fallback_candidates:
+            if os.path.exists(reg_p):
+                try:
+                    pdfmetrics.registerFont(TTFont(reg_name, reg_p))
+                    if os.path.exists(bold_p):
+                        pdfmetrics.registerFont(TTFont(bold_name, bold_p))
+                    else:
+                        pdfmetrics.registerFont(TTFont(bold_name, reg_p))
+                    FONT_REGULAR = reg_name
+                    FONT_BOLD = bold_name
+                    FONT_ITALIC = reg_name
+                    FONT_BOLD_ITALIC = bold_name
+                    registered = True
+                    break
+                except Exception as e:
+                    print(f"Fallback font registration warning ({reg_name}): {e}")
 
     if not registered:
         FONT_REGULAR = "Helvetica"
         FONT_BOLD = "Helvetica-Bold"
+        FONT_ITALIC = "Helvetica-Oblique"
+        FONT_BOLD_ITALIC = "Helvetica-BoldOblique"
 
     _FONTS_INITIALIZED = True
 
@@ -133,18 +196,46 @@ def clean_shaping_text(text: str) -> str:
     return t.strip()
 
 def shape_text(text: str, font_name: Optional[str] = None, font_size: float = 9.0) -> str:
-    """Shapes Devanagari Unicode text using OpenType HarfBuzz rules."""
+    """Shapes Devanagari Unicode text using OpenType HarfBuzz rules with smart script segmentation."""
     if not text or not isinstance(text, str):
         return "" if text is None else str(text)
 
     clean_t = clean_shaping_text(text)
     fn = font_name or FONT_REGULAR
-    if HAS_SHAPING and fn in [FONT_REGULAR, FONT_BOLD]:
+    if not HAS_SHAPING:
+        return clean_t
+
+    ot_fonts = {
+        FONT_REGULAR, FONT_BOLD, FONT_ITALIC, FONT_BOLD_ITALIC,
+        "Kswami", "Kswami-Bold", "Kswami-Italic", "Kswami-BoldItalic",
+        "NotoSansDevanagari", "NotoSansDevanagari-Bold",
+        "Kokila", "Kokila-Bold", "Mangal", "Mangal-Bold"
+    }
+    if fn not in ot_fonts:
+        return clean_t
+
+    try:
+        # Segment text into Devanagari runs and non-Devanagari runs
+        # HarfBuzz guess_segment_properties detects the script of the first char,
+        # so segmenting ensures Devanagari blocks always use script 'Deva' and form conjuncts/matras properly.
+        parts = re.split(r'([\u0900-\u097F\uA8E0-\uA8FF\s]+)', clean_t)
+        result = []
+        for p in parts:
+            if not p:
+                continue
+            if any('\u0900' <= ch <= '\u097F' or '\uA8E0' <= ch <= '\uA8FF' for ch in p):
+                try:
+                    result.append(shapeStr(p, fn, font_size))
+                except Exception:
+                    result.append(p)
+            else:
+                result.append(p)
+        return ''.join(result)
+    except Exception:
         try:
             return shapeStr(clean_t, fn, font_size)
         except Exception:
             return clean_t
-    return clean_t
 
 def to_dev_num(val, lang="ne"):
     """Converts digits to Devanagari numerals when lang is Nepali."""
@@ -187,70 +278,80 @@ RASHI_NAMES_EN = [
 # -------------------------------------------------------------
 # २. पारम्परिक हीरा-जाली बोर्डर एवं फुटर (Ornamental Diamond Border)
 # -------------------------------------------------------------
-def draw_diamond_chain_border(c, page_w, page_h, m=14, s=8):
+def draw_diamond_chain_border(c, page_w, page_h, m=14, s=7.5):
     """
-    Renders exact geometric diamond chain border in regal crimson (#8B1E1E),
-    with inner hairline frame matching the user's reference PDF.
+    Renders exact royal Vedic diamond chain border with corner rosettes
+    and rounded inner frame matching the requested SVG specification.
     """
     c.saveState()
+    border_color = colors.HexColor('#C8232B')
+    bw = s
+    inner_pad = 3.5
+    inner_r = 5.0
 
-    # Inner hairline border
-    c.setStrokeColor(colors.HexColor("#A85507"))
+    avail_w = page_w - 2 * (m + bw)
+    n_x = max(1, round(avail_w / bw))
+    step_x = avail_w / n_x
+
+    avail_h = page_h - 2 * (m + bw)
+    n_y = max(1, round(avail_h / bw))
+    step_y = avail_h / n_y
+
+    # 1. Outer hairline
+    c.setStrokeColor(border_color)
+    c.setLineWidth(0.4)
+    c.rect(m, m, page_w - 2*m, page_h - 2*m, fill=0, stroke=1)
+
+    # 2. Inner hairline
+    c.rect(m + bw, m + bw, page_w - 2*(m+bw), page_h - 2*(m+bw), fill=0, stroke=1)
+
+    # 3. Inner Frame with rounded corners
+    ix = m + bw + inner_pad
+    iy = m + bw + inner_pad
+    iw = page_w - 2 * ix
+    ih = page_h - 2 * iy
     c.setLineWidth(0.6)
-    c.rect(m + s + 3, m + s + 3, page_w - 2 * (m + s + 3), page_h - 2 * (m + s + 3), fill=0, stroke=1)
+    c.roundRect(ix, iy, iw, ih, inner_r, fill=0, stroke=1)
 
-    # Repeating Diamond Chain Border
-    c.setStrokeColor(colors.HexColor("#8B1E1E"))
-    c.setFillColor(colors.HexColor("#8B1E1E"))
+    # 4. Repeating Diamonds
     c.setLineWidth(0.65)
+    c.setFillColor(border_color)
 
-    # Top & Bottom Bands
-    x = m
-    while x + s <= page_w - m:
-        # Top Diamond
-        pt = c.beginPath()
-        pt.moveTo(x + s/2.0, page_h - m)
-        pt.lineTo(x + s, page_h - m - s/2.0)
-        pt.lineTo(x + s/2.0, page_h - m - s)
-        pt.lineTo(x, page_h - m - s/2.0)
-        pt.close()
-        c.drawPath(pt, fill=0, stroke=1)
-        c.circle(x + s/2.0, page_h - m - s/2.0, 0.7, fill=1, stroke=0)
+    def draw_diamond(cx, cy, rx, ry):
+        p = c.beginPath()
+        p.moveTo(cx, cy - ry)
+        p.lineTo(cx + rx, cy)
+        p.lineTo(cx, cy + ry)
+        p.lineTo(cx - rx, cy)
+        p.close()
+        c.drawPath(p, fill=0, stroke=1)
+        c.circle(cx, cy, 0.75, fill=1, stroke=0)
 
-        # Bottom Diamond
-        pb = c.beginPath()
-        pb.moveTo(x + s/2.0, m + s)
-        pb.lineTo(x + s, m + s/2.0)
-        pb.lineTo(x + s/2.0, m)
-        pb.lineTo(x, m + s/2.0)
-        pb.close()
-        c.drawPath(pb, fill=0, stroke=1)
-        c.circle(x + s/2.0, m + s/2.0, 0.7, fill=1, stroke=0)
-        x += s
+    # Top & Bottom
+    for i in range(n_x):
+        cx = m + bw + (i + 0.5) * step_x
+        draw_diamond(cx, page_h - m - bw/2.0, step_x/2.0, bw/2.0)
+        draw_diamond(cx, m + bw/2.0, step_x/2.0, bw/2.0)
 
-    # Left & Right Bands
-    y = m + s
-    while y + s <= page_h - m - s:
-        # Left Diamond
-        pl = c.beginPath()
-        pl.moveTo(m + s/2.0, y + s)
-        pl.lineTo(m + s, y + s/2.0)
-        pl.lineTo(m + s/2.0, y)
-        pl.lineTo(m, y + s/2.0)
-        pl.close()
-        c.drawPath(pl, fill=0, stroke=1)
-        c.circle(m + s/2.0, y + s/2.0, 0.7, fill=1, stroke=0)
+    # Left & Right
+    for j in range(n_y):
+        cy = m + bw + (j + 0.5) * step_y
+        draw_diamond(m + bw/2.0, cy, bw/2.0, step_y/2.0)
+        draw_diamond(page_w - m - bw/2.0, cy, bw/2.0, step_y/2.0)
 
-        # Right Diamond
-        pr = c.beginPath()
-        pr.moveTo(page_w - m - s/2.0, y + s)
-        pr.lineTo(page_w - m, y + s/2.0)
-        pr.lineTo(page_w - m - s/2.0, y)
-        pr.lineTo(page_w - m - s, y + s/2.0)
-        pr.close()
-        c.drawPath(pr, fill=0, stroke=1)
-        c.circle(page_w - m - s/2.0, y + s/2.0, 0.7, fill=1, stroke=0)
-        y += s
+    # 4 Corner Rosettes
+    corners = [
+        (m + bw/2.0, m + bw/2.0),
+        (page_w - m - bw/2.0, m + bw/2.0),
+        (m + bw/2.0, page_h - m - bw/2.0),
+        (page_w - m - bw/2.0, page_h - m - bw/2.0),
+    ]
+    for cx, cy in corners:
+        draw_diamond(cx, cy, bw/2.0, bw/2.0)
+        c.circle(cx, cy, 1.2, fill=1, stroke=0)
+        d_off = bw * 0.32
+        for dx, dy in [(0, -d_off), (0, d_off), (-d_off, 0), (d_off, 0)]:
+            c.circle(cx + dx, cy + dy, 0.65, fill=1, stroke=0)
 
     c.restoreState()
 
@@ -260,7 +361,7 @@ def draw_page_footer(c, page_w, data, page_num, total_pages=13, lang="ne"):
     वशिष्ठ ज्योतिष | www.basistha-jyotish.com        पृष्ठ X / Y        जातक: [नाम] | ज्योतिषी: [ज्योतिषी]
     """
     c.saveState()
-    footer_y = 28
+    footer_y = 29.5
     m_x = 28
 
     # Golden accent rule above footer

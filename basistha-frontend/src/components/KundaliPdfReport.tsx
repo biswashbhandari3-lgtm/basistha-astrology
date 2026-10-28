@@ -23,6 +23,16 @@ import { KundaliData, PanchangData, DashaData, BirthDetails } from "@/types/astr
 
 // ─── Register Fonts ────────────────────────────────────────────────────────────
 Font.register({
+  family: "Kswami",
+  fonts: [
+    { src: "/fonts/Kswami.otf", fontWeight: "normal" },
+    { src: "/fonts/Kswami-Bold.otf", fontWeight: "bold" },
+    { src: "/fonts/Knswami-r-italik.otf", fontStyle: "italic" },
+    { src: "/fonts/Kswami-BoldItalic.otf", fontWeight: "bold", fontStyle: "italic" },
+  ]
+});
+
+Font.register({
   family: "Mangal",
   fonts: [
     { src: "/fonts/Mangal.ttf", fontWeight: "normal" },
@@ -53,7 +63,7 @@ const S = StyleSheet.create({
     backgroundColor: C.parchment,
     paddingHorizontal: 32,
     paddingVertical: 28,
-    fontFamily: "Mangal",
+    fontFamily: "Kswami",
     fontSize: 9,
     color: C.slate900,
   },
@@ -68,7 +78,7 @@ const S = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  headerTitle: { color: C.white, fontSize: 18, fontFamily: "Mangal" },
+  headerTitle: { color: C.white, fontSize: 18, fontFamily: "Kswami" },
   headerSub:   { color: "#FED7AA", fontSize: 8, marginTop: 2 },
   headerRight: { alignItems: "flex-end" },
   headerBadge: {
@@ -78,7 +88,7 @@ const S = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 10,
-    fontFamily: "Mangal",
+    fontFamily: "Kswami",
     marginBottom: 4,
   },
   headerDate: { color: "#FED7AA", fontSize: 7 },
@@ -99,14 +109,14 @@ const S = StyleSheet.create({
     alignItems: "center",
     borderBottom: "1 solid #FDE68A",
   },
-  sectionTitle: { fontSize: 10, fontFamily: "Mangal", color: C.burgundy },
+  sectionTitle: { fontSize: 10, fontFamily: "Kswami", color: C.burgundy },
   sectionBody:  { padding: 10 },
 
   // Info Grid
   infoRow:  { flexDirection: "row", marginBottom: 5, flexWrap: "wrap" },
   infoItem: { width: "50%", flexDirection: "row", marginBottom: 3 },
   infoLabel:{ color: C.slate500, width: 85, fontSize: 8 },
-  infoValue:{ color: C.slate900, fontFamily: "Mangal", fontSize: 8, flex: 1 },
+  infoValue:{ color: C.slate900, fontFamily: "Kswami", fontSize: 8, flex: 1 },
 
   // Tables
   table:     { width: "100%" },
@@ -118,7 +128,7 @@ const S = StyleSheet.create({
     paddingHorizontal: 6,
     marginBottom: 2,
   },
-  tableHeadCell: { fontFamily: "Mangal", color: C.burgundy, fontSize: 7.5 },
+  tableHeadCell: { fontFamily: "Kswami", color: C.burgundy, fontSize: 7.5 },
   tableRow:  {
     flexDirection: "row",
     paddingVertical: 3.5,
@@ -129,8 +139,8 @@ const S = StyleSheet.create({
     backgroundColor: "#FFFBEB",
   },
   tableCell: { fontSize: 8, color: C.slate700 },
-  retro:     { color: C.red, fontFamily: "Mangal" },
-  combust:   { color: C.gold, fontFamily: "Mangal" },
+  retro:     { color: C.red, fontFamily: "Kswami" },
+  combust:   { color: C.gold, fontFamily: "Kswami" },
 
   // Panchang
   panchangGrid: { flexDirection: "row", flexWrap: "wrap", gap: 5 },
@@ -143,11 +153,11 @@ const S = StyleSheet.create({
     marginBottom: 5,
   },
   panchangLabel: { color: C.slate500, fontSize: 7, marginBottom: 2 },
-  panchangValue: { color: C.burgundy, fontFamily: "Mangal", fontSize: 9 },
+  panchangValue: { color: C.burgundy, fontFamily: "Kswami", fontSize: 9 },
 
   // Dasha
   dashaRow:    { flexDirection: "row", paddingVertical: 4, paddingHorizontal: 6, borderBottom: "0.5 solid #E2E8F0" },
-  dashaMain:   { width: "30%", fontFamily: "Mangal", fontSize: 8.5, color: C.burgundy },
+  dashaMain:   { width: "30%", fontFamily: "Kswami", fontSize: 8.5, color: C.burgundy },
   dashaDate:   { width: "45%", fontSize: 7.5, color: C.slate700 },
   dashaDur:    { width: "25%", fontSize: 7.5, color: C.slate700, textAlign: "right" },
   subDashaRow: { flexDirection: "row", paddingVertical: 2.5, paddingHorizontal: 20, borderBottom: "0.5 solid #F1F5F9", backgroundColor: "#FEFCE8" },
@@ -164,7 +174,7 @@ const S = StyleSheet.create({
     justifyContent: "space-between",
   },
   footerText: { color: C.slate500, fontSize: 7 },
-  footerBrand:{ color: C.burgundy, fontFamily: "Mangal", fontSize: 7 },
+  footerBrand:{ color: C.burgundy, fontFamily: "Kswami", fontSize: 7 },
 
   // Lagna box
   lagnaBox: {
@@ -179,7 +189,7 @@ const S = StyleSheet.create({
   },
   lagnaItem: { width: "30%" },
   lagnaLabel:{ color: C.slate500, fontSize: 7.5, marginBottom: 1 },
-  lagnaValue:{ color: C.burgundy, fontFamily: "Mangal", fontSize: 9 },
+  lagnaValue:{ color: C.burgundy, fontFamily: "Kswami", fontSize: 9 },
 
   // SVG Chart wrapper
   chartWrapper: {
@@ -188,7 +198,7 @@ const S = StyleSheet.create({
   },
   chartTitle: {
     fontSize: 9,
-    fontFamily: "Mangal",
+    fontFamily: "Kswami",
     color: C.burgundy,
     textAlign: "center",
     marginBottom: 6,
@@ -268,7 +278,7 @@ function NorthChartSvg({ data }: { data: KundaliData }) {
         return (
           <React.Fragment key={h}>
             {/* Rashi number */}
-            <Text style={{ fontSize: 11, fontFamily: "Mangal", fill: C.burgundy }}
+            <Text style={{ fontSize: 11, fontFamily: "Kswami", fill: C.burgundy }}
               x={c.x} y={c.y - 14}>{houseRashiMap[h]}</Text>
             {/* Planets */}
             {planets.map((p, idx) => (
@@ -414,7 +424,7 @@ export const KundaliPdfDocument: React.FC<Props> = ({ kundali, panchang, dasha, 
 
         {/* Mini header */}
         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 10, alignItems: "center" }}>
-          <Text style={{ fontSize: 12, fontFamily: "Mangal", color: C.burgundy }}>🪐 ग्रह स्पष्ट तालिका (Planetary Positions)</Text>
+          <Text style={{ fontSize: 12, fontFamily: "Kswami", color: C.burgundy }}>🪐 ग्रह स्पष्ट तालिका (Planetary Positions)</Text>
           <Text style={{ fontSize: 8, color: C.slate500 }}>{personName} • {birthDateStr}</Text>
         </View>
 
@@ -436,7 +446,7 @@ export const KundaliPdfDocument: React.FC<Props> = ({ kundali, panchang, dasha, 
             {/* Table rows */}
             {kundali.planets.map((p, idx) => (
               <View key={p.planet_id} style={[S.tableRow, idx % 2 !== 0 ? S.tableRowAlt : {}]}>
-                <Text style={[S.tableCell, { width: PW.name, fontFamily: "Mangal", color: C.burgundy }]}>
+                <Text style={[S.tableCell, { width: PW.name, fontFamily: "Kswami", color: C.burgundy }]}>
                   {p.name}
                 </Text>
                 <Text style={[S.tableCell, { width: PW.lon }]}>
@@ -478,7 +488,7 @@ export const KundaliPdfDocument: React.FC<Props> = ({ kundali, panchang, dasha, 
               const dc = kundali.divisional_charts?.[p.name] || {};
               return (
                 <View key={p.planet_id} style={[S.tableRow, idx % 2 !== 0 ? S.tableRowAlt : {}]}>
-                  <Text style={[S.tableCell, { width: "20%", fontFamily: "Mangal", color: C.burgundy }]}>{p.name}</Text>
+                  <Text style={[S.tableCell, { width: "20%", fontFamily: "Kswami", color: C.burgundy }]}>{p.name}</Text>
                   <Text style={[S.tableCell, { width: "12%" }]}>{dc.D1_Rashi || p.rashi_id}</Text>
                   <Text style={[S.tableCell, { width: "12%" }]}>{dc.D2_Hora || "-"}</Text>
                   <Text style={[S.tableCell, { width: "12%" }]}>{dc.D3_Drekkana || "-"}</Text>
@@ -533,7 +543,7 @@ export const KundaliPdfDocument: React.FC<Props> = ({ kundali, panchang, dasha, 
       <Page size="A4" style={S.page}>
 
         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 10, alignItems: "center" }}>
-          <Text style={{ fontSize: 12, fontFamily: "Mangal", color: C.burgundy }}>⏳ विंशोत्तरी महादशा (Vimshottari Dasha System)</Text>
+          <Text style={{ fontSize: 12, fontFamily: "Kswami", color: C.burgundy }}>⏳ विंशोत्तरी महादशा (Vimshottari Dasha System)</Text>
           <Text style={{ fontSize: 8, color: C.slate500 }}>{personName} • {birthDateStr}</Text>
         </View>
 
@@ -554,13 +564,13 @@ export const KundaliPdfDocument: React.FC<Props> = ({ kundali, panchang, dasha, 
               }}>
                 <View>
                   <Text style={{ fontSize: 7.5, color: C.slate500 }}>चालु महादशा</Text>
-                  <Text style={{ fontSize: 11, fontFamily: "Mangal", color: C.burgundy }}>
+                  <Text style={{ fontSize: 11, fontFamily: "Kswami", color: C.burgundy }}>
                     {dasha.balance_of_dasha.first_lord_ne} ({dasha.balance_of_dasha.first_lord})
                   </Text>
                 </View>
                 <View>
                   <Text style={{ fontSize: 7.5, color: C.slate500 }}>शेष अवधि</Text>
-                  <Text style={{ fontSize: 11, fontFamily: "Mangal", color: C.saffron }}>
+                  <Text style={{ fontSize: 11, fontFamily: "Kswami", color: C.saffron }}>
                     {dasha.balance_of_dasha.balance_text || `${dasha.balance_of_dasha.balance_years.toFixed(2)} वर्ष`}
                   </Text>
                 </View>

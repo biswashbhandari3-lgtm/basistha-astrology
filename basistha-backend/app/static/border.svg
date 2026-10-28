@@ -1,0 +1,761 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 595.28 841.89" width="100%" height="100%">
+<defs>
+  <style>
+    .b-stroke { stroke: #C8232B; fill: none; stroke-width: 0.65; }
+    .b-fill { fill: #C8232B; stroke: none; }
+    .b-inner { stroke: #C8232B; fill: none; stroke-width: 0.6; }
+    .b-hairline { stroke: #C8232B; fill: none; stroke-width: 0.4; opacity: 0.85; }
+  </style>
+</defs>
+<rect class="b-hairline" x="14.00" y="14.00" width="567.28" height="813.89" />
+<rect class="b-hairline" x="21.50" y="21.50" width="552.28" height="798.89" />
+<rect class="b-inner" x="25.00" y="25.00" width="545.28" height="791.89" rx="5.0" ry="5.0" />
+<path class="b-stroke" d="M 25.23 14.00 L 28.96 17.75 L 25.23 21.50 L 21.50 17.75 Z" />
+<circle class="b-fill" cx="25.23" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 25.23 820.39 L 28.96 824.14 L 25.23 827.89 L 21.50 824.14 Z" />
+<circle class="b-fill" cx="25.23" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 32.69 14.00 L 36.43 17.75 L 32.69 21.50 L 28.96 17.75 Z" />
+<circle class="b-fill" cx="32.69" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 32.69 820.39 L 36.43 824.14 L 32.69 827.89 L 28.96 824.14 Z" />
+<circle class="b-fill" cx="32.69" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 40.16 14.00 L 43.89 17.75 L 40.16 21.50 L 36.43 17.75 Z" />
+<circle class="b-fill" cx="40.16" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 40.16 820.39 L 43.89 824.14 L 40.16 827.89 L 36.43 824.14 Z" />
+<circle class="b-fill" cx="40.16" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 47.62 14.00 L 51.35 17.75 L 47.62 21.50 L 43.89 17.75 Z" />
+<circle class="b-fill" cx="47.62" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 47.62 820.39 L 51.35 824.14 L 47.62 827.89 L 43.89 824.14 Z" />
+<circle class="b-fill" cx="47.62" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 55.08 14.00 L 58.82 17.75 L 55.08 21.50 L 51.35 17.75 Z" />
+<circle class="b-fill" cx="55.08" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 55.08 820.39 L 58.82 824.14 L 55.08 827.89 L 51.35 824.14 Z" />
+<circle class="b-fill" cx="55.08" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 62.55 14.00 L 66.28 17.75 L 62.55 21.50 L 58.82 17.75 Z" />
+<circle class="b-fill" cx="62.55" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 62.55 820.39 L 66.28 824.14 L 62.55 827.89 L 58.82 824.14 Z" />
+<circle class="b-fill" cx="62.55" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 70.01 14.00 L 73.74 17.75 L 70.01 21.50 L 66.28 17.75 Z" />
+<circle class="b-fill" cx="70.01" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 70.01 820.39 L 73.74 824.14 L 70.01 827.89 L 66.28 824.14 Z" />
+<circle class="b-fill" cx="70.01" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 77.47 14.00 L 81.21 17.75 L 77.47 21.50 L 73.74 17.75 Z" />
+<circle class="b-fill" cx="77.47" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 77.47 820.39 L 81.21 824.14 L 77.47 827.89 L 73.74 824.14 Z" />
+<circle class="b-fill" cx="77.47" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 84.94 14.00 L 88.67 17.75 L 84.94 21.50 L 81.21 17.75 Z" />
+<circle class="b-fill" cx="84.94" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 84.94 820.39 L 88.67 824.14 L 84.94 827.89 L 81.21 824.14 Z" />
+<circle class="b-fill" cx="84.94" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 92.40 14.00 L 96.13 17.75 L 92.40 21.50 L 88.67 17.75 Z" />
+<circle class="b-fill" cx="92.40" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 92.40 820.39 L 96.13 824.14 L 92.40 827.89 L 88.67 824.14 Z" />
+<circle class="b-fill" cx="92.40" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 99.86 14.00 L 103.60 17.75 L 99.86 21.50 L 96.13 17.75 Z" />
+<circle class="b-fill" cx="99.86" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 99.86 820.39 L 103.60 824.14 L 99.86 827.89 L 96.13 824.14 Z" />
+<circle class="b-fill" cx="99.86" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 107.33 14.00 L 111.06 17.75 L 107.33 21.50 L 103.60 17.75 Z" />
+<circle class="b-fill" cx="107.33" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 107.33 820.39 L 111.06 824.14 L 107.33 827.89 L 103.60 824.14 Z" />
+<circle class="b-fill" cx="107.33" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 114.79 14.00 L 118.52 17.75 L 114.79 21.50 L 111.06 17.75 Z" />
+<circle class="b-fill" cx="114.79" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 114.79 820.39 L 118.52 824.14 L 114.79 827.89 L 111.06 824.14 Z" />
+<circle class="b-fill" cx="114.79" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 122.25 14.00 L 125.99 17.75 L 122.25 21.50 L 118.52 17.75 Z" />
+<circle class="b-fill" cx="122.25" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 122.25 820.39 L 125.99 824.14 L 122.25 827.89 L 118.52 824.14 Z" />
+<circle class="b-fill" cx="122.25" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 129.72 14.00 L 133.45 17.75 L 129.72 21.50 L 125.99 17.75 Z" />
+<circle class="b-fill" cx="129.72" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 129.72 820.39 L 133.45 824.14 L 129.72 827.89 L 125.99 824.14 Z" />
+<circle class="b-fill" cx="129.72" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 137.18 14.00 L 140.91 17.75 L 137.18 21.50 L 133.45 17.75 Z" />
+<circle class="b-fill" cx="137.18" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 137.18 820.39 L 140.91 824.14 L 137.18 827.89 L 133.45 824.14 Z" />
+<circle class="b-fill" cx="137.18" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 144.64 14.00 L 148.38 17.75 L 144.64 21.50 L 140.91 17.75 Z" />
+<circle class="b-fill" cx="144.64" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 144.64 820.39 L 148.38 824.14 L 144.64 827.89 L 140.91 824.14 Z" />
+<circle class="b-fill" cx="144.64" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 152.11 14.00 L 155.84 17.75 L 152.11 21.50 L 148.38 17.75 Z" />
+<circle class="b-fill" cx="152.11" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 152.11 820.39 L 155.84 824.14 L 152.11 827.89 L 148.38 824.14 Z" />
+<circle class="b-fill" cx="152.11" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 159.57 14.00 L 163.30 17.75 L 159.57 21.50 L 155.84 17.75 Z" />
+<circle class="b-fill" cx="159.57" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 159.57 820.39 L 163.30 824.14 L 159.57 827.89 L 155.84 824.14 Z" />
+<circle class="b-fill" cx="159.57" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 167.03 14.00 L 170.76 17.75 L 167.03 21.50 L 163.30 17.75 Z" />
+<circle class="b-fill" cx="167.03" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 167.03 820.39 L 170.76 824.14 L 167.03 827.89 L 163.30 824.14 Z" />
+<circle class="b-fill" cx="167.03" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 174.50 14.00 L 178.23 17.75 L 174.50 21.50 L 170.76 17.75 Z" />
+<circle class="b-fill" cx="174.50" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 174.50 820.39 L 178.23 824.14 L 174.50 827.89 L 170.76 824.14 Z" />
+<circle class="b-fill" cx="174.50" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 181.96 14.00 L 185.69 17.75 L 181.96 21.50 L 178.23 17.75 Z" />
+<circle class="b-fill" cx="181.96" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 181.96 820.39 L 185.69 824.14 L 181.96 827.89 L 178.23 824.14 Z" />
+<circle class="b-fill" cx="181.96" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 189.42 14.00 L 193.15 17.75 L 189.42 21.50 L 185.69 17.75 Z" />
+<circle class="b-fill" cx="189.42" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 189.42 820.39 L 193.15 824.14 L 189.42 827.89 L 185.69 824.14 Z" />
+<circle class="b-fill" cx="189.42" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 196.89 14.00 L 200.62 17.75 L 196.89 21.50 L 193.15 17.75 Z" />
+<circle class="b-fill" cx="196.89" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 196.89 820.39 L 200.62 824.14 L 196.89 827.89 L 193.15 824.14 Z" />
+<circle class="b-fill" cx="196.89" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 204.35 14.00 L 208.08 17.75 L 204.35 21.50 L 200.62 17.75 Z" />
+<circle class="b-fill" cx="204.35" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 204.35 820.39 L 208.08 824.14 L 204.35 827.89 L 200.62 824.14 Z" />
+<circle class="b-fill" cx="204.35" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 211.81 14.00 L 215.54 17.75 L 211.81 21.50 L 208.08 17.75 Z" />
+<circle class="b-fill" cx="211.81" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 211.81 820.39 L 215.54 824.14 L 211.81 827.89 L 208.08 824.14 Z" />
+<circle class="b-fill" cx="211.81" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 219.28 14.00 L 223.01 17.75 L 219.28 21.50 L 215.54 17.75 Z" />
+<circle class="b-fill" cx="219.28" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 219.28 820.39 L 223.01 824.14 L 219.28 827.89 L 215.54 824.14 Z" />
+<circle class="b-fill" cx="219.28" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 226.74 14.00 L 230.47 17.75 L 226.74 21.50 L 223.01 17.75 Z" />
+<circle class="b-fill" cx="226.74" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 226.74 820.39 L 230.47 824.14 L 226.74 827.89 L 223.01 824.14 Z" />
+<circle class="b-fill" cx="226.74" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 234.20 14.00 L 237.93 17.75 L 234.20 21.50 L 230.47 17.75 Z" />
+<circle class="b-fill" cx="234.20" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 234.20 820.39 L 237.93 824.14 L 234.20 827.89 L 230.47 824.14 Z" />
+<circle class="b-fill" cx="234.20" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 241.67 14.00 L 245.40 17.75 L 241.67 21.50 L 237.93 17.75 Z" />
+<circle class="b-fill" cx="241.67" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 241.67 820.39 L 245.40 824.14 L 241.67 827.89 L 237.93 824.14 Z" />
+<circle class="b-fill" cx="241.67" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 249.13 14.00 L 252.86 17.75 L 249.13 21.50 L 245.40 17.75 Z" />
+<circle class="b-fill" cx="249.13" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 249.13 820.39 L 252.86 824.14 L 249.13 827.89 L 245.40 824.14 Z" />
+<circle class="b-fill" cx="249.13" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 256.59 14.00 L 260.32 17.75 L 256.59 21.50 L 252.86 17.75 Z" />
+<circle class="b-fill" cx="256.59" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 256.59 820.39 L 260.32 824.14 L 256.59 827.89 L 252.86 824.14 Z" />
+<circle class="b-fill" cx="256.59" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 264.06 14.00 L 267.79 17.75 L 264.06 21.50 L 260.32 17.75 Z" />
+<circle class="b-fill" cx="264.06" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 264.06 820.39 L 267.79 824.14 L 264.06 827.89 L 260.32 824.14 Z" />
+<circle class="b-fill" cx="264.06" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 271.52 14.00 L 275.25 17.75 L 271.52 21.50 L 267.79 17.75 Z" />
+<circle class="b-fill" cx="271.52" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 271.52 820.39 L 275.25 824.14 L 271.52 827.89 L 267.79 824.14 Z" />
+<circle class="b-fill" cx="271.52" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 278.98 14.00 L 282.71 17.75 L 278.98 21.50 L 275.25 17.75 Z" />
+<circle class="b-fill" cx="278.98" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 278.98 820.39 L 282.71 824.14 L 278.98 827.89 L 275.25 824.14 Z" />
+<circle class="b-fill" cx="278.98" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 286.45 14.00 L 290.18 17.75 L 286.45 21.50 L 282.71 17.75 Z" />
+<circle class="b-fill" cx="286.45" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 286.45 820.39 L 290.18 824.14 L 286.45 827.89 L 282.71 824.14 Z" />
+<circle class="b-fill" cx="286.45" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 293.91 14.00 L 297.64 17.75 L 293.91 21.50 L 290.18 17.75 Z" />
+<circle class="b-fill" cx="293.91" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 293.91 820.39 L 297.64 824.14 L 293.91 827.89 L 290.18 824.14 Z" />
+<circle class="b-fill" cx="293.91" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 301.37 14.00 L 305.10 17.75 L 301.37 21.50 L 297.64 17.75 Z" />
+<circle class="b-fill" cx="301.37" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 301.37 820.39 L 305.10 824.14 L 301.37 827.89 L 297.64 824.14 Z" />
+<circle class="b-fill" cx="301.37" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 308.83 14.00 L 312.57 17.75 L 308.83 21.50 L 305.10 17.75 Z" />
+<circle class="b-fill" cx="308.83" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 308.83 820.39 L 312.57 824.14 L 308.83 827.89 L 305.10 824.14 Z" />
+<circle class="b-fill" cx="308.83" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 316.30 14.00 L 320.03 17.75 L 316.30 21.50 L 312.57 17.75 Z" />
+<circle class="b-fill" cx="316.30" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 316.30 820.39 L 320.03 824.14 L 316.30 827.89 L 312.57 824.14 Z" />
+<circle class="b-fill" cx="316.30" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 323.76 14.00 L 327.49 17.75 L 323.76 21.50 L 320.03 17.75 Z" />
+<circle class="b-fill" cx="323.76" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 323.76 820.39 L 327.49 824.14 L 323.76 827.89 L 320.03 824.14 Z" />
+<circle class="b-fill" cx="323.76" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 331.22 14.00 L 334.96 17.75 L 331.22 21.50 L 327.49 17.75 Z" />
+<circle class="b-fill" cx="331.22" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 331.22 820.39 L 334.96 824.14 L 331.22 827.89 L 327.49 824.14 Z" />
+<circle class="b-fill" cx="331.22" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 338.69 14.00 L 342.42 17.75 L 338.69 21.50 L 334.96 17.75 Z" />
+<circle class="b-fill" cx="338.69" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 338.69 820.39 L 342.42 824.14 L 338.69 827.89 L 334.96 824.14 Z" />
+<circle class="b-fill" cx="338.69" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 346.15 14.00 L 349.88 17.75 L 346.15 21.50 L 342.42 17.75 Z" />
+<circle class="b-fill" cx="346.15" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 346.15 820.39 L 349.88 824.14 L 346.15 827.89 L 342.42 824.14 Z" />
+<circle class="b-fill" cx="346.15" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 353.61 14.00 L 357.35 17.75 L 353.61 21.50 L 349.88 17.75 Z" />
+<circle class="b-fill" cx="353.61" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 353.61 820.39 L 357.35 824.14 L 353.61 827.89 L 349.88 824.14 Z" />
+<circle class="b-fill" cx="353.61" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 361.08 14.00 L 364.81 17.75 L 361.08 21.50 L 357.35 17.75 Z" />
+<circle class="b-fill" cx="361.08" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 361.08 820.39 L 364.81 824.14 L 361.08 827.89 L 357.35 824.14 Z" />
+<circle class="b-fill" cx="361.08" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 368.54 14.00 L 372.27 17.75 L 368.54 21.50 L 364.81 17.75 Z" />
+<circle class="b-fill" cx="368.54" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 368.54 820.39 L 372.27 824.14 L 368.54 827.89 L 364.81 824.14 Z" />
+<circle class="b-fill" cx="368.54" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 376.00 14.00 L 379.74 17.75 L 376.00 21.50 L 372.27 17.75 Z" />
+<circle class="b-fill" cx="376.00" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 376.00 820.39 L 379.74 824.14 L 376.00 827.89 L 372.27 824.14 Z" />
+<circle class="b-fill" cx="376.00" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 383.47 14.00 L 387.20 17.75 L 383.47 21.50 L 379.74 17.75 Z" />
+<circle class="b-fill" cx="383.47" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 383.47 820.39 L 387.20 824.14 L 383.47 827.89 L 379.74 824.14 Z" />
+<circle class="b-fill" cx="383.47" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 390.93 14.00 L 394.66 17.75 L 390.93 21.50 L 387.20 17.75 Z" />
+<circle class="b-fill" cx="390.93" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 390.93 820.39 L 394.66 824.14 L 390.93 827.89 L 387.20 824.14 Z" />
+<circle class="b-fill" cx="390.93" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 398.39 14.00 L 402.13 17.75 L 398.39 21.50 L 394.66 17.75 Z" />
+<circle class="b-fill" cx="398.39" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 398.39 820.39 L 402.13 824.14 L 398.39 827.89 L 394.66 824.14 Z" />
+<circle class="b-fill" cx="398.39" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 405.86 14.00 L 409.59 17.75 L 405.86 21.50 L 402.13 17.75 Z" />
+<circle class="b-fill" cx="405.86" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 405.86 820.39 L 409.59 824.14 L 405.86 827.89 L 402.13 824.14 Z" />
+<circle class="b-fill" cx="405.86" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 413.32 14.00 L 417.05 17.75 L 413.32 21.50 L 409.59 17.75 Z" />
+<circle class="b-fill" cx="413.32" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 413.32 820.39 L 417.05 824.14 L 413.32 827.89 L 409.59 824.14 Z" />
+<circle class="b-fill" cx="413.32" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 420.78 14.00 L 424.52 17.75 L 420.78 21.50 L 417.05 17.75 Z" />
+<circle class="b-fill" cx="420.78" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 420.78 820.39 L 424.52 824.14 L 420.78 827.89 L 417.05 824.14 Z" />
+<circle class="b-fill" cx="420.78" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 428.25 14.00 L 431.98 17.75 L 428.25 21.50 L 424.52 17.75 Z" />
+<circle class="b-fill" cx="428.25" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 428.25 820.39 L 431.98 824.14 L 428.25 827.89 L 424.52 824.14 Z" />
+<circle class="b-fill" cx="428.25" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 435.71 14.00 L 439.44 17.75 L 435.71 21.50 L 431.98 17.75 Z" />
+<circle class="b-fill" cx="435.71" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 435.71 820.39 L 439.44 824.14 L 435.71 827.89 L 431.98 824.14 Z" />
+<circle class="b-fill" cx="435.71" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 443.17 14.00 L 446.90 17.75 L 443.17 21.50 L 439.44 17.75 Z" />
+<circle class="b-fill" cx="443.17" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 443.17 820.39 L 446.90 824.14 L 443.17 827.89 L 439.44 824.14 Z" />
+<circle class="b-fill" cx="443.17" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 450.64 14.00 L 454.37 17.75 L 450.64 21.50 L 446.90 17.75 Z" />
+<circle class="b-fill" cx="450.64" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 450.64 820.39 L 454.37 824.14 L 450.64 827.89 L 446.90 824.14 Z" />
+<circle class="b-fill" cx="450.64" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 458.10 14.00 L 461.83 17.75 L 458.10 21.50 L 454.37 17.75 Z" />
+<circle class="b-fill" cx="458.10" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 458.10 820.39 L 461.83 824.14 L 458.10 827.89 L 454.37 824.14 Z" />
+<circle class="b-fill" cx="458.10" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 465.56 14.00 L 469.29 17.75 L 465.56 21.50 L 461.83 17.75 Z" />
+<circle class="b-fill" cx="465.56" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 465.56 820.39 L 469.29 824.14 L 465.56 827.89 L 461.83 824.14 Z" />
+<circle class="b-fill" cx="465.56" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 473.03 14.00 L 476.76 17.75 L 473.03 21.50 L 469.29 17.75 Z" />
+<circle class="b-fill" cx="473.03" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 473.03 820.39 L 476.76 824.14 L 473.03 827.89 L 469.29 824.14 Z" />
+<circle class="b-fill" cx="473.03" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 480.49 14.00 L 484.22 17.75 L 480.49 21.50 L 476.76 17.75 Z" />
+<circle class="b-fill" cx="480.49" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 480.49 820.39 L 484.22 824.14 L 480.49 827.89 L 476.76 824.14 Z" />
+<circle class="b-fill" cx="480.49" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 487.95 14.00 L 491.68 17.75 L 487.95 21.50 L 484.22 17.75 Z" />
+<circle class="b-fill" cx="487.95" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 487.95 820.39 L 491.68 824.14 L 487.95 827.89 L 484.22 824.14 Z" />
+<circle class="b-fill" cx="487.95" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 495.42 14.00 L 499.15 17.75 L 495.42 21.50 L 491.68 17.75 Z" />
+<circle class="b-fill" cx="495.42" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 495.42 820.39 L 499.15 824.14 L 495.42 827.89 L 491.68 824.14 Z" />
+<circle class="b-fill" cx="495.42" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 502.88 14.00 L 506.61 17.75 L 502.88 21.50 L 499.15 17.75 Z" />
+<circle class="b-fill" cx="502.88" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 502.88 820.39 L 506.61 824.14 L 502.88 827.89 L 499.15 824.14 Z" />
+<circle class="b-fill" cx="502.88" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 510.34 14.00 L 514.07 17.75 L 510.34 21.50 L 506.61 17.75 Z" />
+<circle class="b-fill" cx="510.34" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 510.34 820.39 L 514.07 824.14 L 510.34 827.89 L 506.61 824.14 Z" />
+<circle class="b-fill" cx="510.34" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 517.81 14.00 L 521.54 17.75 L 517.81 21.50 L 514.07 17.75 Z" />
+<circle class="b-fill" cx="517.81" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 517.81 820.39 L 521.54 824.14 L 517.81 827.89 L 514.07 824.14 Z" />
+<circle class="b-fill" cx="517.81" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 525.27 14.00 L 529.00 17.75 L 525.27 21.50 L 521.54 17.75 Z" />
+<circle class="b-fill" cx="525.27" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 525.27 820.39 L 529.00 824.14 L 525.27 827.89 L 521.54 824.14 Z" />
+<circle class="b-fill" cx="525.27" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 532.73 14.00 L 536.46 17.75 L 532.73 21.50 L 529.00 17.75 Z" />
+<circle class="b-fill" cx="532.73" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 532.73 820.39 L 536.46 824.14 L 532.73 827.89 L 529.00 824.14 Z" />
+<circle class="b-fill" cx="532.73" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 540.20 14.00 L 543.93 17.75 L 540.20 21.50 L 536.46 17.75 Z" />
+<circle class="b-fill" cx="540.20" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 540.20 820.39 L 543.93 824.14 L 540.20 827.89 L 536.46 824.14 Z" />
+<circle class="b-fill" cx="540.20" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 547.66 14.00 L 551.39 17.75 L 547.66 21.50 L 543.93 17.75 Z" />
+<circle class="b-fill" cx="547.66" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 547.66 820.39 L 551.39 824.14 L 547.66 827.89 L 543.93 824.14 Z" />
+<circle class="b-fill" cx="547.66" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 555.12 14.00 L 558.85 17.75 L 555.12 21.50 L 551.39 17.75 Z" />
+<circle class="b-fill" cx="555.12" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 555.12 820.39 L 558.85 824.14 L 555.12 827.89 L 551.39 824.14 Z" />
+<circle class="b-fill" cx="555.12" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 562.59 14.00 L 566.32 17.75 L 562.59 21.50 L 558.85 17.75 Z" />
+<circle class="b-fill" cx="562.59" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 562.59 820.39 L 566.32 824.14 L 562.59 827.89 L 558.85 824.14 Z" />
+<circle class="b-fill" cx="562.59" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 570.05 14.00 L 573.78 17.75 L 570.05 21.50 L 566.32 17.75 Z" />
+<circle class="b-fill" cx="570.05" cy="17.75" r="0.75" />
+<path class="b-stroke" d="M 570.05 820.39 L 573.78 824.14 L 570.05 827.89 L 566.32 824.14 Z" />
+<circle class="b-fill" cx="570.05" cy="824.14" r="0.75" />
+<path class="b-stroke" d="M 17.75 21.50 L 21.50 25.23 L 17.75 28.97 L 14.00 25.23 Z" />
+<circle class="b-fill" cx="17.75" cy="25.23" r="0.75" />
+<path class="b-stroke" d="M 577.53 21.50 L 581.28 25.23 L 577.53 28.97 L 573.78 25.23 Z" />
+<circle class="b-fill" cx="577.53" cy="25.23" r="0.75" />
+<path class="b-stroke" d="M 17.75 28.97 L 21.50 32.70 L 17.75 36.43 L 14.00 32.70 Z" />
+<circle class="b-fill" cx="17.75" cy="32.70" r="0.75" />
+<path class="b-stroke" d="M 577.53 28.97 L 581.28 32.70 L 577.53 36.43 L 573.78 32.70 Z" />
+<circle class="b-fill" cx="577.53" cy="32.70" r="0.75" />
+<path class="b-stroke" d="M 17.75 36.43 L 21.50 40.17 L 17.75 43.90 L 14.00 40.17 Z" />
+<circle class="b-fill" cx="17.75" cy="40.17" r="0.75" />
+<path class="b-stroke" d="M 577.53 36.43 L 581.28 40.17 L 577.53 43.90 L 573.78 40.17 Z" />
+<circle class="b-fill" cx="577.53" cy="40.17" r="0.75" />
+<path class="b-stroke" d="M 17.75 43.90 L 21.50 47.63 L 17.75 51.37 L 14.00 47.63 Z" />
+<circle class="b-fill" cx="17.75" cy="47.63" r="0.75" />
+<path class="b-stroke" d="M 577.53 43.90 L 581.28 47.63 L 577.53 51.37 L 573.78 47.63 Z" />
+<circle class="b-fill" cx="577.53" cy="47.63" r="0.75" />
+<path class="b-stroke" d="M 17.75 51.37 L 21.50 55.10 L 17.75 58.83 L 14.00 55.10 Z" />
+<circle class="b-fill" cx="17.75" cy="55.10" r="0.75" />
+<path class="b-stroke" d="M 577.53 51.37 L 581.28 55.10 L 577.53 58.83 L 573.78 55.10 Z" />
+<circle class="b-fill" cx="577.53" cy="55.10" r="0.75" />
+<path class="b-stroke" d="M 17.75 58.83 L 21.50 62.56 L 17.75 66.30 L 14.00 62.56 Z" />
+<circle class="b-fill" cx="17.75" cy="62.56" r="0.75" />
+<path class="b-stroke" d="M 577.53 58.83 L 581.28 62.56 L 577.53 66.30 L 573.78 62.56 Z" />
+<circle class="b-fill" cx="577.53" cy="62.56" r="0.75" />
+<path class="b-stroke" d="M 17.75 66.30 L 21.50 70.03 L 17.75 73.76 L 14.00 70.03 Z" />
+<circle class="b-fill" cx="17.75" cy="70.03" r="0.75" />
+<path class="b-stroke" d="M 577.53 66.30 L 581.28 70.03 L 577.53 73.76 L 573.78 70.03 Z" />
+<circle class="b-fill" cx="577.53" cy="70.03" r="0.75" />
+<path class="b-stroke" d="M 17.75 73.76 L 21.50 77.50 L 17.75 81.23 L 14.00 77.50 Z" />
+<circle class="b-fill" cx="17.75" cy="77.50" r="0.75" />
+<path class="b-stroke" d="M 577.53 73.76 L 581.28 77.50 L 577.53 81.23 L 573.78 77.50 Z" />
+<circle class="b-fill" cx="577.53" cy="77.50" r="0.75" />
+<path class="b-stroke" d="M 17.75 81.23 L 21.50 84.96 L 17.75 88.70 L 14.00 84.96 Z" />
+<circle class="b-fill" cx="17.75" cy="84.96" r="0.75" />
+<path class="b-stroke" d="M 577.53 81.23 L 581.28 84.96 L 577.53 88.70 L 573.78 84.96 Z" />
+<circle class="b-fill" cx="577.53" cy="84.96" r="0.75" />
+<path class="b-stroke" d="M 17.75 88.70 L 21.50 92.43 L 17.75 96.16 L 14.00 92.43 Z" />
+<circle class="b-fill" cx="17.75" cy="92.43" r="0.75" />
+<path class="b-stroke" d="M 577.53 88.70 L 581.28 92.43 L 577.53 96.16 L 573.78 92.43 Z" />
+<circle class="b-fill" cx="577.53" cy="92.43" r="0.75" />
+<path class="b-stroke" d="M 17.75 96.16 L 21.50 99.90 L 17.75 103.63 L 14.00 99.90 Z" />
+<circle class="b-fill" cx="17.75" cy="99.90" r="0.75" />
+<path class="b-stroke" d="M 577.53 96.16 L 581.28 99.90 L 577.53 103.63 L 573.78 99.90 Z" />
+<circle class="b-fill" cx="577.53" cy="99.90" r="0.75" />
+<path class="b-stroke" d="M 17.75 103.63 L 21.50 107.36 L 17.75 111.10 L 14.00 107.36 Z" />
+<circle class="b-fill" cx="17.75" cy="107.36" r="0.75" />
+<path class="b-stroke" d="M 577.53 103.63 L 581.28 107.36 L 577.53 111.10 L 573.78 107.36 Z" />
+<circle class="b-fill" cx="577.53" cy="107.36" r="0.75" />
+<path class="b-stroke" d="M 17.75 111.10 L 21.50 114.83 L 17.75 118.56 L 14.00 114.83 Z" />
+<circle class="b-fill" cx="17.75" cy="114.83" r="0.75" />
+<path class="b-stroke" d="M 577.53 111.10 L 581.28 114.83 L 577.53 118.56 L 573.78 114.83 Z" />
+<circle class="b-fill" cx="577.53" cy="114.83" r="0.75" />
+<path class="b-stroke" d="M 17.75 118.56 L 21.50 122.29 L 17.75 126.03 L 14.00 122.29 Z" />
+<circle class="b-fill" cx="17.75" cy="122.29" r="0.75" />
+<path class="b-stroke" d="M 577.53 118.56 L 581.28 122.29 L 577.53 126.03 L 573.78 122.29 Z" />
+<circle class="b-fill" cx="577.53" cy="122.29" r="0.75" />
+<path class="b-stroke" d="M 17.75 126.03 L 21.50 129.76 L 17.75 133.49 L 14.00 129.76 Z" />
+<circle class="b-fill" cx="17.75" cy="129.76" r="0.75" />
+<path class="b-stroke" d="M 577.53 126.03 L 581.28 129.76 L 577.53 133.49 L 573.78 129.76 Z" />
+<circle class="b-fill" cx="577.53" cy="129.76" r="0.75" />
+<path class="b-stroke" d="M 17.75 133.49 L 21.50 137.23 L 17.75 140.96 L 14.00 137.23 Z" />
+<circle class="b-fill" cx="17.75" cy="137.23" r="0.75" />
+<path class="b-stroke" d="M 577.53 133.49 L 581.28 137.23 L 577.53 140.96 L 573.78 137.23 Z" />
+<circle class="b-fill" cx="577.53" cy="137.23" r="0.75" />
+<path class="b-stroke" d="M 17.75 140.96 L 21.50 144.69 L 17.75 148.43 L 14.00 144.69 Z" />
+<circle class="b-fill" cx="17.75" cy="144.69" r="0.75" />
+<path class="b-stroke" d="M 577.53 140.96 L 581.28 144.69 L 577.53 148.43 L 573.78 144.69 Z" />
+<circle class="b-fill" cx="577.53" cy="144.69" r="0.75" />
+<path class="b-stroke" d="M 17.75 148.43 L 21.50 152.16 L 17.75 155.89 L 14.00 152.16 Z" />
+<circle class="b-fill" cx="17.75" cy="152.16" r="0.75" />
+<path class="b-stroke" d="M 577.53 148.43 L 581.28 152.16 L 577.53 155.89 L 573.78 152.16 Z" />
+<circle class="b-fill" cx="577.53" cy="152.16" r="0.75" />
+<path class="b-stroke" d="M 17.75 155.89 L 21.50 159.63 L 17.75 163.36 L 14.00 159.63 Z" />
+<circle class="b-fill" cx="17.75" cy="159.63" r="0.75" />
+<path class="b-stroke" d="M 577.53 155.89 L 581.28 159.63 L 577.53 163.36 L 573.78 159.63 Z" />
+<circle class="b-fill" cx="577.53" cy="159.63" r="0.75" />
+<path class="b-stroke" d="M 17.75 163.36 L 21.50 167.09 L 17.75 170.83 L 14.00 167.09 Z" />
+<circle class="b-fill" cx="17.75" cy="167.09" r="0.75" />
+<path class="b-stroke" d="M 577.53 163.36 L 581.28 167.09 L 577.53 170.83 L 573.78 167.09 Z" />
+<circle class="b-fill" cx="577.53" cy="167.09" r="0.75" />
+<path class="b-stroke" d="M 17.75 170.83 L 21.50 174.56 L 17.75 178.29 L 14.00 174.56 Z" />
+<circle class="b-fill" cx="17.75" cy="174.56" r="0.75" />
+<path class="b-stroke" d="M 577.53 170.83 L 581.28 174.56 L 577.53 178.29 L 573.78 174.56 Z" />
+<circle class="b-fill" cx="577.53" cy="174.56" r="0.75" />
+<path class="b-stroke" d="M 17.75 178.29 L 21.50 182.02 L 17.75 185.76 L 14.00 182.02 Z" />
+<circle class="b-fill" cx="17.75" cy="182.02" r="0.75" />
+<path class="b-stroke" d="M 577.53 178.29 L 581.28 182.02 L 577.53 185.76 L 573.78 182.02 Z" />
+<circle class="b-fill" cx="577.53" cy="182.02" r="0.75" />
+<path class="b-stroke" d="M 17.75 185.76 L 21.50 189.49 L 17.75 193.22 L 14.00 189.49 Z" />
+<circle class="b-fill" cx="17.75" cy="189.49" r="0.75" />
+<path class="b-stroke" d="M 577.53 185.76 L 581.28 189.49 L 577.53 193.22 L 573.78 189.49 Z" />
+<circle class="b-fill" cx="577.53" cy="189.49" r="0.75" />
+<path class="b-stroke" d="M 17.75 193.22 L 21.50 196.96 L 17.75 200.69 L 14.00 196.96 Z" />
+<circle class="b-fill" cx="17.75" cy="196.96" r="0.75" />
+<path class="b-stroke" d="M 577.53 193.22 L 581.28 196.96 L 577.53 200.69 L 573.78 196.96 Z" />
+<circle class="b-fill" cx="577.53" cy="196.96" r="0.75" />
+<path class="b-stroke" d="M 17.75 200.69 L 21.50 204.42 L 17.75 208.16 L 14.00 204.42 Z" />
+<circle class="b-fill" cx="17.75" cy="204.42" r="0.75" />
+<path class="b-stroke" d="M 577.53 200.69 L 581.28 204.42 L 577.53 208.16 L 573.78 204.42 Z" />
+<circle class="b-fill" cx="577.53" cy="204.42" r="0.75" />
+<path class="b-stroke" d="M 17.75 208.16 L 21.50 211.89 L 17.75 215.62 L 14.00 211.89 Z" />
+<circle class="b-fill" cx="17.75" cy="211.89" r="0.75" />
+<path class="b-stroke" d="M 577.53 208.16 L 581.28 211.89 L 577.53 215.62 L 573.78 211.89 Z" />
+<circle class="b-fill" cx="577.53" cy="211.89" r="0.75" />
+<path class="b-stroke" d="M 17.75 215.62 L 21.50 219.36 L 17.75 223.09 L 14.00 219.36 Z" />
+<circle class="b-fill" cx="17.75" cy="219.36" r="0.75" />
+<path class="b-stroke" d="M 577.53 215.62 L 581.28 219.36 L 577.53 223.09 L 573.78 219.36 Z" />
+<circle class="b-fill" cx="577.53" cy="219.36" r="0.75" />
+<path class="b-stroke" d="M 17.75 223.09 L 21.50 226.82 L 17.75 230.56 L 14.00 226.82 Z" />
+<circle class="b-fill" cx="17.75" cy="226.82" r="0.75" />
+<path class="b-stroke" d="M 577.53 223.09 L 581.28 226.82 L 577.53 230.56 L 573.78 226.82 Z" />
+<circle class="b-fill" cx="577.53" cy="226.82" r="0.75" />
+<path class="b-stroke" d="M 17.75 230.56 L 21.50 234.29 L 17.75 238.02 L 14.00 234.29 Z" />
+<circle class="b-fill" cx="17.75" cy="234.29" r="0.75" />
+<path class="b-stroke" d="M 577.53 230.56 L 581.28 234.29 L 577.53 238.02 L 573.78 234.29 Z" />
+<circle class="b-fill" cx="577.53" cy="234.29" r="0.75" />
+<path class="b-stroke" d="M 17.75 238.02 L 21.50 241.75 L 17.75 245.49 L 14.00 241.75 Z" />
+<circle class="b-fill" cx="17.75" cy="241.75" r="0.75" />
+<path class="b-stroke" d="M 577.53 238.02 L 581.28 241.75 L 577.53 245.49 L 573.78 241.75 Z" />
+<circle class="b-fill" cx="577.53" cy="241.75" r="0.75" />
+<path class="b-stroke" d="M 17.75 245.49 L 21.50 249.22 L 17.75 252.95 L 14.00 249.22 Z" />
+<circle class="b-fill" cx="17.75" cy="249.22" r="0.75" />
+<path class="b-stroke" d="M 577.53 245.49 L 581.28 249.22 L 577.53 252.95 L 573.78 249.22 Z" />
+<circle class="b-fill" cx="577.53" cy="249.22" r="0.75" />
+<path class="b-stroke" d="M 17.75 252.95 L 21.50 256.69 L 17.75 260.42 L 14.00 256.69 Z" />
+<circle class="b-fill" cx="17.75" cy="256.69" r="0.75" />
+<path class="b-stroke" d="M 577.53 252.95 L 581.28 256.69 L 577.53 260.42 L 573.78 256.69 Z" />
+<circle class="b-fill" cx="577.53" cy="256.69" r="0.75" />
+<path class="b-stroke" d="M 17.75 260.42 L 21.50 264.15 L 17.75 267.89 L 14.00 264.15 Z" />
+<circle class="b-fill" cx="17.75" cy="264.15" r="0.75" />
+<path class="b-stroke" d="M 577.53 260.42 L 581.28 264.15 L 577.53 267.89 L 573.78 264.15 Z" />
+<circle class="b-fill" cx="577.53" cy="264.15" r="0.75" />
+<path class="b-stroke" d="M 17.75 267.89 L 21.50 271.62 L 17.75 275.35 L 14.00 271.62 Z" />
+<circle class="b-fill" cx="17.75" cy="271.62" r="0.75" />
+<path class="b-stroke" d="M 577.53 267.89 L 581.28 271.62 L 577.53 275.35 L 573.78 271.62 Z" />
+<circle class="b-fill" cx="577.53" cy="271.62" r="0.75" />
+<path class="b-stroke" d="M 17.75 275.35 L 21.50 279.09 L 17.75 282.82 L 14.00 279.09 Z" />
+<circle class="b-fill" cx="17.75" cy="279.09" r="0.75" />
+<path class="b-stroke" d="M 577.53 275.35 L 581.28 279.09 L 577.53 282.82 L 573.78 279.09 Z" />
+<circle class="b-fill" cx="577.53" cy="279.09" r="0.75" />
+<path class="b-stroke" d="M 17.75 282.82 L 21.50 286.55 L 17.75 290.29 L 14.00 286.55 Z" />
+<circle class="b-fill" cx="17.75" cy="286.55" r="0.75" />
+<path class="b-stroke" d="M 577.53 282.82 L 581.28 286.55 L 577.53 290.29 L 573.78 286.55 Z" />
+<circle class="b-fill" cx="577.53" cy="286.55" r="0.75" />
+<path class="b-stroke" d="M 17.75 290.29 L 21.50 294.02 L 17.75 297.75 L 14.00 294.02 Z" />
+<circle class="b-fill" cx="17.75" cy="294.02" r="0.75" />
+<path class="b-stroke" d="M 577.53 290.29 L 581.28 294.02 L 577.53 297.75 L 573.78 294.02 Z" />
+<circle class="b-fill" cx="577.53" cy="294.02" r="0.75" />
+<path class="b-stroke" d="M 17.75 297.75 L 21.50 301.48 L 17.75 305.22 L 14.00 301.48 Z" />
+<circle class="b-fill" cx="17.75" cy="301.48" r="0.75" />
+<path class="b-stroke" d="M 577.53 297.75 L 581.28 301.48 L 577.53 305.22 L 573.78 301.48 Z" />
+<circle class="b-fill" cx="577.53" cy="301.48" r="0.75" />
+<path class="b-stroke" d="M 17.75 305.22 L 21.50 308.95 L 17.75 312.68 L 14.00 308.95 Z" />
+<circle class="b-fill" cx="17.75" cy="308.95" r="0.75" />
+<path class="b-stroke" d="M 577.53 305.22 L 581.28 308.95 L 577.53 312.68 L 573.78 308.95 Z" />
+<circle class="b-fill" cx="577.53" cy="308.95" r="0.75" />
+<path class="b-stroke" d="M 17.75 312.68 L 21.50 316.42 L 17.75 320.15 L 14.00 316.42 Z" />
+<circle class="b-fill" cx="17.75" cy="316.42" r="0.75" />
+<path class="b-stroke" d="M 577.53 312.68 L 581.28 316.42 L 577.53 320.15 L 573.78 316.42 Z" />
+<circle class="b-fill" cx="577.53" cy="316.42" r="0.75" />
+<path class="b-stroke" d="M 17.75 320.15 L 21.50 323.88 L 17.75 327.62 L 14.00 323.88 Z" />
+<circle class="b-fill" cx="17.75" cy="323.88" r="0.75" />
+<path class="b-stroke" d="M 577.53 320.15 L 581.28 323.88 L 577.53 327.62 L 573.78 323.88 Z" />
+<circle class="b-fill" cx="577.53" cy="323.88" r="0.75" />
+<path class="b-stroke" d="M 17.75 327.62 L 21.50 331.35 L 17.75 335.08 L 14.00 331.35 Z" />
+<circle class="b-fill" cx="17.75" cy="331.35" r="0.75" />
+<path class="b-stroke" d="M 577.53 327.62 L 581.28 331.35 L 577.53 335.08 L 573.78 331.35 Z" />
+<circle class="b-fill" cx="577.53" cy="331.35" r="0.75" />
+<path class="b-stroke" d="M 17.75 335.08 L 21.50 338.82 L 17.75 342.55 L 14.00 338.82 Z" />
+<circle class="b-fill" cx="17.75" cy="338.82" r="0.75" />
+<path class="b-stroke" d="M 577.53 335.08 L 581.28 338.82 L 577.53 342.55 L 573.78 338.82 Z" />
+<circle class="b-fill" cx="577.53" cy="338.82" r="0.75" />
+<path class="b-stroke" d="M 17.75 342.55 L 21.50 346.28 L 17.75 350.02 L 14.00 346.28 Z" />
+<circle class="b-fill" cx="17.75" cy="346.28" r="0.75" />
+<path class="b-stroke" d="M 577.53 342.55 L 581.28 346.28 L 577.53 350.02 L 573.78 346.28 Z" />
+<circle class="b-fill" cx="577.53" cy="346.28" r="0.75" />
+<path class="b-stroke" d="M 17.75 350.02 L 21.50 353.75 L 17.75 357.48 L 14.00 353.75 Z" />
+<circle class="b-fill" cx="17.75" cy="353.75" r="0.75" />
+<path class="b-stroke" d="M 577.53 350.02 L 581.28 353.75 L 577.53 357.48 L 573.78 353.75 Z" />
+<circle class="b-fill" cx="577.53" cy="353.75" r="0.75" />
+<path class="b-stroke" d="M 17.75 357.48 L 21.50 361.21 L 17.75 364.95 L 14.00 361.21 Z" />
+<circle class="b-fill" cx="17.75" cy="361.21" r="0.75" />
+<path class="b-stroke" d="M 577.53 357.48 L 581.28 361.21 L 577.53 364.95 L 573.78 361.21 Z" />
+<circle class="b-fill" cx="577.53" cy="361.21" r="0.75" />
+<path class="b-stroke" d="M 17.75 364.95 L 21.50 368.68 L 17.75 372.41 L 14.00 368.68 Z" />
+<circle class="b-fill" cx="17.75" cy="368.68" r="0.75" />
+<path class="b-stroke" d="M 577.53 364.95 L 581.28 368.68 L 577.53 372.41 L 573.78 368.68 Z" />
+<circle class="b-fill" cx="577.53" cy="368.68" r="0.75" />
+<path class="b-stroke" d="M 17.75 372.41 L 21.50 376.15 L 17.75 379.88 L 14.00 376.15 Z" />
+<circle class="b-fill" cx="17.75" cy="376.15" r="0.75" />
+<path class="b-stroke" d="M 577.53 372.41 L 581.28 376.15 L 577.53 379.88 L 573.78 376.15 Z" />
+<circle class="b-fill" cx="577.53" cy="376.15" r="0.75" />
+<path class="b-stroke" d="M 17.75 379.88 L 21.50 383.61 L 17.75 387.35 L 14.00 383.61 Z" />
+<circle class="b-fill" cx="17.75" cy="383.61" r="0.75" />
+<path class="b-stroke" d="M 577.53 379.88 L 581.28 383.61 L 577.53 387.35 L 573.78 383.61 Z" />
+<circle class="b-fill" cx="577.53" cy="383.61" r="0.75" />
+<path class="b-stroke" d="M 17.75 387.35 L 21.50 391.08 L 17.75 394.81 L 14.00 391.08 Z" />
+<circle class="b-fill" cx="17.75" cy="391.08" r="0.75" />
+<path class="b-stroke" d="M 577.53 387.35 L 581.28 391.08 L 577.53 394.81 L 573.78 391.08 Z" />
+<circle class="b-fill" cx="577.53" cy="391.08" r="0.75" />
+<path class="b-stroke" d="M 17.75 394.81 L 21.50 398.55 L 17.75 402.28 L 14.00 398.55 Z" />
+<circle class="b-fill" cx="17.75" cy="398.55" r="0.75" />
+<path class="b-stroke" d="M 577.53 394.81 L 581.28 398.55 L 577.53 402.28 L 573.78 398.55 Z" />
+<circle class="b-fill" cx="577.53" cy="398.55" r="0.75" />
+<path class="b-stroke" d="M 17.75 402.28 L 21.50 406.01 L 17.75 409.75 L 14.00 406.01 Z" />
+<circle class="b-fill" cx="17.75" cy="406.01" r="0.75" />
+<path class="b-stroke" d="M 577.53 402.28 L 581.28 406.01 L 577.53 409.75 L 573.78 406.01 Z" />
+<circle class="b-fill" cx="577.53" cy="406.01" r="0.75" />
+<path class="b-stroke" d="M 17.75 409.75 L 21.50 413.48 L 17.75 417.21 L 14.00 413.48 Z" />
+<circle class="b-fill" cx="17.75" cy="413.48" r="0.75" />
+<path class="b-stroke" d="M 577.53 409.75 L 581.28 413.48 L 577.53 417.21 L 573.78 413.48 Z" />
+<circle class="b-fill" cx="577.53" cy="413.48" r="0.75" />
+<path class="b-stroke" d="M 17.75 417.21 L 21.50 420.94 L 17.75 424.68 L 14.00 420.94 Z" />
+<circle class="b-fill" cx="17.75" cy="420.94" r="0.75" />
+<path class="b-stroke" d="M 577.53 417.21 L 581.28 420.94 L 577.53 424.68 L 573.78 420.94 Z" />
+<circle class="b-fill" cx="577.53" cy="420.94" r="0.75" />
+<path class="b-stroke" d="M 17.75 424.68 L 21.50 428.41 L 17.75 432.14 L 14.00 428.41 Z" />
+<circle class="b-fill" cx="17.75" cy="428.41" r="0.75" />
+<path class="b-stroke" d="M 577.53 424.68 L 581.28 428.41 L 577.53 432.14 L 573.78 428.41 Z" />
+<circle class="b-fill" cx="577.53" cy="428.41" r="0.75" />
+<path class="b-stroke" d="M 17.75 432.14 L 21.50 435.88 L 17.75 439.61 L 14.00 435.88 Z" />
+<circle class="b-fill" cx="17.75" cy="435.88" r="0.75" />
+<path class="b-stroke" d="M 577.53 432.14 L 581.28 435.88 L 577.53 439.61 L 573.78 435.88 Z" />
+<circle class="b-fill" cx="577.53" cy="435.88" r="0.75" />
+<path class="b-stroke" d="M 17.75 439.61 L 21.50 443.34 L 17.75 447.08 L 14.00 443.34 Z" />
+<circle class="b-fill" cx="17.75" cy="443.34" r="0.75" />
+<path class="b-stroke" d="M 577.53 439.61 L 581.28 443.34 L 577.53 447.08 L 573.78 443.34 Z" />
+<circle class="b-fill" cx="577.53" cy="443.34" r="0.75" />
+<path class="b-stroke" d="M 17.75 447.08 L 21.50 450.81 L 17.75 454.54 L 14.00 450.81 Z" />
+<circle class="b-fill" cx="17.75" cy="450.81" r="0.75" />
+<path class="b-stroke" d="M 577.53 447.08 L 581.28 450.81 L 577.53 454.54 L 573.78 450.81 Z" />
+<circle class="b-fill" cx="577.53" cy="450.81" r="0.75" />
+<path class="b-stroke" d="M 17.75 454.54 L 21.50 458.28 L 17.75 462.01 L 14.00 458.28 Z" />
+<circle class="b-fill" cx="17.75" cy="458.28" r="0.75" />
+<path class="b-stroke" d="M 577.53 454.54 L 581.28 458.28 L 577.53 462.01 L 573.78 458.28 Z" />
+<circle class="b-fill" cx="577.53" cy="458.28" r="0.75" />
+<path class="b-stroke" d="M 17.75 462.01 L 21.50 465.74 L 17.75 469.48 L 14.00 465.74 Z" />
+<circle class="b-fill" cx="17.75" cy="465.74" r="0.75" />
+<path class="b-stroke" d="M 577.53 462.01 L 581.28 465.74 L 577.53 469.48 L 573.78 465.74 Z" />
+<circle class="b-fill" cx="577.53" cy="465.74" r="0.75" />
+<path class="b-stroke" d="M 17.75 469.48 L 21.50 473.21 L 17.75 476.94 L 14.00 473.21 Z" />
+<circle class="b-fill" cx="17.75" cy="473.21" r="0.75" />
+<path class="b-stroke" d="M 577.53 469.48 L 581.28 473.21 L 577.53 476.94 L 573.78 473.21 Z" />
+<circle class="b-fill" cx="577.53" cy="473.21" r="0.75" />
+<path class="b-stroke" d="M 17.75 476.94 L 21.50 480.68 L 17.75 484.41 L 14.00 480.68 Z" />
+<circle class="b-fill" cx="17.75" cy="480.68" r="0.75" />
+<path class="b-stroke" d="M 577.53 476.94 L 581.28 480.68 L 577.53 484.41 L 573.78 480.68 Z" />
+<circle class="b-fill" cx="577.53" cy="480.68" r="0.75" />
+<path class="b-stroke" d="M 17.75 484.41 L 21.50 488.14 L 17.75 491.87 L 14.00 488.14 Z" />
+<circle class="b-fill" cx="17.75" cy="488.14" r="0.75" />
+<path class="b-stroke" d="M 577.53 484.41 L 581.28 488.14 L 577.53 491.87 L 573.78 488.14 Z" />
+<circle class="b-fill" cx="577.53" cy="488.14" r="0.75" />
+<path class="b-stroke" d="M 17.75 491.87 L 21.50 495.61 L 17.75 499.34 L 14.00 495.61 Z" />
+<circle class="b-fill" cx="17.75" cy="495.61" r="0.75" />
+<path class="b-stroke" d="M 577.53 491.87 L 581.28 495.61 L 577.53 499.34 L 573.78 495.61 Z" />
+<circle class="b-fill" cx="577.53" cy="495.61" r="0.75" />
+<path class="b-stroke" d="M 17.75 499.34 L 21.50 503.07 L 17.75 506.81 L 14.00 503.07 Z" />
+<circle class="b-fill" cx="17.75" cy="503.07" r="0.75" />
+<path class="b-stroke" d="M 577.53 499.34 L 581.28 503.07 L 577.53 506.81 L 573.78 503.07 Z" />
+<circle class="b-fill" cx="577.53" cy="503.07" r="0.75" />
+<path class="b-stroke" d="M 17.75 506.81 L 21.50 510.54 L 17.75 514.27 L 14.00 510.54 Z" />
+<circle class="b-fill" cx="17.75" cy="510.54" r="0.75" />
+<path class="b-stroke" d="M 577.53 506.81 L 581.28 510.54 L 577.53 514.27 L 573.78 510.54 Z" />
+<circle class="b-fill" cx="577.53" cy="510.54" r="0.75" />
+<path class="b-stroke" d="M 17.75 514.27 L 21.50 518.01 L 17.75 521.74 L 14.00 518.01 Z" />
+<circle class="b-fill" cx="17.75" cy="518.01" r="0.75" />
+<path class="b-stroke" d="M 577.53 514.27 L 581.28 518.01 L 577.53 521.74 L 573.78 518.01 Z" />
+<circle class="b-fill" cx="577.53" cy="518.01" r="0.75" />
+<path class="b-stroke" d="M 17.75 521.74 L 21.50 525.47 L 17.75 529.21 L 14.00 525.47 Z" />
+<circle class="b-fill" cx="17.75" cy="525.47" r="0.75" />
+<path class="b-stroke" d="M 577.53 521.74 L 581.28 525.47 L 577.53 529.21 L 573.78 525.47 Z" />
+<circle class="b-fill" cx="577.53" cy="525.47" r="0.75" />
+<path class="b-stroke" d="M 17.75 529.21 L 21.50 532.94 L 17.75 536.67 L 14.00 532.94 Z" />
+<circle class="b-fill" cx="17.75" cy="532.94" r="0.75" />
+<path class="b-stroke" d="M 577.53 529.21 L 581.28 532.94 L 577.53 536.67 L 573.78 532.94 Z" />
+<circle class="b-fill" cx="577.53" cy="532.94" r="0.75" />
+<path class="b-stroke" d="M 17.75 536.67 L 21.50 540.41 L 17.75 544.14 L 14.00 540.41 Z" />
+<circle class="b-fill" cx="17.75" cy="540.41" r="0.75" />
+<path class="b-stroke" d="M 577.53 536.67 L 581.28 540.41 L 577.53 544.14 L 573.78 540.41 Z" />
+<circle class="b-fill" cx="577.53" cy="540.41" r="0.75" />
+<path class="b-stroke" d="M 17.75 544.14 L 21.50 547.87 L 17.75 551.60 L 14.00 547.87 Z" />
+<circle class="b-fill" cx="17.75" cy="547.87" r="0.75" />
+<path class="b-stroke" d="M 577.53 544.14 L 581.28 547.87 L 577.53 551.60 L 573.78 547.87 Z" />
+<circle class="b-fill" cx="577.53" cy="547.87" r="0.75" />
+<path class="b-stroke" d="M 17.75 551.60 L 21.50 555.34 L 17.75 559.07 L 14.00 555.34 Z" />
+<circle class="b-fill" cx="17.75" cy="555.34" r="0.75" />
+<path class="b-stroke" d="M 577.53 551.60 L 581.28 555.34 L 577.53 559.07 L 573.78 555.34 Z" />
+<circle class="b-fill" cx="577.53" cy="555.34" r="0.75" />
+<path class="b-stroke" d="M 17.75 559.07 L 21.50 562.80 L 17.75 566.54 L 14.00 562.80 Z" />
+<circle class="b-fill" cx="17.75" cy="562.80" r="0.75" />
+<path class="b-stroke" d="M 577.53 559.07 L 581.28 562.80 L 577.53 566.54 L 573.78 562.80 Z" />
+<circle class="b-fill" cx="577.53" cy="562.80" r="0.75" />
+<path class="b-stroke" d="M 17.75 566.54 L 21.50 570.27 L 17.75 574.00 L 14.00 570.27 Z" />
+<circle class="b-fill" cx="17.75" cy="570.27" r="0.75" />
+<path class="b-stroke" d="M 577.53 566.54 L 581.28 570.27 L 577.53 574.00 L 573.78 570.27 Z" />
+<circle class="b-fill" cx="577.53" cy="570.27" r="0.75" />
+<path class="b-stroke" d="M 17.75 574.00 L 21.50 577.74 L 17.75 581.47 L 14.00 577.74 Z" />
+<circle class="b-fill" cx="17.75" cy="577.74" r="0.75" />
+<path class="b-stroke" d="M 577.53 574.00 L 581.28 577.74 L 577.53 581.47 L 573.78 577.74 Z" />
+<circle class="b-fill" cx="577.53" cy="577.74" r="0.75" />
+<path class="b-stroke" d="M 17.75 581.47 L 21.50 585.20 L 17.75 588.94 L 14.00 585.20 Z" />
+<circle class="b-fill" cx="17.75" cy="585.20" r="0.75" />
+<path class="b-stroke" d="M 577.53 581.47 L 581.28 585.20 L 577.53 588.94 L 573.78 585.20 Z" />
+<circle class="b-fill" cx="577.53" cy="585.20" r="0.75" />
+<path class="b-stroke" d="M 17.75 588.94 L 21.50 592.67 L 17.75 596.40 L 14.00 592.67 Z" />
+<circle class="b-fill" cx="17.75" cy="592.67" r="0.75" />
+<path class="b-stroke" d="M 577.53 588.94 L 581.28 592.67 L 577.53 596.40 L 573.78 592.67 Z" />
+<circle class="b-fill" cx="577.53" cy="592.67" r="0.75" />
+<path class="b-stroke" d="M 17.75 596.40 L 21.50 600.14 L 17.75 603.87 L 14.00 600.14 Z" />
+<circle class="b-fill" cx="17.75" cy="600.14" r="0.75" />
+<path class="b-stroke" d="M 577.53 596.40 L 581.28 600.14 L 577.53 603.87 L 573.78 600.14 Z" />
+<circle class="b-fill" cx="577.53" cy="600.14" r="0.75" />
+<path class="b-stroke" d="M 17.75 603.87 L 21.50 607.60 L 17.75 611.33 L 14.00 607.60 Z" />
+<circle class="b-fill" cx="17.75" cy="607.60" r="0.75" />
+<path class="b-stroke" d="M 577.53 603.87 L 581.28 607.60 L 577.53 611.33 L 573.78 607.60 Z" />
+<circle class="b-fill" cx="577.53" cy="607.60" r="0.75" />
+<path class="b-stroke" d="M 17.75 611.33 L 21.50 615.07 L 17.75 618.80 L 14.00 615.07 Z" />
+<circle class="b-fill" cx="17.75" cy="615.07" r="0.75" />
+<path class="b-stroke" d="M 577.53 611.33 L 581.28 615.07 L 577.53 618.80 L 573.78 615.07 Z" />
+<circle class="b-fill" cx="577.53" cy="615.07" r="0.75" />
+<path class="b-stroke" d="M 17.75 618.80 L 21.50 622.53 L 17.75 626.27 L 14.00 622.53 Z" />
+<circle class="b-fill" cx="17.75" cy="622.53" r="0.75" />
+<path class="b-stroke" d="M 577.53 618.80 L 581.28 622.53 L 577.53 626.27 L 573.78 622.53 Z" />
+<circle class="b-fill" cx="577.53" cy="622.53" r="0.75" />
+<path class="b-stroke" d="M 17.75 626.27 L 21.50 630.00 L 17.75 633.73 L 14.00 630.00 Z" />
+<circle class="b-fill" cx="17.75" cy="630.00" r="0.75" />
+<path class="b-stroke" d="M 577.53 626.27 L 581.28 630.00 L 577.53 633.73 L 573.78 630.00 Z" />
+<circle class="b-fill" cx="577.53" cy="630.00" r="0.75" />
+<path class="b-stroke" d="M 17.75 633.73 L 21.50 637.47 L 17.75 641.20 L 14.00 637.47 Z" />
+<circle class="b-fill" cx="17.75" cy="637.47" r="0.75" />
+<path class="b-stroke" d="M 577.53 633.73 L 581.28 637.47 L 577.53 641.20 L 573.78 637.47 Z" />
+<circle class="b-fill" cx="577.53" cy="637.47" r="0.75" />
+<path class="b-stroke" d="M 17.75 641.20 L 21.50 644.93 L 17.75 648.67 L 14.00 644.93 Z" />
+<circle class="b-fill" cx="17.75" cy="644.93" r="0.75" />
+<path class="b-stroke" d="M 577.53 641.20 L 581.28 644.93 L 577.53 648.67 L 573.78 644.93 Z" />
+<circle class="b-fill" cx="577.53" cy="644.93" r="0.75" />
+<path class="b-stroke" d="M 17.75 648.67 L 21.50 652.40 L 17.75 656.13 L 14.00 652.40 Z" />
+<circle class="b-fill" cx="17.75" cy="652.40" r="0.75" />
+<path class="b-stroke" d="M 577.53 648.67 L 581.28 652.40 L 577.53 656.13 L 573.78 652.40 Z" />
+<circle class="b-fill" cx="577.53" cy="652.40" r="0.75" />
+<path class="b-stroke" d="M 17.75 656.13 L 21.50 659.87 L 17.75 663.60 L 14.00 659.87 Z" />
+<circle class="b-fill" cx="17.75" cy="659.87" r="0.75" />
+<path class="b-stroke" d="M 577.53 656.13 L 581.28 659.87 L 577.53 663.60 L 573.78 659.87 Z" />
+<circle class="b-fill" cx="577.53" cy="659.87" r="0.75" />
+<path class="b-stroke" d="M 17.75 663.60 L 21.50 667.33 L 17.75 671.06 L 14.00 667.33 Z" />
+<circle class="b-fill" cx="17.75" cy="667.33" r="0.75" />
+<path class="b-stroke" d="M 577.53 663.60 L 581.28 667.33 L 577.53 671.06 L 573.78 667.33 Z" />
+<circle class="b-fill" cx="577.53" cy="667.33" r="0.75" />
+<path class="b-stroke" d="M 17.75 671.06 L 21.50 674.80 L 17.75 678.53 L 14.00 674.80 Z" />
+<circle class="b-fill" cx="17.75" cy="674.80" r="0.75" />
+<path class="b-stroke" d="M 577.53 671.06 L 581.28 674.80 L 577.53 678.53 L 573.78 674.80 Z" />
+<circle class="b-fill" cx="577.53" cy="674.80" r="0.75" />
+<path class="b-stroke" d="M 17.75 678.53 L 21.50 682.26 L 17.75 686.00 L 14.00 682.26 Z" />
+<circle class="b-fill" cx="17.75" cy="682.26" r="0.75" />
+<path class="b-stroke" d="M 577.53 678.53 L 581.28 682.26 L 577.53 686.00 L 573.78 682.26 Z" />
+<circle class="b-fill" cx="577.53" cy="682.26" r="0.75" />
+<path class="b-stroke" d="M 17.75 686.00 L 21.50 689.73 L 17.75 693.46 L 14.00 689.73 Z" />
+<circle class="b-fill" cx="17.75" cy="689.73" r="0.75" />
+<path class="b-stroke" d="M 577.53 686.00 L 581.28 689.73 L 577.53 693.46 L 573.78 689.73 Z" />
+<circle class="b-fill" cx="577.53" cy="689.73" r="0.75" />
+<path class="b-stroke" d="M 17.75 693.46 L 21.50 697.20 L 17.75 700.93 L 14.00 697.20 Z" />
+<circle class="b-fill" cx="17.75" cy="697.20" r="0.75" />
+<path class="b-stroke" d="M 577.53 693.46 L 581.28 697.20 L 577.53 700.93 L 573.78 697.20 Z" />
+<circle class="b-fill" cx="577.53" cy="697.20" r="0.75" />
+<path class="b-stroke" d="M 17.75 700.93 L 21.50 704.66 L 17.75 708.40 L 14.00 704.66 Z" />
+<circle class="b-fill" cx="17.75" cy="704.66" r="0.75" />
+<path class="b-stroke" d="M 577.53 700.93 L 581.28 704.66 L 577.53 708.40 L 573.78 704.66 Z" />
+<circle class="b-fill" cx="577.53" cy="704.66" r="0.75" />
+<path class="b-stroke" d="M 17.75 708.40 L 21.50 712.13 L 17.75 715.86 L 14.00 712.13 Z" />
+<circle class="b-fill" cx="17.75" cy="712.13" r="0.75" />
+<path class="b-stroke" d="M 577.53 708.40 L 581.28 712.13 L 577.53 715.86 L 573.78 712.13 Z" />
+<circle class="b-fill" cx="577.53" cy="712.13" r="0.75" />
+<path class="b-stroke" d="M 17.75 715.86 L 21.50 719.60 L 17.75 723.33 L 14.00 719.60 Z" />
+<circle class="b-fill" cx="17.75" cy="719.60" r="0.75" />
+<path class="b-stroke" d="M 577.53 715.86 L 581.28 719.60 L 577.53 723.33 L 573.78 719.60 Z" />
+<circle class="b-fill" cx="577.53" cy="719.60" r="0.75" />
+<path class="b-stroke" d="M 17.75 723.33 L 21.50 727.06 L 17.75 730.79 L 14.00 727.06 Z" />
+<circle class="b-fill" cx="17.75" cy="727.06" r="0.75" />
+<path class="b-stroke" d="M 577.53 723.33 L 581.28 727.06 L 577.53 730.79 L 573.78 727.06 Z" />
+<circle class="b-fill" cx="577.53" cy="727.06" r="0.75" />
+<path class="b-stroke" d="M 17.75 730.79 L 21.50 734.53 L 17.75 738.26 L 14.00 734.53 Z" />
+<circle class="b-fill" cx="17.75" cy="734.53" r="0.75" />
+<path class="b-stroke" d="M 577.53 730.79 L 581.28 734.53 L 577.53 738.26 L 573.78 734.53 Z" />
+<circle class="b-fill" cx="577.53" cy="734.53" r="0.75" />
+<path class="b-stroke" d="M 17.75 738.26 L 21.50 741.99 L 17.75 745.73 L 14.00 741.99 Z" />
+<circle class="b-fill" cx="17.75" cy="741.99" r="0.75" />
+<path class="b-stroke" d="M 577.53 738.26 L 581.28 741.99 L 577.53 745.73 L 573.78 741.99 Z" />
+<circle class="b-fill" cx="577.53" cy="741.99" r="0.75" />
+<path class="b-stroke" d="M 17.75 745.73 L 21.50 749.46 L 17.75 753.19 L 14.00 749.46 Z" />
+<circle class="b-fill" cx="17.75" cy="749.46" r="0.75" />
+<path class="b-stroke" d="M 577.53 745.73 L 581.28 749.46 L 577.53 753.19 L 573.78 749.46 Z" />
+<circle class="b-fill" cx="577.53" cy="749.46" r="0.75" />
+<path class="b-stroke" d="M 17.75 753.19 L 21.50 756.93 L 17.75 760.66 L 14.00 756.93 Z" />
+<circle class="b-fill" cx="17.75" cy="756.93" r="0.75" />
+<path class="b-stroke" d="M 577.53 753.19 L 581.28 756.93 L 577.53 760.66 L 573.78 756.93 Z" />
+<circle class="b-fill" cx="577.53" cy="756.93" r="0.75" />
+<path class="b-stroke" d="M 17.75 760.66 L 21.50 764.39 L 17.75 768.13 L 14.00 764.39 Z" />
+<circle class="b-fill" cx="17.75" cy="764.39" r="0.75" />
+<path class="b-stroke" d="M 577.53 760.66 L 581.28 764.39 L 577.53 768.13 L 573.78 764.39 Z" />
+<circle class="b-fill" cx="577.53" cy="764.39" r="0.75" />
+<path class="b-stroke" d="M 17.75 768.13 L 21.50 771.86 L 17.75 775.59 L 14.00 771.86 Z" />
+<circle class="b-fill" cx="17.75" cy="771.86" r="0.75" />
+<path class="b-stroke" d="M 577.53 768.13 L 581.28 771.86 L 577.53 775.59 L 573.78 771.86 Z" />
+<circle class="b-fill" cx="577.53" cy="771.86" r="0.75" />
+<path class="b-stroke" d="M 17.75 775.59 L 21.50 779.33 L 17.75 783.06 L 14.00 779.33 Z" />
+<circle class="b-fill" cx="17.75" cy="779.33" r="0.75" />
+<path class="b-stroke" d="M 577.53 775.59 L 581.28 779.33 L 577.53 783.06 L 573.78 779.33 Z" />
+<circle class="b-fill" cx="577.53" cy="779.33" r="0.75" />
+<path class="b-stroke" d="M 17.75 783.06 L 21.50 786.79 L 17.75 790.52 L 14.00 786.79 Z" />
+<circle class="b-fill" cx="17.75" cy="786.79" r="0.75" />
+<path class="b-stroke" d="M 577.53 783.06 L 581.28 786.79 L 577.53 790.52 L 573.78 786.79 Z" />
+<circle class="b-fill" cx="577.53" cy="786.79" r="0.75" />
+<path class="b-stroke" d="M 17.75 790.52 L 21.50 794.26 L 17.75 797.99 L 14.00 794.26 Z" />
+<circle class="b-fill" cx="17.75" cy="794.26" r="0.75" />
+<path class="b-stroke" d="M 577.53 790.52 L 581.28 794.26 L 577.53 797.99 L 573.78 794.26 Z" />
+<circle class="b-fill" cx="577.53" cy="794.26" r="0.75" />
+<path class="b-stroke" d="M 17.75 797.99 L 21.50 801.72 L 17.75 805.46 L 14.00 801.72 Z" />
+<circle class="b-fill" cx="17.75" cy="801.72" r="0.75" />
+<path class="b-stroke" d="M 577.53 797.99 L 581.28 801.72 L 577.53 805.46 L 573.78 801.72 Z" />
+<circle class="b-fill" cx="577.53" cy="801.72" r="0.75" />
+<path class="b-stroke" d="M 17.75 805.46 L 21.50 809.19 L 17.75 812.92 L 14.00 809.19 Z" />
+<circle class="b-fill" cx="17.75" cy="809.19" r="0.75" />
+<path class="b-stroke" d="M 577.53 805.46 L 581.28 809.19 L 577.53 812.92 L 573.78 809.19 Z" />
+<circle class="b-fill" cx="577.53" cy="809.19" r="0.75" />
+<path class="b-stroke" d="M 17.75 812.92 L 21.50 816.66 L 17.75 820.39 L 14.00 816.66 Z" />
+<circle class="b-fill" cx="17.75" cy="816.66" r="0.75" />
+<path class="b-stroke" d="M 577.53 812.92 L 581.28 816.66 L 577.53 820.39 L 573.78 816.66 Z" />
+<circle class="b-fill" cx="577.53" cy="816.66" r="0.75" />
+<path class="b-stroke" d="M 17.75 14.00 L 21.50 17.75 L 17.75 21.50 L 14.00 17.75 Z" />
+<circle class="b-fill" cx="17.75" cy="17.75" r="1.2" />
+<circle class="b-fill" cx="17.75" cy="15.35" r="0.65" />
+<circle class="b-fill" cx="17.75" cy="20.15" r="0.65" />
+<circle class="b-fill" cx="15.35" cy="17.75" r="0.65" />
+<circle class="b-fill" cx="20.15" cy="17.75" r="0.65" />
+<path class="b-stroke" d="M 577.53 14.00 L 581.28 17.75 L 577.53 21.50 L 573.78 17.75 Z" />
+<circle class="b-fill" cx="577.53" cy="17.75" r="1.2" />
+<circle class="b-fill" cx="577.53" cy="15.35" r="0.65" />
+<circle class="b-fill" cx="577.53" cy="20.15" r="0.65" />
+<circle class="b-fill" cx="575.13" cy="17.75" r="0.65" />
+<circle class="b-fill" cx="579.93" cy="17.75" r="0.65" />
+<path class="b-stroke" d="M 17.75 820.39 L 21.50 824.14 L 17.75 827.89 L 14.00 824.14 Z" />
+<circle class="b-fill" cx="17.75" cy="824.14" r="1.2" />
+<circle class="b-fill" cx="17.75" cy="821.74" r="0.65" />
+<circle class="b-fill" cx="17.75" cy="826.54" r="0.65" />
+<circle class="b-fill" cx="15.35" cy="824.14" r="0.65" />
+<circle class="b-fill" cx="20.15" cy="824.14" r="0.65" />
+<path class="b-stroke" d="M 577.53 820.39 L 581.28 824.14 L 577.53 827.89 L 573.78 824.14 Z" />
+<circle class="b-fill" cx="577.53" cy="824.14" r="1.2" />
+<circle class="b-fill" cx="577.53" cy="821.74" r="0.65" />
+<circle class="b-fill" cx="577.53" cy="826.54" r="0.65" />
+<circle class="b-fill" cx="575.13" cy="824.14" r="0.65" />
+<circle class="b-fill" cx="579.93" cy="824.14" r="0.65" />
+</svg>
